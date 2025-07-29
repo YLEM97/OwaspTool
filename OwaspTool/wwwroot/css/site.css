@@ -9,13 +9,17 @@
     font-family: 'Anta', sans-serif !important;
     font-style: normal;
     font-weight: 400;
-    font-size: 1.6rem;
-    color: white;
+    font-size: 7rem !important;
+    color: #264653 !important;
     letter-spacing: 1px;
 }
 .nav-item-align {
     display: flex;
     align-items: center;
-    gap: 8px; /* Spazio tra icona e testo */
+    gap: 8px;
 }
-
+@media (max-width: 600px) {
+    .curecode-brand {
+        font-size: 4rem !important; 
+    }
+}

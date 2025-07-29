@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using OwaspTool.Components;
+using OwaspTool.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddMudServices();
+
+builder.Services.AddDbContext<OwaspToolContext>(item => item.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
 var app = builder.Build();
 
