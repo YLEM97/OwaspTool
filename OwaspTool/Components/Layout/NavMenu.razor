@@ -1,30 +1,24 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">OwaspTool</a>
+﻿<MudNavMenu>
+    <div style="text-align:center">
+        <MudText Typo="Typo.h6" Class="curecode-brand" Color="Color.Secondary">CureCode</MudText>
     </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
+    <MudDivider Style="border-width:3px; border-color: #E9C46A" />
+    <MudNavLink Href="/" Match="NavLinkMatch.All">
+        <div class="nav-item-align">
+            <MudIcon Icon="@Icons.Material.Filled.Home" Color="@Color.Primary" />
+            <MudText Typo="Typo.subtitle1">Home</MudText>
         </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
+    </MudNavLink>
+    <MudNavLink Href="/counter">
+        <div class="nav-item-align">
+            <MudIcon Icon="@Icons.Material.Filled.AddBox" Color="@Color.Primary" />
+            <MudText Typo="Typo.subtitle1">Counter</MudText>
         </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
+    </MudNavLink>
+    <MudNavLink Href="/weather">
+        <div class="nav-item-align">
+            <MudIcon Icon="@Icons.Material.Filled.List" Color="@Color.Primary" />
+            <MudText Typo="Typo.subtitle1">Weather</MudText>
         </div>
-    </nav>
-</div>
-
+    </MudNavLink>
+</MudNavMenu>

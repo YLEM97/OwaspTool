@@ -1,0 +1,21 @@
+﻿.appbar-title-centered {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.curecode-brand {
+    font-family: 'Anta', sans-serif !important;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: white;
+    letter-spacing: 1px;
+}
+.nav-item-align {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Spazio tra icona e testo */
+}
+

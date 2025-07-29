@@ -1,23 +1,47 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudThemeProvider Theme="@customTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<MudLayout>
+    <MudAppBar Elevation="0" Class="position-relative mt-2">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Primary" Edge="Edge.Start" OnClick="ToggleDrawer" Size="Size.Large"/>
+        <div class="appbar-title-centered mt-1 pb-1">
+            <img src="img/CC.png" alt="CureCode Logo" style="height:120px;" />
         </div>
-
-        <article class="content px-4">
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Primary" Href="/" Size="Size.Large"/>
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_open" Style="border-right: 3px solid #E9C46A">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <div class="ms-5 mt-5 ps-2">
             @Body
-        </article>
-    </main>
-</div>
+        </div>
+    </MudMainContent>
+</MudLayout>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+@code {
+    private bool _open = false;
+
+    private void ToggleDrawer()
+    {
+        _open = !_open;
+    }
+
+    public MudTheme customTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#2A9D8F", //Verde acqua profondo
+            Secondary = "#264653", //Blu petrolio
+            Tertiary = "#E9C46A", //Giallo ocra
+            Background = "#ffffff", //Grigio chiaro
+            AppbarText = "#ffffff",
+            AppbarBackground = "#ffffff",
+            Error = "#E76F51" //Rosso corallo
+        }
+    };
+}
