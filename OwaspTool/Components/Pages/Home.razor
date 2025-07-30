@@ -2,6 +2,205 @@
 
 <PageTitle>CureCode</PageTitle>
 
-<div style="text-align:center">
-    <div class="curecode-brand">CureCode</div>
-</div>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="px-1">
+
+    <!-- Hero Section con design migliorato -->
+    <MudPaper Class="hero-gradient mt-16 mb-16 pa-12" Elevation="0">
+        <MudGrid Justify="Justify.Center" AlignItems="AlignItems.Center" Spacing="6">
+            <MudItem xs="12" lg="6" Class="text-sm-start">
+                <MudText Class="hero-home-title mb-4">
+                    Welcome to <span class="curecode-brand">CureCode</span>
+                </MudText>
+                <MudText Typo="Typo.h5" Class="hero-home-subtitle mb-6">
+                    Your smart assistant for secure-by-design healthcare web development
+                </MudText>
+                <MudText Typo="Typo.body1" Class="hero-home-body mb-8">
+                    CureCode helps healthcare developers apply security best practices with ease by generating tailored requirements based on the OWASP ASVS 5.0 standard. No guesswork, no lengthy documents — just clarity, compliance, and confidence.
+                </MudText>
+                <MudButton Variant="Variant.Filled"
+                           Class="pulse-button"
+                           Href="/">
+                    Get Started Now
+                </MudButton>
+            </MudItem>
+            <MudItem xs="12" lg="6" Class="h-100 d-flex align-center justify-center hero-img">
+                <div class="floating-element">
+                    <img src="img/hero-image.png"
+                         alt="Medical computer technology with stethoscope representing healthcare web security" />
+                </div>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <!-- Sezione divider -->
+    <div class="section-divider"></div>
+
+    <div class="ps-0 sm:ps-12 pe-0 sm:pe-12">
+        <!-- Feature Highlights ridisegnate -->
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12" Class="d-flex justify-center">
+                    <MudText Class="text-center mb-4 home-title">
+                        Why Choose <span class="curecode-brand">CureCode</span>?
+                    </MudText>
+                </MudItem>
+                <MudItem xs="12" Class="d-flex justify-center">
+                    <MudText Typo="Typo.h5" Class="text-center mb-12 home-subtitle">
+                        Discover the powerful features that make healthcare security development easier and more effective
+                    </MudText>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+
+        <MudGrid Class="mb-16">
+            <MudItem xs="12" sm="4">
+                <MudPaper Class="feature-card pa-8 text-center h-100" Elevation="0">
+                    <div class="icon-container pulse-icon">
+                        <MudIcon Icon="@Icons.Material.Filled.Security" Size="Size.Large" Style="color: white;" />
+                    </div>
+                    <MudText Typo="Typo.h5" Class="mb-3 home-card-title">Security First</MudText>
+                    <MudText Typo="Typo.body1" Class="home-card-body">
+                        Align your project with the OWASP ASVS 5.0 standard. Ensure secure-by-design practices in healthcare development with confidence.
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="4">
+                <MudPaper Class="feature-card pa-8 text-center h-100" Elevation="0">
+                    <div class="icon-container pulse-icon">
+                        <MudIcon Icon="@Icons.Material.Filled.Speed" Size="Size.Large" Style="color: white;"/>
+                    </div>
+                    <MudText Typo="Typo.h5" Class="mb-3 home-card-title">Fast & Guided</MudText>
+                    <MudText Typo="Typo.body1" Class="home-card-body">
+                        Answer a short questionnaire and instantly get requirements tailored to your app's architecture and risk level. Simple and efficient.
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="12" sm="4">
+                <MudPaper Class="feature-card pa-8 text-center h-100" Elevation="0">
+                    <div class="icon-container pulse-icon">
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Size="Size.Large" Style="color: white;" />
+                    </div>
+                    <MudText Typo="Typo.h5" Class="mb-3 home-card-title">Regulatory Friendly</MudText>
+                    <MudText Typo="Typo.body1" Class="home-card-body">
+                        Support for GDPR and healthcare-specific security needs — simplified, structured, and compliant.
+                    </MudText>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+
+        <!-- Stats Section -->
+        <MudPaper Class="stats-section pa-12 mb-16 text-center" Elevation="0">
+            <MudGrid Justify="Justify.SpaceAround" AlignItems="AlignItems.Center">
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.h2" Style="font-weight: 700; margin-bottom: 8px; color: #264653;">500+</MudText>
+                    <MudText Typo="Typo.body1" Style="opacity: 0.9; color: #264653;">Security Requirements</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.h2" Style="font-weight: 700; margin-bottom: 8px; color: #264653;">100%</MudText>
+                    <MudText Typo="Typo.body1" Style="opacity: 0.9; color: #264653;">OWASP ASVS 5.0 Coverage</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.h2" Style="font-weight: 700; margin-bottom: 8px; color: #264653;">5 min</MudText>
+                    <MudText Typo="Typo.body1" Style="opacity: 0.9; color: #264653;">Average Setup Time</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+        <!-- Action Cards ridisegnate -->
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12" Class="d-flex justify-center">
+                    <MudText Class="text-center mb-4 home-title">
+                        Ready to Get Started?
+                    </MudText>
+                </MudItem>
+                <MudItem xs="12" Class="d-flex justify-center">
+                    <MudText Typo="Typo.h5" Class="text-center mb-12 home-subtitle">
+                        Choose your path to secure healthcare development
+                    </MudText>
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+
+        <MudGrid Class="mb-20">
+            <MudItem xs="12" md="4">
+                <MudCard Class="action-card h-100" Elevation="0">
+                    <div class="home-action-card">
+                        <img src="img/lente.jpg"
+                             alt="ASVS Requirements"/>
+                    </div>
+                    <MudCardContent Class="pa-6">
+                        <MudText Typo="Typo.h5" Class="mb-3 home-card-title">
+                            Explore OWASP ASVS 5.0
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="home-card-body">
+                            Browse and understand all ASVS requirements, carefully organized for developers working in healthcare environments.
+                        </MudText>
+                    </MudCardContent>
+                    <MudCardActions Class="pa-6 pt-0">
+                        <MudButton Variant="Variant.Outlined"
+                                   Class="home-card-outlined-button"
+                                   Href="/asvs-requirements">
+                            View Requirements
+                            <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Class="ml-2" />
+                        </MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+
+
+            <MudItem xs="12" md="4">
+                <MudCard Class="action-card h-100" Elevation="0">
+                    <div class="home-action-card">
+                        <img src="img/safetyfirst.jpg"
+                             alt="Safety first" />
+                    </div>
+                    <MudCardContent Class="pa-6">
+                        <MudText Typo="Typo.h5" Class="mb-3 home-card-title">
+                            Choose the security level
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="home-card-body">
+                            Based on our workflow, choose the security level of your healthcare web application
+                        </MudText>
+                    </MudCardContent>
+                    <MudCardActions Class="pa-6 pt-0">
+                        <MudButton Variant="Variant.Outlined"
+                                   Class="home-card-outlined-button"
+                                   Href="/">
+                            Security Level
+                            <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Class="ml-2" />
+                        </MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+
+            <MudItem xs="12" md="4">
+                <MudCard Class="action-card h-100" Elevation="0">
+                    <div class="home-action-card">
+                        <img src="img/questionmark.jpg"
+                             alt="Question marks" />
+                    </div>
+                    <MudCardContent Class="pa-6">
+                        <MudText Typo="Typo.h5" Class="mb-3 home-card-title">
+                            Generate Your Requirements
+                        </MudText>
+                        <MudText Typo="Typo.body1" Class="home-card-body">
+                            Launch our intelligent questionnaire and get security controls tailored specifically to your application, instantly and clearly.
+                        </MudText>
+                    </MudCardContent>
+                    <MudCardActions Class="pa-6 pt-0">
+                        <MudButton Variant="Variant.Filled"
+                                   Class="home-card-filled-button"
+                                   Href="/">
+                            Start Questionnaire
+                            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Class="ml-2" />
+                        </MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </div>
+    
+
+</MudContainer>
+
