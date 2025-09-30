@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
 <PageTitle>CureCode</PageTitle>
 
@@ -137,12 +138,29 @@
                             Browse and understand all ASVS requirements, carefully organized for developers working in healthcare environments.
                         </MudText>
                     </MudCardContent>
-                    <MudCardActions Class="pa-6 pt-0">
+                    @* <MudCardActions Class="pa-6 pt-0">
                         <MudButton Variant="Variant.Outlined"
                                    Class="home-card-outlined-button"
                                    Href="/asvs-requirements">
                             View Requirements
                             <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Class="ml-2" />
+                        </MudButton>
+                    </MudCardActions> *@
+                    <MudCardActions Class="pa-6 pt-0">
+                        <MudButton Variant="Variant.Outlined"
+                                   Class="home-card-outlined-button"
+                                   OnClick="NavigateToAsvs"
+                                   Disabled="@isNavigating">
+                            @if (isNavigating)
+                            {
+                                <MudProgressCircular Size="Size.Small" Indeterminate="true" Style="margin-right: 8px;" />
+                                <span>Loading...</span>
+                            }
+                            else
+                            {
+                                <span>View Requirements</span>
+                                <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Class="ml-2" />
+                            }
                         </MudButton>
                     </MudCardActions>
                 </MudCard>
@@ -204,3 +222,40 @@
 
 </MudContainer>
 
+@if (isNavigating)
+{
+    <div class="page-transition-overlay">
+        <div class="transition-content">
+            <MudIcon Icon="@Icons.Material.Filled.Security"
+                     Style="font-size: 4rem; margin-bottom: 1rem; color: #E9C46A;" />
+            <div class="transition-title">
+                Loading ASVS Requirements
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="transition-subtitle">
+                Preparing security standards for you...
+            </div>
+            <MudProgressCircular Size="Size.Large"
+                                 Indeterminate="true"
+                                 Style="color: #E9C46A;" />
+        </div>
+    </div>
+}
+
+@code {
+    private bool isNavigating = false;
+
+    private async Task NavigateToAsvs()
+    {
+        isNavigating = true;
+        StateHasChanged();
+
+        await Task.Delay(1000); //To be deleted in production
+
+        NavigationManager.NavigateTo("/asvs-requirements");
+    }
+}
