@@ -59,7 +59,7 @@ The first step involves assessing the highest-level risk categories, which would
 ### Step 1.2: Decision logic
 If at least one of these critical categories is assessed as high risk, the application is automatically classified as L3. If none of these categories are high, but either H2a or H2b is considered moderate, this still justifies a L3 classification, given the legal sensitivity of PII or PHI exposure. If H2a and H2b are not rated high or moderate, but H1, H3 or H4 are evaluated as moderate, the application is classified at L2. If all the categories in this group are considered low or none, proceed to Step 2.1.
 
-The following image represents the decisional workflow of the <b>first step</b>. In the website the buttons are interactive to facilitate the <i>interaction</i> with the schema.
+The image below illustrates the decision-making workflow of the <b>first step</b>. On the website, the buttons are <i>interactive</i> to enhance user interaction with the diagram.
 
 ![STEP 1](/OwaspTool/wwwroot/img/step1.jpg)
 
@@ -74,6 +74,6 @@ If none of the critical risks reach Moderate or High levels, the assessment cont
 ### Step 2.2: Decision Logic
 If H7 or H9 are evaluated as high or moderate, then the system is classified as L3. If none of these categories are rated, above Low, the system may be safely classified as L1, which assumes only minimal residual risk.
 
-The following image represents the decisional workflow of the <b>second step</b>. In the website the buttons are interactive to facilitate the <i>interaction</i> with the schema.
+The image below illustrates the decision-making workflow of the <b>second step</b>. On the website, the buttons are <i>interactive</i> to enhance user interaction with the diagram.
 
 ![STEP 2](/OwaspTool/wwwroot/img/step2.jpg)
