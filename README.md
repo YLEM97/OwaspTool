@@ -70,3 +70,6 @@ If none of the critical risks reach Moderate or High levels, the assessment cont
 ### Step 2.2: Decision Logic
 If H7 or H9 are evaluated as high or moderate, then the system is classified as L3. If none of these categories are rated, above Low, the system may be safely classified as L1, which assumes only minimal residual risk.
 
+![STEP 1](/OwaspTool/wwwroot/img/step1.jpg)
+
+![STEP 2](/OwaspTool/wwwroot/img/step2.jpg)

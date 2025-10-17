@@ -1,0 +1,593 @@
+﻿@* @page "/security-level"
+
+<PageTitle>Security Level Classification</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-12 mb-12">
+
+    <MudPaper Class="hero-gradient mt-16 mb-16 pa-12" Elevation="0">
+        <MudGrid Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Spacing="6">
+            <MudItem xs="12" lg="10" Class="text-sm-start">
+                <MudText Class="hero-home-title mb-4">
+                    <span class="curecode-brand">CureCode</span>: Security Level Classification
+                </MudText>
+                <MudText Typo="Typo.h5" Class="hero-home-subtitle mb-6">
+                    Define the right security assurance category for your healthcare web application based on contextual risks and adapted NIST SP 800-63 guidelines.
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" lg="2" Class="h-100 d-flex align-center justify-end hero-img" style="max-width: 200px; width: 100%; height: auto;">
+                <div class="floating-element">
+                    <img src="img/Icona-Sicurezza-Giallo.png"
+                         alt="Security icon" />
+                </div>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <MudPaper Class="pa-6 mb-12" Style="background-color:#f1f8f7; border-radius:12px;">
+        <MudText Typo="Typo.h5" Class="mb-4 curecode-brand">
+            Informative Section 1: Security Level Selection
+        </MudText>
+        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
+            According to the OWASP ASVS, web applications can be categorized in three levels:
+        </MudText>
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Risk Category</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>H1</td>
+                    <td>Health data integrity compromise</td>
+                    <td>Alteration or corruption of clinical data leading to inappropriate care or loss of reliable historicity.</td>
+                </tr>
+                <tr>
+                    <td>H2a</td>
+                    <td>Demographic data breach (PII)</td>
+                    <td>Exposure of Personally Identifiable Information of patients or staff, without clinical content.</td>
+                </tr>
+                <tr>
+                    <td>H2b</td>
+                    <td>Identifiable clinical information breach (PHI)</td>
+                    <td>Leakage of medical records, reports, diagnostic images or therapies associated with an identified patient.</td>
+                </tr>
+                <tr>
+                    <td>H3</td>
+                    <td>Healthcare financial fraud or abuse</td>
+                    <td>Theft or misuse of billing credentials, insurance fraud, or unauthorized charges.</td>
+                </tr>
+                <tr>
+                    <td>H4</td>
+                    <td>Other clinical delays or errors</td>
+                    <td>Any impact that slows, prevents, or alters diagnostic/therapeutic decisions.</td>
+                </tr>
+                <tr>
+                    <td>H5</td>
+                    <td>Reputational/legal damage</td>
+                    <td>Loss of trust, GDPR/NIS2 penalties, and potential lawsuits against the healthcare organization.</td>
+                </tr>
+                <tr>
+                    <td>H6</td>
+                    <td>Disruption of clinical services</td>
+                    <td>System downtime or malfunction preventing care delivery (e.g., unavailable EHR or prescriptions).</td>
+                </tr>
+                <tr>
+                    <td>H7</td>
+                    <td>Risk to patient physical safety</td>
+                    <td>Data alteration or unavailability that may lead to injury or death.</td>
+                </tr>
+                <tr>
+                    <td>H8</td>
+                    <td>Invalidation of trial data</td>
+                    <td>Clinical trial results compromised due to data alteration or unauthorized disclosure.</td>
+                </tr>
+                <tr>
+                    <td>H9</td>
+                    <td>Re-identification of pseudonymized data</td>
+                    <td>Linking pseudonymized data with external datasets to recover patient identities.</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </MudPaper>
+
+
+</MudContainer>
+
+
+
+@code {
+
+} *@
+
+@page "/security-level"
+
+<PageTitle>Security Level Classification</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-12 mb-12">
+
+    <MudPaper Class="hero-gradient mt-16 mb-16 pa-12" Elevation="0">
+        <MudGrid Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Spacing="6">
+            <MudItem xs="12" lg="10" Class="text-sm-start">
+                <MudText Class="hero-home-title mb-4">
+                    <span class="curecode-brand">CureCode</span>: Security Level Classification
+                </MudText>
+                <MudText Typo="Typo.h5" Class="hero-home-subtitle mb-6">
+                    Define the right security assurance category for your healthcare web application based on contextual risks and adapted NIST SP 800-63 guidelines.
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" lg="2" Class="h-100 d-flex align-center justify-end hero-img" style="max-width: 200px; width: 100%; height: auto;">
+                <div class="floating-element">
+                    <img src="img/Icona-Sicurezza-Giallo.png"
+                         alt="Security icon" />
+                </div>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <div class="section-divider"></div>
+
+    <MudPaper Class="pa-12 mb-12" Style="background-color:#f1f8f7; border-radius:12px;">
+        <MudText Typo="Typo.h4" Class="mb-4">
+            Informative Section
+        </MudText>
+        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
+            According to the OWASP ASVS, web applications can be categorized in three security verification levels:
+            <ol style="padding-left: 30px;">
+                <li><b>ASVS Level 1: </b>For low assurance levels, completely penetration testable.</li>
+                <li><b>ASVS Level 2: </b>Applications that contain sensitive data, which requires protection and is the recommended level for most applications.</li>
+                <li><b>ASVS Level 3: </b>Most critical applications - applications that perform high value trnsactions, contain sensitive medical data, or any application that requires the highest level of trust.</li>
+            </ol>
+            <br />
+            It may seem logical to assume that web applications used in the healthcare domain should automatically be classified as ASVS Level 3. However, there are situations in which a web application,
+            even whithin a clinical context, can be considered low or medium riks. The table below provide examples to illustrate how security level can be defined in clinical settings:
+        </MudText>
+
+        <MudTable Items="@securityLevels" Bordered="true" Striped="true" Hover="true" Class="mb-8">
+            <HeaderContent>
+                <MudTh Style="background-color: #E9C46A; color: #264653; text-align: center; font-weight: bold;">Security Level</MudTh>
+                <MudTh Style="background-color: #E9C46A; color: #264653; text-align: center; font-weight: bold;">Healthcare web app type</MudTh>
+                <MudTh Style="background-color: #E9C46A; color: #264653; text-align: center; font-weight: bold;">Rationale</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Level" Style="font-weight: 600;">@context.Level</MudTd>
+                <MudTd DataLabel="Application Type" Style="font-weight: 500;">@context.AppType</MudTd>
+                <MudTd DataLabel="Rationale">@context.Rationale</MudTd>
+            </RowTemplate>
+        </MudTable>
+
+        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
+            To evaluate the level of security, the following healthcare-specific harm and impact categories will be considered:
+        </MudText>
+
+        <MudTable Items="@riskCategories"
+                  Dense="false"
+                  Hover="true"
+                  Striped="true"
+                  Elevation="0"
+                  Class="mb-4">
+            <HeaderContent>
+                <MudTh Style="background-color: #E9C46A; color: #264653; text-align: center; font-weight: bold;">Code</MudTh>
+                <MudTh Style="background-color: #E9C46A; color: #264653; text-align: center; font-weight: bold;">Risk Category</MudTh>
+                <MudTh Style="background-color: #E9C46A; color: #264653; text-align: center; font-weight: bold;">Description</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Code" Style="font-weight: 600;">@context.Code</MudTd>
+                <MudTd DataLabel="Risk Category" Style="font-weight: 500;">@context.Category</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+            </RowTemplate>
+        </MudTable>
+
+    </MudPaper>
+
+    <div class="section-divider"></div>
+
+    <MudPaper Class="pa-12 mb-12" Style="background-color:#f1f8f7; border-radius:12px;">
+        <MudText Typo="Typo.h4" Class="mb-4">
+            Step 1: High level risk categories evalutation
+        </MudText>
+        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
+            The first step involves assessing the highest-level risk categories, which would directly affect patient or healthcare personnel, data confidentiality, or healthcare information.
+            <br />
+            Use the following <b>Interactive workflow</b> to decide the security level that should be applied to your healthcare web application:
+        </MudText>
+        <div style="display: flex; justify-content: center;">
+            <svg width="800" height="1000" xmlns="http://www.w3.org/2000/svg">
+
+                <g>
+                    <title>Layer 1</title>
+                    <line stroke-width="3" id="svg_194" y2="755.64691" x2="634.42561" y1="706.54345" x1="634.11527" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_193" y2="704.00924" x2="608.03836" y1="704.00924" x1="520.8318" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_191" y2="661.90398" x2="632.59976" y1="661.90398" x1="545.39321" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_190" y2="663.54164" x2="631.79404" y1="614.43819" x1="631.48369" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_188" y2="574.06796" x2="401.09228" y1="524.96451" x1="400.78193" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_189" y2="686.46538" x2="297.51205" y1="686.46538" x1="210.30549" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_186" y2="838.10304" x2="636.18" y1="788.99959" x1="635.86966" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_187" y2="842.6963" x2="404.03347" y1="793.59285" x1="403.72312" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_183" y2="686.46538" x2="153.86248" y1="686.46538" x1="67.37276" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_184" y2="605.75895" x2="300.20226" y1="605.75895" x1="212.99571" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_181" y2="789.09696" x2="622.07344" y1="789.09696" x1="534.86689" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_175" y2="604.79746" x2="609.80007" y1="604.79746" x1="522.59352" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_129" y2="933.76889" x2="65.75297" y1="606.90918" x1="66.21783" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_9" y2="213.97242" x2="325.68963" y1="164.86896" x1="325.37928" stroke="#000" fill="none" />
+                    <rect stroke-width="0" rx="10" id="svg_20" height="28" width="69" y="773.039" x="596.28789" stroke="#000" fill="@GetFill("svg_20")" @onclick="@(() => Toggle("svg_20"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_21" y="794.99026" x="615.20964" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_20"))">NO</text>
+                    <rect stroke-width="0" rx="10" id="svg_32" height="28" width="69" y="21.39999" x="20" stroke="#000" fill="#264653" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_33" y="43.02221" x="21.64723" stroke="#000" fill="#ffffff">STEP 1</text>
+                    <rect stroke-width="0" rx="10" id="svg_32_clear" height="28" width="150" y="21.39999" x="605.46824" stroke="#000" fill="#264653" @onclick="@(() => ClearStep1())" style="cursor: pointer;"/>
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_33_clea" y="43.02221" x="610.46824" stroke="#000" fill="#ffffff" @onclick="@(() => ClearStep1())" style="cursor: pointer;">CLEAR STEP 1</text>
+                    <line stroke-width="3" id="svg_34" y2="151.95171" x2="422.75859" y1="151.95171" x1="359.99997" stroke="#000" fill="none" />
+                    <rect stroke-width="0" rx="10" id="svg_35" height="28" width="69" y="836.97085" x="371.42657" stroke="#000" fill="@GetFill("svg_35")" @onclick="@(() => Toggle("svg_35"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_36" y="858.9221" x="388.14717" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_35"))">YES</text>
+                    <line stroke-width="3" id="svg_37" y2="151.2138" x2="391.87788" y1="102.11035" x1="391.56754" stroke="#000" fill="none" />
+                    <rect stroke-width="0" rx="10" id="svg_48" height="32" width="712" y="71.4207" x="47.10345" stroke="#000" fill="#DDDDDD" />
+                    <ellipse stroke-width="0" ry="13" rx="14" id="svg_49" cy="87.4207" cx="66.10345" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" id="svg_50" y="95.37196" x="59.86031" stroke-width="0" stroke="#000" fill="#ffffff">1</text>
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="19" id="svg_51" y="98.17931" x="85.65517" stroke-width="0" stroke="#000" fill="#000000">To provide the service, do you need any personal and/or clinical information?</text>
+                    <rect stroke-width="0" rx="10" id="svg_5" height="32" width="712" y="212.11034" x="47.10345" stroke="#000" fill="#DDDDDD" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="18.7" id="svg_8" y="238.86896" x="85.65517" stroke-width="0" stroke="#000" fill="#000000">What are the risks (to the organization or the subject) of providing the service?</text>
+                    <rect rx="10" id="svg_55" height="234.35964" width="711.72409" y="293.26226" x="44.88985" stroke-width="0" stroke="#000" fill="#DDDDDD" />
+                    <ellipse stroke-width="0" ry="13" rx="14" id="svg_56" cy="228.11034" cx="66.10345" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" id="svg_57" y="236.0616" x="59.86031" stroke-width="0" stroke="#000" fill="#ffffff">2</text>
+                    <ellipse stroke-width="0" ry="13" rx="14" id="svg_6" cy="358.26812" cx="64.73919" stroke="#000" fill="#2a9d8f" />
+                    <path id="svg_58" d="m45.11149,345.28996l20.83626,0l0,26.04127l-20.83626,0l0,-26.04127z" opacity="undefined" stroke-width="0" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="15" id="svg_7" y="364.51967" x="46.25053" stroke-width="0" stroke="#000" fill="#ffffff">H2a</text>
+                    <text font-style="italic" font-weight="normal" xml:space="preserve" text-anchor="start" font-family="'Arimo'" font-size="16" id="svg_60" y="363.71444" x="84.71892" stroke-width="0" stroke="#000" fill="#000000">Demographic data breach</text>
+                    <rect stroke-width="0" rx="10" id="svg_61" height="28" width="69" y="342.48238" x="682.46824" stroke="#000" fill="@GetFill("svg_61")" @onclick="@(() => Toggle("svg_61"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_62" y="362.72399" x="694.41424" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_61"))">High</text>
+                    <rect stroke-width="0" rx="10" id="svg_63" height="28" width="69" y="342.48238" x="610.90937" stroke="#000" fill="@GetFill("svg_63")" @onclick="@(() => Toggle("svg_63"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_64" y="362.72399" x="624.01922" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_63"))">Mod</text>
+                    <rect stroke-width="0" rx="10" id="svg_65" height="28" width="69" y="342.48238" x="539.35051" stroke="#000" fill="@GetFill("svg_65")" @onclick="@(() => Toggle("svg_65"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_66" y="362.72399" x="554.2853" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_65"))">Low</text>
+                    <rect stroke-width="0" rx="10" id="svg_67" height="28" width="69" y="342.48239" x="467.79164" stroke="#000" fill="@GetFill("svg_67")" @onclick="@(() => Toggle("svg_67"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_68" y="362.72401" x="477.83365" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_67"))">None</text>
+                    <line stroke-dasharray="2,2" id="svg_69" y2="373.56606" x2="756.56752" y1="376.50724" x1="44.80235" stroke="#000" fill="none" />
+                    <ellipse stroke-width="0" ry="13" rx="14" id="svg_71" cy="315.82641" cx="64.73919" stroke="#000" fill="#2a9d8f" />
+                    <path id="svg_72" d="m45.11149,302.84826l20.83626,0l0,26.04127l-20.83626,0l0,-26.04127z" opacity="undefined" stroke-width="0" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="15" id="svg_73" y="322.07797" x="46.25053" stroke-width="0" stroke="#000" fill="#ffffff">H1</text>
+                    <text font-style="italic" font-weight="normal" xml:space="preserve" text-anchor="start" font-family="'Arimo'" font-size="16" id="svg_74" y="321.27273" x="84.71892" stroke-width="0" stroke="#000" fill="#000000">Health data integrity compromise</text>
+                    <rect stroke-width="0" rx="10" id="svg_75" height="28" width="69" y="300.04067" x="682.46824" stroke="#000" fill="@GetFill("svg_75")" @onclick="@(() => Toggle("svg_75"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_76" y="320.28228" x="694.41424" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_75"))">High</text>
+                    <rect stroke-width="0" rx="10" id="svg_77" height="28" width="69" y="300.04067" x="610.90937" stroke="#000" fill="@GetFill("svg_77")" @onclick="@(() => Toggle("svg_77"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_78" y="320.28228" x="624.01922" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_77"))">Mod</text>
+                    <rect stroke-width="0" rx="10" id="svg_79" height="28" width="69" y="300.04067" x="539.3505" stroke="#000" fill="@GetFill("svg_79")" @onclick="@(() => Toggle("svg_79"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_80" y="320.28228" x="554.2853" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_79"))">Low</text>
+                    <rect stroke-width="0" rx="10" id="svg_81" height="28" width="69" y="300.04069" x="467.79164" stroke="#000" fill="@GetFill("svg_81")" @onclick="@(() => Toggle("svg_81"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_82" y="320.2823" x="477.83364" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_81"))">None</text>
+                    <line stroke-dasharray="2,2" id="svg_83" y2="331.12435" x2="756.56752" y1="334.06553" x1="44.80235" stroke="#000" fill="none" />
+                    <ellipse stroke-width="0" ry="13" rx="14" id="svg_100" cy="401.63422" cx="64.73919" stroke="#000" fill="#2a9d8f" />
+                    <path id="svg_101" d="m45.11149,388.65607l20.83626,0l0,26.04127l-20.83626,0l0,-26.04127z" opacity="undefined" stroke-width="0" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="15" id="svg_102" y="407.17149" x="46.25053" stroke-width="0" stroke="#000" fill="#ffffff">H2b</text>
+                    <text font-style="italic" font-weight="normal" xml:space="preserve" text-anchor="start" font-family="'Arimo'" font-size="16" id="svg_103" y="407.08054" x="84.71892" stroke-width="0" stroke="#000" fill="#000000">Identifiable clinical information breach</text>
+                    <rect stroke-width="0" rx="10" id="svg_104" height="28" width="69" y="385.84848" x="682.46824" stroke="#000" fill="@GetFill("svg_104")" @onclick="@(() => Toggle("svg_104"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_105" y="406.09009" x="694.41424" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_104"))">High</text>
+                    <rect stroke-width="0" rx="10" id="svg_106" height="28" width="69" y="385.84848" x="610.90937" stroke="#000" fill="@GetFill("svg_106")" @onclick="@(() => Toggle("svg_106"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_107" y="406.09009" x="624.01922" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_106"))">Mod</text>
+                    <rect stroke-width="0" rx="10" id="svg_108" height="28" width="69" y="385.84848" x="539.35051" stroke="#000" fill="@GetFill("svg_108")" @onclick="@(() => Toggle("svg_108"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_109" y="406.09009" x="554.28531" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_108"))">Low</text>
+                    <rect stroke-width="0" rx="10" id="svg_110" height="28" width="69" y="385.8485" x="467.79164" stroke="#000" fill="@GetFill("svg_110")" @onclick="@(() => Toggle("svg_110"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_111" y="406.09011" x="477.83365" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_110"))">None</text>
+                    <line stroke-dasharray="2,2" id="svg_112" y2="416.93216" x2="756.56752" y1="419.87334" x1="44.80235" stroke="#000" fill="none" />
+                    <ellipse stroke-width="0" ry="13" rx="14" id="svg_114" cy="446.99647" cx="64.73919" stroke="#000" fill="#2a9d8f" />
+                    <path id="svg_115" d="m45.1115,434.01832l20.83626,0l0,26.04127l-20.83626,0l0,-26.04127z" opacity="undefined" stroke-width="0" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="15" id="svg_116" y="452.53375" x="46.25054" stroke-width="0" stroke="#000" fill="#ffffff">H3</text>
+                    <text font-style="italic" font-weight="normal" xml:space="preserve" text-anchor="start" font-family="'Arimo'" font-size="16" id="svg_117" y="452.4428" x="84.71892" stroke-width="0" stroke="#000" fill="#000000">Healthcare financial fraud or abuse</text>
+                    <rect stroke-width="0" rx="10" id="svg_118" height="28" width="69" y="431.21074" x="682.46824" stroke="#000" fill="@GetFill("svg_118")" @onclick="@(() => Toggle("svg_118"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_119" y="451.45235" x="694.41424" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_118"))">High</text>
+                    <rect stroke-width="0" rx="10" id="svg_120" height="28" width="69" y="431.21074" x="610.90938" stroke="#000" fill="@GetFill("svg_120")" @onclick="@(() => Toggle("svg_120"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_121" y="451.45235" x="624.01922" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_120"))">Mod</text>
+                    <rect stroke-width="0" rx="10" id="svg_122" height="28" width="69" y="431.21074" x="539.35051" stroke="#000" fill="@GetFill("svg_122")" @onclick="@(() => Toggle("svg_122"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_123" y="451.45235" x="554.28531" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_122"))">Low</text>
+                    <rect stroke-width="0" rx="10" id="svg_124" height="28" width="69" y="431.21075" x="467.79164" stroke="#000" fill="@GetFill("svg_124")" @onclick="@(() => Toggle("svg_124"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_125" y="451.45237" x="477.83365" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_124"))">None</text>
+                    <line stroke-dasharray="2,2" id="svg_126" y2="462.29442" x2="756.56752" y1="465.2356" x1="44.80235" stroke="#000" fill="none" />
+                    <ellipse stroke-width="0" ry="13" rx="14" id="svg_85" cy="492.20294" cx="64.73919" stroke="#000" fill="#2a9d8f" />
+                    <path id="svg_86" d="m45.11149,479.22478l20.83626,0l0,26.04127l-20.83626,0l0,-26.04127z" opacity="undefined" stroke-width="0" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="15" id="svg_87" y="497.74021" x="46.25054" stroke-width="0" stroke="#000" fill="#ffffff">H4</text>
+                    <text font-style="italic" font-weight="normal" xml:space="preserve" text-anchor="start" font-family="'Arimo'" font-size="16" id="svg_88" y="497.64926" x="84.71892" stroke-width="0" stroke="#000" fill="#000000">Other clinical delays or errors</text>
+                    <rect stroke-width="0" rx="10" id="svg_89" height="28" width="69" y="476.4172" x="682.46824" stroke="#000" fill="@GetFill("svg_89")" @onclick="@(() => Toggle("svg_89"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_90" y="496.65881" x="694.41424" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_89"))">High</text>
+                    <rect stroke-width="0" rx="10" id="svg_91" height="28" width="69" y="476.4172" x="610.90938" stroke="#000" fill="@GetFill("svg_91")" @onclick="@(() => Toggle("svg_91"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_92" y="496.65881" x="624.01922" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_91"))">Mod</text>
+                    <rect stroke-width="0" rx="10" id="svg_93" height="28" width="69" y="476.4172" x="539.35051" stroke="#000" fill="@GetFill("svg_93")" @onclick="@(() => Toggle("svg_93"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_94" y="496.65881" x="554.28531" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_93"))">Low</text>
+                    <rect stroke-width="0" rx="10" id="svg_95" height="28" width="69" y="476.41721" x="467.79164" stroke="#000" fill="@GetFill("svg_95")" @onclick="@(() => Toggle("svg_95"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_96" y="496.65883" x="477.83365" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_95"))">None</text>
+                    <line stroke-dasharray="2,2" id="svg_97" y2="507.50088" x2="756.56752" y1="510.44206" x1="44.80235" stroke="#000" fill="none" />
+                    <rect rx="10" id="svg_140" height="67.87878" width="236.36362" y="572.72957" x="290.82517" stroke-width="0" stroke="#000" fill="#DDDDDD" />
+                    <ellipse stroke-width="0" ry="14" rx="14" id="svg_141" cy="589.36033" cx="312.28023" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="18" id="svg_142" y="596.55971" x="306.03709" stroke-width="0" stroke="#000" fill="#ffffff">3</text>
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="18" id="svg_143" y="628.62657" x="331.54031" stroke-width="0" stroke="#000" fill="#000000">for any of the above?</text>
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="18" id="svg_144" y="597.11142" x="330.32819" stroke-width="0" stroke="#000" fill="#000000">Did you assess at high</text>
+                    <rect rx="10" id="svg_146" height="67.87878" width="282.21996" y="653.39255" x="267.89696" stroke-width="0" stroke="#000" fill="#DDDDDD" />
+                    <ellipse stroke-width="0" ry="14" rx="14" id="svg_147" cy="670.02331" cx="289.35201" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="18" id="svg_148" y="677.22269" x="283.10888" stroke-width="0" stroke="#000" fill="#ffffff">4</text>
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="18" id="svg_149" y="709.28956" x="308.6121" stroke-width="0" stroke="#000" fill="#000000">for H2a and/or H2b?</text>
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="18" id="svg_150" y="677.77441" x="307.39998" stroke-width="0" stroke="#000" fill="#000000">Did you assess at moderate</text>
+                    <line stroke-width="3" id="svg_192" y2="754.00924" x2="635.23134" y1="754.00924" x1="548.02478" stroke="#000" fill="none" />
+                    <rect rx="10" id="svg_137" height="67.87878" width="283.32495" y="734.60802" x="267.3445" stroke-width="0" stroke="#000" fill="#DDDDDD" />
+                    <ellipse stroke-width="0" ry="14" rx="14" id="svg_131" cy="751.79126" cx="288.79955" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="18" id="svg_132" y="759.74252" x="282.55642" stroke-width="0" stroke="#000" fill="#ffffff">5</text>
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="18" id="svg_133" y="791.05751" x="308.05964" stroke-width="0" stroke="#000" fill="#000000">for H1, H3 and/or H4?</text>
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="18" id="svg_138" y="759.54236" x="306.84752" stroke-width="0" stroke="#000" fill="#000000">Did you assess at moderate</text>
+                    <line stroke-width="3" id="svg_154" y2="293.4262" x2="401.47096" y1="244.32275" x1="401.16062" stroke="#000" fill="none" />
+                    <rect stroke-width="0" rx="10" id="svg_155" height="28" width="69" y="137.95171" x="291.03447" stroke="#000" fill="@GetFill("svg_155")" @onclick="@(() => Toggle("svg_155"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_156" y="160.65485" x="307.75506" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_155"))">YES</text>
+                    <rect stroke-width="0" rx="10" id="svg_157" height="28" width="69" y="590.89258" x="150.83848" stroke="#000" fill="@GetFill("svg_157")" @onclick="@(() => Toggle("svg_157"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_158" y="613.59572" x="167.55908" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_157"))">YES</text>
+                    <rect stroke-width="0" rx="10" id="svg_159" height="28" width="69" y="672.26508" x="152.79926" stroke="#000" fill="@GetFill("svg_159")" @onclick="@(() => Toggle("svg_159"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_160" y="694.96821" x="169.51986" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_159"))">YES</text>
+                    <rect stroke-width="0" rx="10" id="svg_161" height="28" width="69" y="137.95171" x="422.75859" stroke="#000" fill="@GetFill("svg_161")" @onclick="@(() => Toggle("svg_161"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_162" y="160.65485" x="441.68035" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_161"))">NO</text>
+                    <rect stroke-width="0" rx="10" id="svg_163" height="28" width="69" y="587.9514" x="596.28789" stroke="#000" fill="@GetFill("svg_163")" @onclick="@(() => Toggle("svg_163"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_164" y="609.90265" x="615.20964" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_163"))">NO</text>
+                    <rect stroke-width="0" rx="10" id="svg_165" height="28" width="69" y="689.29294" x="597.26828" stroke="#000" fill="@GetFill("svg_165")" @onclick="@(() => Toggle("svg_165"))" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_166" y="711.24419" x="616.19003" stroke="#000" fill="#ffffff" style="cursor: pointer;" @onclick="@(() => Toggle("svg_165"))">NO</text>
+                    <rect rx="10" id="svg_168" height="50.98036" width="634.3133" y="904.90097" x="84.50941" stroke-width="0" stroke="#000" fill="#e9c46a" />
+                    <line stroke-width="3" id="svg_182" y2="913.85236" x2="404.13667" y1="864.7489" x1="403.82632" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_180" y2="932.42103" x2="151.05971" y1="932.42103" x1="64.57" stroke="#000" fill="none" />
+                    <rect rx="10" id="svg_169" height="36.27449" width="62.74506" y="911.95984" x="602.1561" stroke-width="0" stroke="#000" fill="#2a9d8f" />
+                    <rect rx="10" id="svg_170" height="36.27449" width="62.74506" y="911.95984" x="375.68568" stroke-width="0" stroke="#000" fill="#2a9d8f" />
+                    <rect rx="10" id="svg_171" height="36.27449" width="62.74506" y="911.95984" x="140.39172" stroke-width="0" stroke="#000" fill="#2a9d8f" />
+                    <text font-weight="bold" style="cursor: move;" xml:space="preserve" text-anchor="start" font-size="28" id="svg_172" y="939.86782" x="390.03037" stroke-width="0" stroke="#000" fill="#ffffff">L2</text>
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="28" id="svg_173" y="940.84821" x="156.69718" stroke-width="0" stroke="#000" fill="#ffffff">L3</text>
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="28" id="svg_174" y="940.84821" x="617.48119" stroke-width="0" stroke="#000" fill="#ffffff">L1</text>
+                    <line id="svg_176" y2="929.33076" x2="777.93192" y1="151.11998" x1="774.01035" stroke-width="3" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_178" y2="152.54856" x2="775.1532" y1="152.54856" x1="491.37189" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_179" y2="927.85602" x2="777.09826" y1="927.85602" x1="664.89313" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_185" y2="605.75895" x2="151.17226" y1="605.75895" x1="64.68255" stroke="#000" fill="none" />
+                    <rect rx="10" id="svg_196" height="35.96491" width="134.21052" y="835.61399" x="567.54386" stroke-width="0" stroke="#000" fill="#e9c46a" />
+                    <text font-style="italic" font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" id="svg_197" y="862.93228" x="573.93483" stroke-width="0" stroke="#000" fill="#ffffff">Go to step 2</text>
+                </g>
+            </svg>
+        </div>
+    </MudPaper>
+
+    <div class="section-divider"></div>
+
+    <MudPaper Class="pa-12 mb-12" Style="background-color:#f1f8f7; border-radius:12px;">
+        <MudText Typo="Typo.h4" Class="mb-4">
+            Step 2: Low level risk categories evaluation
+        </MudText>
+        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
+            If none of the <b>high level</b> critical risks listed in <b>Step 1</b> reach <b>moderate</b> or <b>high</b> levels, the assessment continues with categories which can be 
+            direct or indirect consequences of the high level risk categories. 
+            <br />
+            Use the following <b>Interactive workflow</b> to decide the security level that should be applied to your healthcare web application:
+        </MudText>
+        <div style="display: flex; justify-content: center;">
+
+            <svg width="800" height="680" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <title>Layer 1</title>
+                    <line fill="none" stroke="#000" x1="634.11527" y1="391.50984" x2="634.42561" y2="440.6133" id="svg_194_2" stroke-width="3" />
+                    <line fill="none" stroke="#000" x1="520.8318" y1="388.97563" x2="608.03836" y2="388.97563" id="svg_193_2" stroke-width="3" />
+                    <line fill="none" stroke="#000" x1="400.78193" y1="292.96451" x2="401.09228" y2="342.06796" id="svg_188_2" stroke-width="3" />
+                    <line fill="none" stroke="#000" x1="210.30549" y1="371.43177" x2="297.51205" y2="371.43177" id="svg_189_2" stroke-width="3" />
+                    <line fill="none" stroke="#000" x1="403.72312" y1="478.55924" x2="404.03347" y2="527.66269" id="svg_187_2" stroke-width="3" />
+                    <line fill="none" stroke="#000" x1="67.37276" y1="371.43177" x2="153.86248" y2="371.43177" id="svg_183_2" stroke-width="3" />
+                    <line fill="none" stroke="#000" x1="534.86689" y1="474.06335" x2="622.07344" y2="474.06335" id="svg_181_2" stroke-width="3" />
+                    <line fill="none" stroke="#000" x1="66.21783" y1="369.97585" x2="65.75297" y2="618.62023" id="svg_129_2" stroke-width="3" />
+                    <rect fill="#264653" stroke="#000" x="20" y="21.39999" width="69" height="28" id="svg_32_2" rx="10" stroke-width="0" />
+                    <text style="cursor: move;" fill="#ffffff" stroke="#000" x="21.64723" y="43.02221" id="svg_33_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold">STEP 2</text>
+                    <rect stroke-width="0" rx="10" id="svg_32_2_clear" height="28" width="150" y="21.39999" x="605.46824" stroke="#000" fill="#264653" @onclick="@(() => ClearStep2())" style="cursor: pointer;" />
+                    <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="20" stroke-width="0" id="svg_33_2_clear" y="43.02221" x="610.46824" stroke="#000" fill="#ffffff" @onclick="@(() => ClearStep2())" style="cursor: pointer;">CLEAR STEP 2</text>
+                    <rect stroke="#000" x="371.42657" y="521.93724" width="69" height="28" id="svg_35_2" rx="10" stroke-width="0" fill="@GetFill("svg_35_2")" @onclick="@(() => Toggle("svg_35_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="388.14717" y="543.88849" id="svg_36_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_35_2"))">YES</text>
+                    <rect fill="#DDDDDD" stroke="#000" stroke-width="0" x="44.88985" y="61.26226" width="711.72409" height="234.35964" id="svg_55_2" rx="10" />
+                    <ellipse fill="#2a9d8f" stroke="#000" cx="64.73919" cy="126.26812" id="svg_6_2" rx="14" ry="13" stroke-width="0" />
+                    <path fill="#2a9d8f" stroke="#000" stroke-width="0" opacity="undefined" d="m45.11149,113.28996l20.83626,0l0,26.04127l-20.83626,0l0,-26.04127z" id="svg_58_2" />
+                    <text style="cursor: move;" fill="#ffffff" stroke="#000" stroke-width="0" x="46.25053" y="132.51967" id="svg_7_2" font-size="15" text-anchor="start" xml:space="preserve" font-weight="bold">H6</text>
+                    <text style="cursor: move;" fill="#000000" stroke="#000" stroke-width="0" x="84.71892" y="131.71444" id="svg_60_2" font-size="16" font-family="'Arimo'" text-anchor="start" xml:space="preserve" font-weight="normal" font-style="italic">Disruption of clinical services</text>
+                    <rect stroke="#000" x="682.46824" y="110.48238" width="69" height="28" id="svg_61_2" rx="10" stroke-width="0" fill="@GetFill("svg_61_2")" @onclick="@(() => Toggle("svg_61_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="694.41424" y="130.72399" id="svg_62_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_61_2"))">High</text>
+                    <rect stroke="#000" x="610.90937" y="110.48238" width="69" height="28" id="svg_63_2" rx="10" stroke-width="0" fill="@GetFill("svg_63_2")" @onclick="@(() => Toggle("svg_63_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="624.01922" y="130.72399" id="svg_64_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_63_2"))">Mod</text>
+                    <rect stroke="#000" x="539.35051" y="110.48238" width="69" height="28" id="svg_65_2" rx="10" stroke-width="0" fill="@GetFill("svg_65_2")" @onclick="@(() => Toggle("svg_65_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="554.2853" y="130.72399" id="svg_66_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_65_2"))">Low</text>
+                    <rect stroke="#000" x="467.79164" y="110.48239" width="69" height="28" id="svg_67_2" rx="10" stroke-width="0" fill="@GetFill("svg_67_2")" @onclick="@(() => Toggle("svg_67_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="477.83365" y="130.72401" id="svg_68_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_67_2"))">None</text>
+                    <line fill="none" stroke="#000" x1="44.80235" y1="144.50724" x2="756.56752" y2="141.56606" id="svg_69_2" stroke-dasharray="2,2" />
+                    <ellipse fill="#2a9d8f" stroke="#000" cx="64.73919" cy="83.82641" id="svg_71_2" rx="14" ry="13" stroke-width="0" />
+                    <path fill="#2a9d8f" stroke="#000" stroke-width="0" opacity="undefined" d="m45.11149,70.84826l20.83626,0l0,26.04127l-20.83626,0l0,-26.04127z" id="svg_72_2" />
+                    <text style="cursor: move;" fill="#ffffff" stroke="#000" stroke-width="0" x="46.25053" y="90.07797" id="svg_73_2" font-size="15" text-anchor="start" xml:space="preserve" font-weight="bold">H5</text>
+                    <text style="cursor: move;" fill="#000000" stroke="#000" stroke-width="0" x="84.71892" y="98.27273" id="svg_74_2" font-size="16" font-family="'Arimo'" text-anchor="start" xml:space="preserve" font-weight="normal" font-style="italic">healthcare organizations</text>
+                    <rect stroke="#000" x="682.46824" y="68.04067" width="69" height="28" id="svg_75_2" rx="10" stroke-width="0" fill="@GetFill("svg_75_2")" @onclick="@(() => Toggle("svg_75_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="694.41424" y="88.28228" id="svg_76_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_75_2"))">High</text>
+                    <rect stroke="#000" x="610.90937" y="68.04067" width="69" height="28" id="svg_77_2" rx="10" stroke-width="0" fill="@GetFill("svg_77_2")" @onclick="@(() => Toggle("svg_77_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="624.01922" y="88.28228" id="svg_78_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_77_2"))">Mod</text>
+                    <rect stroke="#000" x="539.3505" y="68.04067" width="69" height="28" id="svg_79_2" rx="10" stroke-width="0" fill="@GetFill("svg_79_2")" @onclick="@(() => Toggle("svg_79_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="554.2853" y="88.28228" id="svg_80_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_79_2"))">Low</text>
+                    <rect stroke="#000" x="467.79164" y="68.04069" width="69" height="28" id="svg_81_2" rx="10" stroke-width="0" fill="@GetFill("svg_81_2")" @onclick="@(() => Toggle("svg_81_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="477.83364" y="88.2823" id="svg_82_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_81_2"))">None</text>
+                    <line fill="none" stroke="#000" x1="44.80235" y1="102.06553" x2="756.56752" y2="99.12435" id="svg_83_2" stroke-dasharray="2,2" />
+                    <ellipse fill="#2a9d8f" stroke="#000" cx="64.73919" cy="169.63422" id="svg_100_2" rx="14" ry="13" stroke-width="0" />
+                    <path fill="#2a9d8f" stroke="#000" stroke-width="0" opacity="undefined" d="m45.11149,156.65607l20.83626,0l0,26.04127l-20.83626,0l0,-26.04127z" id="svg_101_2" />
+                    <text style="cursor: move;" fill="#ffffff" stroke="#000" stroke-width="0" x="46.25053" y="175.17149" id="svg_102_2" font-size="15" text-anchor="start" xml:space="preserve" font-weight="bold">H7</text>
+                    <text style="cursor: move;" fill="#000000" stroke="#000" stroke-width="0" x="84.71892" y="175.08054" id="svg_103_2" font-size="16" font-family="'Arimo'" text-anchor="start" xml:space="preserve" font-weight="normal" font-style="italic">Risk to patient physical safety</text>
+                    <rect stroke="#000" x="682.46824" y="153.84848" width="69" height="28" id="svg_104_2" rx="10" stroke-width="0" fill="@GetFill("svg_104_2")" @onclick="@(() => Toggle("svg_104_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="694.41424" y="174.09009" id="svg_105_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_104_2"))">High</text>
+                    <rect stroke="#000" x="610.90937" y="153.84848" width="69" height="28" id="svg_106_2" rx="10" stroke-width="0" fill="@GetFill("svg_106_2")" @onclick="@(() => Toggle("svg_106_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="624.01922" y="174.09009" id="svg_107_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_106_2"))">Mod</text>
+                    <rect stroke="#000" x="539.35051" y="153.84848" width="69" height="28" id="svg_108_2" rx="10" stroke-width="0" fill="@GetFill("svg_108_2")" @onclick="@(() => Toggle("svg_108_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="554.28531" y="174.09009" id="svg_109_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_108_2"))">Low</text>
+                    <rect stroke="#000" x="467.79164" y="153.8485" width="69" height="28" id="svg_110_2" rx="10" stroke-width="0" fill="@GetFill("svg_110_2")" @onclick="@(() => Toggle("svg_110_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="477.83365" y="174.09011" id="svg_111_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_110_2"))">None</text>
+                    <line fill="none" stroke="#000" x1="44.80235" y1="187.87334" x2="756.56752" y2="184.93216" id="svg_112_2" stroke-dasharray="2,2" />
+                    <ellipse fill="#2a9d8f" stroke="#000" cx="64.73919" cy="214.99647" id="svg_114_2" rx="14" ry="13" stroke-width="0" />
+                    <path fill="#2a9d8f" stroke="#000" stroke-width="0" opacity="undefined" d="m45.1115,202.01832l20.83626,0l0,26.04127l-20.83626,0l0,-26.04127z" id="svg_115_2" />
+                    <text style="cursor: move;" fill="#ffffff" stroke="#000" stroke-width="0" x="46.25054" y="220.53375" id="svg_116_2" font-size="15" text-anchor="start" xml:space="preserve" font-weight="bold">H8</text>
+                    <text style="cursor: move;" fill="#000000" stroke="#000" stroke-width="0" x="84.71892" y="220.4428" id="svg_117_2" font-size="16" font-family="'Arimo'" text-anchor="start" xml:space="preserve" font-weight="normal" font-style="italic">Invalidation of trial data</text>
+                    <rect stroke="#000" x="682.46824" y="199.21074" width="69" height="28" id="svg_118_2" rx="10" stroke-width="0" fill="@GetFill("svg_118_2")" @onclick="@(() => Toggle("svg_118_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="694.41424" y="219.45235" id="svg_119_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_118_2"))">High</text>
+                    <rect stroke="#000" x="610.90938" y="199.21074" width="69" height="28" id="svg_120_2" rx="10" stroke-width="0" fill="@GetFill("svg_120_2")" @onclick="@(() => Toggle("svg_120_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="624.01922" y="219.45235" id="svg_121_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_120_2"))">Mod</text>
+                    <rect stroke="#000" x="539.35051" y="199.21074" width="69" height="28" id="svg_122_2" rx="10" stroke-width="0" fill="@GetFill("svg_122_2")" @onclick="@(() => Toggle("svg_122_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="554.28531" y="219.45235" id="svg_123_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_122_2"))">Low</text>
+                    <rect stroke="#000" x="467.79164" y="199.21075" width="69" height="28" id="svg_124_2" rx="10" stroke-width="0" fill="@GetFill("svg_124_2")" @onclick="@(() => Toggle("svg_124_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="477.83365" y="219.45237" id="svg_125_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_124_2"))">None</text>
+                    <line fill="none" stroke="#000" x1="44.80235" y1="233.2356" x2="756.56752" y2="230.29442" id="svg_126_2" stroke-dasharray="2,2" />
+                    <ellipse fill="#2a9d8f" stroke="#000" cx="64.73919" cy="260.20294" id="svg_85_2" rx="14" ry="13" stroke-width="0" />
+                    <path fill="#2a9d8f" stroke="#000" stroke-width="0" opacity="undefined" d="m45.11149,247.22478l20.83626,0l0,26.04127l-20.83626,0l0,-26.04127z" id="svg_86_2" />
+                    <text style="cursor: move;" fill="#ffffff" stroke="#000" stroke-width="0" x="46.25054" y="265.74021" id="svg_87_2" font-size="15" text-anchor="start" xml:space="preserve" font-weight="bold">H9</text>
+                    <text style="cursor: move;" fill="#000000" stroke="#000" stroke-width="0" x="83.71892" y="274.64926" id="svg_88_2" font-size="16" font-family="'Arimo'" text-anchor="start" xml:space="preserve" font-weight="normal" font-style="italic">info from pseudonymized data</text>
+                    <rect stroke="#000" x="682.46824" y="244.4172" width="69" height="28" id="svg_89_2" rx="10" stroke-width="0" fill="@GetFill("svg_89_2")" @onclick="@(() => Toggle("svg_89_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="694.41424" y="264.65881" id="svg_90_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_89_2"))">High</text>
+                    <rect stroke="#000" x="610.90938" y="244.4172" width="69" height="28" id="svg_91_2" rx="10" stroke-width="0" fill="@GetFill("svg_91_2")" @onclick="@(() => Toggle("svg_91_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="624.01922" y="264.65881" id="svg_92_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_91_2"))">Mod</text>
+                    <rect stroke="#000" x="539.35051" y="244.4172" width="69" height="28" id="svg_93_2" rx="10" stroke-width="0" fill="@GetFill("svg_93_2")" @onclick="@(() => Toggle("svg_93_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="554.28531" y="264.65881" id="svg_94_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_93_2"))">Low</text>
+                    <rect stroke="#000" x="467.79164" y="244.41721" width="69" height="28" id="svg_95_2" rx="10" stroke-width="0" fill="@GetFill("svg_95_2")" @onclick="@(() => Toggle("svg_95_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="477.83365" y="264.65883" id="svg_96_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_95_2"))">None</text>
+                    <line fill="none" stroke="#000" x1="44.80235" y1="278.44206" x2="756.56752" y2="275.50088" id="svg_97_2" stroke-dasharray="2,2" />
+                    <rect fill="#DDDDDD" stroke="#000" stroke-width="0" x="267.89696" y="338.35894" width="282.21996" height="67.87878" id="svg_146_2" rx="10" />
+                    <ellipse fill="#2a9d8f" stroke="#000" cx="289.35201" cy="354.9897" id="svg_147_2" rx="14" ry="14" stroke-width="0" />
+                    <text style="cursor: move;" fill="#ffffff" stroke="#000" stroke-width="0" x="283.10888" y="362.18908" id="svg_148_2" font-size="18" text-anchor="start" xml:space="preserve" font-weight="bold">1</text>
+                    <text style="cursor: move;" fill="#000000" stroke="#000" stroke-width="0" x="299.3684" y="394.25595" id="svg_149_2" font-size="18" text-anchor="start" xml:space="preserve" font-weight="bold">moderate for H7 and/or H9?</text>
+                    <text style="cursor: move;" fill="#000000" stroke="#000" stroke-width="0" x="307.39998" y="362.7408" id="svg_150_2" font-size="18" text-anchor="start" xml:space="preserve" font-weight="bold">Did you assess at high or</text>
+                    <line fill="none" stroke="#000" x1="548.02478" y1="438.97563" x2="635.23134" y2="438.97563" id="svg_192_2" stroke-width="3" />
+                    <rect fill="#DDDDDD" stroke="#000" stroke-width="0" x="267.3445" y="419.57441" width="283.32495" height="67.87878" id="svg_137_2" rx="10" />
+                    <ellipse fill="#2a9d8f" stroke="#000" cx="288.79955" cy="436.75765" id="svg_131_2" rx="14" ry="14" stroke-width="0" />
+                    <text style="cursor: move;" fill="#ffffff" stroke="#000" stroke-width="0" x="282.55642" y="444.70891" id="svg_132_2" font-size="18" text-anchor="start" xml:space="preserve" font-weight="bold">2</text>
+                    <text style="cursor: move;" fill="#000000" stroke="#000" stroke-width="0" x="308.05964" y="476.0239" id="svg_133_2" font-size="18" text-anchor="start" xml:space="preserve" font-weight="bold">for H5, H6 and/or H8?</text>
+                    <text fill="#000000" stroke="#000" stroke-width="0" x="306.84752" y="444.50875" id="svg_138_2" font-size="18" text-anchor="start" xml:space="preserve" font-weight="bold">Did you assess at moderate</text>
+                    <rect stroke="#000" x="152.79926" y="357.23147" width="69" height="28" id="svg_159_2" rx="10" stroke-width="0" fill="@GetFill("svg_159_2")" @onclick="@(() => Toggle("svg_159_2"))" style="cursor: pointer;"/>
+                    <text fill="#ffffff" stroke="#000" x="169.51986" y="379.9346" id="svg_160_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_159_2"))">YES</text>
+                    <rect stroke="#000" x="597.26828" y="374.25933" width="69" height="28" id="svg_165_2" rx="10" stroke-width="0" fill="@GetFill("svg_165_2")" @onclick="@(() => Toggle("svg_165_2"))" style="cursor: pointer;" />
+                    <text fill="#ffffff" stroke="#000" x="616.19003" y="396.21058" id="svg_166_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_165_2"))">NO</text>
+                    <rect fill="#e9c46a" stroke="#000" stroke-width="0" x="84.50941" y="589.86736" width="634.3133" height="50.98036" id="svg_168_2" rx="10" />
+                    <line fill="none" stroke="#000" x1="635.86966" y1="473.96602" x2="636.18" y2="597.01899" id="svg_186_2" stroke-width="3" />
+                    <line fill="none" stroke="#000" x1="403.82632" y1="549.71529" x2="404.13667" y2="598.81875" id="svg_182_2" stroke-width="3" />
+                    <line fill="none" stroke="#000" x1="64.57" y1="617.38742" x2="151.05971" y2="617.38742" id="svg_180_2" stroke-width="3" />
+                    <rect fill="#2a9d8f" stroke="#000" stroke-width="0" x="602.1561" y="596.92623" width="62.74506" height="36.27449" id="svg_169_2" rx="10" />
+                    <rect fill="#2a9d8f" stroke="#000" stroke-width="0" x="375.68568" y="596.92623" width="62.74506" height="36.27449" id="svg_170_2" rx="10" />
+                    <rect fill="#2a9d8f" stroke="#000" stroke-width="0" x="140.39172" y="596.92623" width="62.74506" height="36.27449" id="svg_171_2" rx="10" />
+                    <text fill="#ffffff" stroke="#000" stroke-width="0" x="390.03037" y="624.83421" id="svg_172_2" font-size="28" text-anchor="start" xml:space="preserve" font-weight="bold">L2</text>
+                    <text fill="#ffffff" stroke="#000" stroke-width="0" x="156.69718" y="625.8146" id="svg_173_2" font-size="28" text-anchor="start" xml:space="preserve" font-weight="bold">L3</text>
+                    <text fill="#ffffff" stroke="#000" stroke-width="0" x="617.48119" y="625.8146" id="svg_174_2" font-size="28" text-anchor="start" xml:space="preserve" font-weight="bold">L1</text>
+                    <text style="cursor: move;" fill="#000000" stroke="#000" stroke-width="0" x="84.71892" y="78.27273" id="svg_1_2" font-size="16" font-family="'Arimo'" text-anchor="start" xml:space="preserve" font-weight="normal" font-style="italic">Reputational/legal damage to</text>
+                    <text style="cursor: move;" fill="#000000" stroke="#000" stroke-width="0" x="84.71892" y="254.64926" id="svg_2_2" font-size="16" font-family="'Arimo'" text-anchor="start" xml:space="preserve" font-weight="normal" font-style="italic">Possible re-identification of sensitive</text>
+                    <rect stroke="#000" x="596.28789" y="458.00539" width="69" height="28" id="svg_20_2" rx="10" stroke-width="0" fill="@GetFill("svg_20_2")" @onclick="@(() => Toggle("svg_20_2"))" style="cursor: pointer;"/>
+                    <text fill="#ffffff" stroke="#000" x="615.20964" y="479.95665" id="svg_21_2" stroke-width="0" font-size="20" text-anchor="start" xml:space="preserve" font-weight="bold" style="cursor: pointer;" @onclick="@(() => Toggle("svg_20_2"))">NO</text>
+                </g>
+
+            </svg>
+        </div>
+    </MudPaper>
+
+
+
+</MudContainer>
+
+@code {
+    private List<OwaspSecurityLevel> securityLevels = new()
+    {
+        new OwaspSecurityLevel("ASVS Level 1", 
+        "Health education portal with no login, publishing articles and infographics on healthy lifestyle (no user data collected, only technical cookies).", 
+        "Reduced attack surface: no accounts, no uploads, no sensitive APIs. An attack would bring more of a reputational damage, but zero impact on data or patient care."),
+
+        new OwaspSecurityLevel("ASVS Level 2", 
+        "Medical appointment booking portal that manages patient profiles with demographics information and agenda, accessible via username + password and CAPTCHA; includes REST API to synchronize with the outpatient clinic’s queue management system.", 
+        "It exposes PII and integrates APIs. However, it doesn’t contain detailed clinical data or functionality that directly affects diagnosis/therapy."),
+
+        new OwaspSecurityLevel("ASVS Level 3", "Electronic prescribing and drug therapy system used on the ward, with Single Sign-On authentication and digital signature, which updates the medical record in real time and sends orders to smart infusion pumps. It allows PDF report uploads and manages complete clinical data.", 
+        "Multiple attack surfaces. Any compromise can alter therapies or expose PHI. More weaknesses, thus high probability of accident if advanced controls are not implemented rigorously."),
+    };
+
+    private List<RiskCategory> riskCategories = new()
+    {
+        new RiskCategory("H1", "Health data integrity compromise",
+            "Any unauthorized alteration, corruption, or deletion of clinical data. Such incidents may cause misdiagnosis, inappropriate treatments, or the loss of historically important clinical information."),
+
+        new RiskCategory("H2a", "Demographic data breach (PII)",
+            "Exposure of Personally Identifiable Information (PII) of patients or staff, without exposing clinical content."),
+
+        new RiskCategory("H2b", "Identifiable clinical information breach (PHI)",
+            "Unauthorized access to or dissemination of identifiable medical data, including lab results, diagnostic images, prescriptions, or detailed clinical reports. Such breaches not only expose patients to potential stigma and discrimination but also result in legal consequences and lasting damage to institutional trust."),
+
+        new RiskCategory("H3", "Healthcare financial fraud or abuse",
+            "Attacks that compromise billing systems, payment authorizations, or insurance data fall into this category. Misuse of billing credentials can result in financial loss, fraudulent charges, or regulatory penalties."),
+
+        new RiskCategory("H4", "Other clinical delays or errors",
+            "Any impact that slows, prevents, or alters diagnostic/therapeutic decisions."),
+
+        new RiskCategory("H5", "Reputational/legal damage",
+            "A breach or incident may lead to loss of patient and public trust, and potential violations of laws such as GDPR or NIS2. These legal consequences may result in significant financial penalties or operational restrictions."),
+
+        new RiskCategory("H6", "Disruption of clinical services",
+            "System downtime or malfunction that impedes care delivery, e.g., a radiology system becoming unavailable, or electronic prescriptions failing. Prolonged disruptions can directly affect patient care continuity."),
+
+        new RiskCategory("H7", "Risk to patient physical safety",
+            "Data alteration or unavailability that may lead to injury or death."),
+
+        new RiskCategory("H8", "Invalidation of trial data",
+            "For systems involved in clinical trials, any breach that alters or exposes research data may invalidate scientific works. This not only affects medical progress but can undermine compliance with trial protocols and regulatory approvals."),
+
+        new RiskCategory("H9", "Re-identification of pseudonymized data",
+            "When data is pseudonymized, there’s a risk that attackers may cross-reference it with external datasets to reconstruct patient identities. This kind of breach is subtle but deeply invasive, undermining patient confidentiality.")
+    };
+
+    public record OwaspSecurityLevel(string Level, string AppType, string Rationale);
+    public record RiskCategory(string Code, string Category, string Description);
+
+    private Dictionary<string, bool> selected = new Dictionary<string, bool>();
+
+    private string GetFill(string id)
+    {
+        return selected.GetValueOrDefault(id, false) ? "#e76f51" : "#264653";
+    }
+
+    private string GetStroke(string id)
+    {
+        return selected.GetValueOrDefault(id, false) ? "#e76f51" : "#000";
+    }
+
+    private void Toggle(string id)
+    {
+        if(selected.ContainsKey(id))
+        {
+            selected[id] = !selected[id];
+        }
+        else
+        {
+            selected[id] = true;
+        }
+    }
+
+    private void ClearStep1()
+    {
+        var rectIds = new[]
+        {
+            "svg_20", "svg_35", "svg_61", "svg_63", "svg_65", "svg_67",
+            "svg_75", "svg_77", "svg_79", "svg_81", "svg_89", "svg_91",
+            "svg_93", "svg_95", "svg_104", "svg_106", "svg_108", "svg_110",
+            "svg_118", "svg_120", "svg_122", "svg_124", "svg_155", "svg_157",
+            "svg_159", "svg_161", "svg_163", "svg_165"
+        };
+
+        foreach (var id in rectIds)
+        {
+            selected[id] = false;
+        }
+    }
+
+    private void ClearStep2()
+    {
+        var rectIds = new[]
+        {
+            "svg_20_2", "svg_35_2", "svg_159_2", "svg_165_2",
+            "svg_61_2", "svg_63_2", "svg_65_2", "svg_67_2",
+            "svg_75_2", "svg_77_2", "svg_79_2", "svg_81_2",
+            "svg_104_2", "svg_106_2", "svg_108_2", "svg_110_2",
+            "svg_118_2", "svg_120_2", "svg_122_2", "svg_124_2",
+            "svg_89_2", "svg_91_2", "svg_93_2", "svg_95_2"
+        };
+        foreach (var id in rectIds)
+        {
+            selected[id] = false;
+        }
+    }
+}
