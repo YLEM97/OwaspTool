@@ -13,7 +13,7 @@
         <MudSpacer />
         <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Primary" Href="/" Size="Size.Large"/>
     </MudAppBar>
-    <MudDrawer @bind-Open="@_open" Style="border-right: 3px solid #E9C46A">
+    <MudDrawer @bind-Open="@_open" Style="border-right: 3px solid #E9C46A" Variant="@DrawerVariant.Temporary">
         <NavMenu />
     </MudDrawer>
     <MudMainContent>

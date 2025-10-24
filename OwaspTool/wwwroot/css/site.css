@@ -6,7 +6,7 @@
     transform: translate(-50%, -50%);
 }
 .custom-appbar {
-    height: 100px; /* oppure 80px, 120px, ecc. */
+    height: 100px; 
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 }
@@ -38,7 +38,7 @@
 .hero-home-title {
     color: #264653;
     font-weight: 400;
-    font-size: 3.5rem !important;
+    font-size: 2.5rem !important;
     line-height: 1.2;
 }
 .hero-home-subtitle {
