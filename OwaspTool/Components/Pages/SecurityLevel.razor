@@ -1,115 +1,10 @@
-﻿@* @page "/security-level"
-
-<PageTitle>Security Level Classification</PageTitle>
-
-<MudContainer MaxWidth="MaxWidth.Large" Class="mt-12 mb-12">
-
-    <MudPaper Class="hero-gradient mt-16 mb-16 pa-12" Elevation="0">
-        <MudGrid Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Spacing="6">
-            <MudItem xs="12" lg="10" Class="text-sm-start">
-                <MudText Class="hero-home-title mb-4">
-                    <span class="curecode-brand">CureCode</span>: Security Level Classification
-                </MudText>
-                <MudText Typo="Typo.h5" Class="hero-home-subtitle mb-6">
-                    Define the right security assurance category for your healthcare web application based on contextual risks and adapted NIST SP 800-63 guidelines.
-                </MudText>
-            </MudItem>
-            <MudItem xs="12" lg="2" Class="h-100 d-flex align-center justify-end hero-img" style="max-width: 200px; width: 100%; height: auto;">
-                <div class="floating-element">
-                    <img src="img/Icona-Sicurezza-Giallo.png"
-                         alt="Security icon" />
-                </div>
-            </MudItem>
-        </MudGrid>
-    </MudPaper>
-
-    <MudPaper Class="pa-6 mb-12" Style="background-color:#f1f8f7; border-radius:12px;">
-        <MudText Typo="Typo.h5" Class="mb-4 curecode-brand">
-            Informative Section 1: Security Level Selection
-        </MudText>
-        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
-            According to the OWASP ASVS, web applications can be categorized in three levels:
-        </MudText>
-        <table class="custom-table">
-            <thead>
-                <tr>
-                    <th>Code</th>
-                    <th>Risk Category</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>H1</td>
-                    <td>Health data integrity compromise</td>
-                    <td>Alteration or corruption of clinical data leading to inappropriate care or loss of reliable historicity.</td>
-                </tr>
-                <tr>
-                    <td>H2a</td>
-                    <td>Demographic data breach (PII)</td>
-                    <td>Exposure of Personally Identifiable Information of patients or staff, without clinical content.</td>
-                </tr>
-                <tr>
-                    <td>H2b</td>
-                    <td>Identifiable clinical information breach (PHI)</td>
-                    <td>Leakage of medical records, reports, diagnostic images or therapies associated with an identified patient.</td>
-                </tr>
-                <tr>
-                    <td>H3</td>
-                    <td>Healthcare financial fraud or abuse</td>
-                    <td>Theft or misuse of billing credentials, insurance fraud, or unauthorized charges.</td>
-                </tr>
-                <tr>
-                    <td>H4</td>
-                    <td>Other clinical delays or errors</td>
-                    <td>Any impact that slows, prevents, or alters diagnostic/therapeutic decisions.</td>
-                </tr>
-                <tr>
-                    <td>H5</td>
-                    <td>Reputational/legal damage</td>
-                    <td>Loss of trust, GDPR/NIS2 penalties, and potential lawsuits against the healthcare organization.</td>
-                </tr>
-                <tr>
-                    <td>H6</td>
-                    <td>Disruption of clinical services</td>
-                    <td>System downtime or malfunction preventing care delivery (e.g., unavailable EHR or prescriptions).</td>
-                </tr>
-                <tr>
-                    <td>H7</td>
-                    <td>Risk to patient physical safety</td>
-                    <td>Data alteration or unavailability that may lead to injury or death.</td>
-                </tr>
-                <tr>
-                    <td>H8</td>
-                    <td>Invalidation of trial data</td>
-                    <td>Clinical trial results compromised due to data alteration or unauthorized disclosure.</td>
-                </tr>
-                <tr>
-                    <td>H9</td>
-                    <td>Re-identification of pseudonymized data</td>
-                    <td>Linking pseudonymized data with external datasets to recover patient identities.</td>
-                </tr>
-            </tbody>
-        </table>
-
-    </MudPaper>
-
-
-</MudContainer>
-
-
-
-@code {
-
-} *@
-
-@page "/security-level"
+﻿@page "/security-level"
 
 <PageTitle>Security Level Classification</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-12 mb-12">
 
-    <MudPaper Class="hero-gradient mt-16 mb-16 pa-12" Elevation="0">
+    <MudPaper Class="hero-gradient mt-16 mb-16 pa-md-12" Elevation="0">
         <MudGrid Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Spacing="6">
             <MudItem xs="12" lg="10" Class="text-sm-start">
                 <MudText Class="hero-home-title mb-4">
@@ -185,14 +80,14 @@
 
     <div class="section-divider"></div>
 
-    <MudPaper Class="pa-12 mb-12" Style="background-color:#f1f8f7; border-radius:12px;">
+    <MudPaper Class="pa-12 mb-12 d-none d-md-block" Style="background-color:#f1f8f7; border-radius:12px;">
         <MudText Typo="Typo.h4" Class="mb-4">
             Step 1: High level risk categories evalutation
         </MudText>
         <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
             The first step involves assessing the highest-level risk categories, which would directly affect patient or healthcare personnel, data confidentiality, or healthcare information.
             <br />
-            Use the following <b>Interactive workflow</b> to decide the security level that should be applied to your healthcare web application:
+            Use the following <b>interactive workflow</b> to decide the security level that should be applied to your healthcare web application:
         </MudText>
         <div style="display: flex; justify-content: center;">
             <svg width="800" height="1000" xmlns="http://www.w3.org/2000/svg">
@@ -335,8 +230,8 @@
                     <text font-weight="bold" style="cursor: move;" xml:space="preserve" text-anchor="start" font-size="28" id="svg_172" y="939.86782" x="390.03037" stroke-width="0" stroke="#000" fill="#ffffff">L2</text>
                     <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="28" id="svg_173" y="940.84821" x="156.69718" stroke-width="0" stroke="#000" fill="#ffffff">L3</text>
                     <text font-weight="bold" xml:space="preserve" text-anchor="start" font-size="28" id="svg_174" y="940.84821" x="617.48119" stroke-width="0" stroke="#000" fill="#ffffff">L1</text>
-                    <line id="svg_176" y2="929.33076" x2="777.93192" y1="151.11998" x1="774.01035" stroke-width="3" stroke="#000" fill="none" />
-                    <line stroke-width="3" id="svg_178" y2="152.54856" x2="775.1532" y1="152.54856" x1="491.37189" stroke="#000" fill="none" />
+                    <line id="svg_176" y2="929.33076" x2="759.93192" y1="151.11998" x1="759.01035" stroke-width="3" stroke="#000" fill="none" />
+                    <line stroke-width="3" id="svg_178" y2="152.54856" x2="760" y1="152.54856" x1="491.37189" stroke="#000" fill="none" />
                     <line stroke-width="3" id="svg_179" y2="927.85602" x2="777.09826" y1="927.85602" x1="664.89313" stroke="#000" fill="none" />
                     <line stroke-width="3" id="svg_185" y2="605.75895" x2="151.17226" y1="605.75895" x1="64.68255" stroke="#000" fill="none" />
                     <rect rx="10" id="svg_196" height="35.96491" width="134.21052" y="835.61399" x="567.54386" stroke-width="0" stroke="#000" fill="#e9c46a" />
@@ -346,9 +241,31 @@
         </div>
     </MudPaper>
 
+    <MudPaper Class="pa-1 mb-12 d-block d-sm-none" Style="background-color:#f1f8f7; border-radius:12px;">
+        <MudText Typo="Typo.h4" Class="mb-4">
+            Step 1: High level risk categories evalutation
+        </MudText>
+        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
+            The first step involves assessing the highest-level risk categories, which would directly affect patient or healthcare personnel, data confidentiality, or healthcare information.
+            <br />
+            If you want to use the <b>interactive workflow</b>, please use a screen <i>> 960px</i> wide.
+        </MudText>
+    </MudPaper>
+
+    <MudPaper Class="pa-1 mb-12 d-none d-sm-block d-md-none" Style="background-color:#f1f8f7; border-radius:12px;">
+        <MudText Typo="Typo.h4" Class="mb-4">
+            Step 1: High level risk categories evalutation
+        </MudText>
+        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
+            The first step involves assessing the highest-level risk categories, which would directly affect patient or healthcare personnel, data confidentiality, or healthcare information.
+            <br />
+            If you want to use the <b>interactive workflow</b>, please use a screen <i>> 960px</i> wide.
+        </MudText>
+    </MudPaper>
+
     <div class="section-divider"></div>
 
-    <MudPaper Class="pa-12 mb-12" Style="background-color:#f1f8f7; border-radius:12px;">
+    <MudPaper Class="pa-12 mb-12 d-none d-md-block" Style="background-color:#f1f8f7; border-radius:12px;">
         <MudText Typo="Typo.h4" Class="mb-4">
             Step 2: Low level risk categories evaluation
         </MudText>
@@ -356,7 +273,7 @@
             If none of the <b>high level</b> critical risks listed in <b>Step 1</b> reach <b>moderate</b> or <b>high</b> levels, the assessment continues with categories which can be 
             direct or indirect consequences of the high level risk categories. 
             <br />
-            Use the following <b>Interactive workflow</b> to decide the security level that should be applied to your healthcare web application:
+            Use the following <b>interactive workflow</b> to decide the security level that should be applied to your healthcare web application:
         </MudText>
         <div style="display: flex; justify-content: center;">
 
@@ -478,7 +395,29 @@
         </div>
     </MudPaper>
 
+    <MudPaper Class="pa-1 mb-12 d-block d-sm-none" Style="background-color:#f1f8f7; border-radius:12px;">
+        <MudText Typo="Typo.h4" Class="mb-4">
+            Step 2: Low level risk categories evaluation
+        </MudText>
+        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
+            If none of the <b>high level</b> critical risks listed in <b>Step 1</b> reach <b>moderate</b> or <b>high</b> levels, the assessment continues with categories which can be
+            direct or indirect consequences of the high level risk categories.
+            <br />
+            If you want to use the <b>interactive workflow</b>, please use a screen <i>> 960px</i> wide.
+        </MudText>
+    </MudPaper>
 
+    <MudPaper Class="pa-1 mb-12 d-none d-sm-block d-md-none" Style="background-color:#f1f8f7; border-radius:12px;">
+        <MudText Typo="Typo.h4" Class="mb-4">
+            Step 2: Low level risk categories evaluation
+        </MudText>
+        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height:1.6;">
+            If none of the <b>high level</b> critical risks listed in <b>Step 1</b> reach <b>moderate</b> or <b>high</b> levels, the assessment continues with categories which can be
+            direct or indirect consequences of the high level risk categories. 
+            <br />
+            If you want to use the <b>interactive workflow</b>, please use a screen <i>> 960px</i> wide.
+        </MudText>
+    </MudPaper>
 
 </MudContainer>
 
