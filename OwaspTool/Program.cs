@@ -1,3 +1,6 @@
+using AuthLibrary.Areas.Auth.Authentication;
+using AuthLibrary.Areas.Auth.DAL;
+using AuthLibrary.Areas.Auth.Extensions;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using OwaspTool.Components;
@@ -12,6 +15,16 @@ builder.Services.AddRazorComponents()
 builder.Services.AddMudServices();
 
 builder.Services.AddDbContext<OwaspToolContext>(item => item.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
+builder.Services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Authconn")));
+
+builder.Services.AddScoped<HttpClient>(sp => new HttpClient
+{
+    BaseAddress = new Uri(builder.Configuration["AppUrl"])
+});
+
+builder.Services.AddAuthLibrary();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -27,7 +40,14 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
 app.UseAntiforgery();
+
+app.MapSignOutEndpoint();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
