@@ -24,4 +24,8 @@
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\AuthLibrary-code\AuthLibrary\AuthLibrary.csproj" />
+  </ItemGroup>
+
 </Project>
