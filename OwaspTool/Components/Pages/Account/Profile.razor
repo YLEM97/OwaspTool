@@ -1,0 +1,146 @@
+﻿@page "/account/profile"
+@using System.Security.Claims
+@using AuthLibrary.Areas.Auth.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using MudBlazor
+@attribute [Authorize]
+
+@inject AuthenticationStateProvider AuthStateProvider
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-16 mb-16">
+
+    <MudPaper Elevation="4" Class="py-2 px-2">
+
+        <MudStack Spacing="0">
+
+            <MudButton Variant="Variant.Text"
+                       OnClick="@ToggleProfileExpanded"
+                       Color="Color.Primary">
+                @(ProfileExpanded ? "Hide your profile information" : "View your profile information")
+            </MudButton>
+
+            <MudCollapse Expanded="ProfileExpanded">
+
+                <MudText Typo="Typo.h3" Color="Color.Primary" Class="mb-2">Profile</MudText>
+
+                <MudText Typo="Typo.body1"><b>First Name:</b> @FirstName</MudText>
+                <MudText Typo="Typo.body1"><b>Last Name:</b> @LastName</MudText>
+                <MudText Typo="Typo.body1" Class="mb-5"><b>Email:</b> @Email</MudText>
+
+                <div class="section-divider-profile"></div>
+
+                <div class="mt-4 mb-4">
+                    <MudButton Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Key"
+                               OnClick="@ShowChangePassword">
+                        Change Password
+                    </MudButton>
+                </div>
+
+                @if (ShowPasswordFields)
+                {
+                    <MudTextField @bind-Value="CurrentPassword"
+                                  Label="Current Password"
+                                  InputType="InputType.Password"
+                                  Required="true"
+                                  For="@(() => CurrentPassword)" />
+
+                    <MudTextField @bind-Value="NewPassword"
+                                  Label="New Password"
+                                  InputType="InputType.Password"
+                                  Required="true"
+                                  For="@(() => NewPassword)" />
+
+                    <MudTextField @bind-Value="ConfirmPassword"
+                                  Label="Confirm New Password"
+                                  InputType="InputType.Password"
+                                  Required="true"
+                                  Validation="@((Func<string, string>)(v => v == NewPassword ? null : "Passwords do not match"))" />
+
+                    <MudButton Class="mt-4"
+                               OnClick="@ChangePassword"
+                               Color="Color.Primary"
+                               Variant="Variant.Filled">
+                        Submit New Password
+                    </MudButton>
+                }
+
+            </MudCollapse>
+
+        </MudStack>
+
+    </MudPaper>
+
+    <MudPaper Elevation="4" Class="py-2 px-2 mt-4">
+        <MudStack Spacing="0">
+            <MudButton Variant="Variant.Text"
+                       OnClick="@ToggleAppExpanded"
+                       Color="Color.Primary">
+                @(AppExpanded ? "Hide your app information" : "View your app information")
+            </MudButton>
+            <MudCollapse Expanded="AppExpanded">
+
+            </MudCollapse>
+        </MudStack>
+    </MudPaper>
+
+</MudContainer>
+
+@code {
+    private string FirstName = "";
+    private string LastName = "";
+    private string Email = "";
+
+    private bool ProfileExpanded = false;
+    private bool AppExpanded = false;
+    private bool ShowPasswordFields = false;
+
+    private string CurrentPassword = "";
+    private string NewPassword = "";
+    private string ConfirmPassword = "";
+
+    private string ChangePasswordError = "";
+
+    private ApplicationUser? UserEntity;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = state.User;
+
+        FirstName = user.FindFirst("Name")?.Value ?? "";
+        LastName = user.FindFirst("Surname")?.Value ?? "";
+        Email = user.FindFirst(ClaimTypes.Email)?.Value ?? "";
+
+        UserEntity = await UserManager.GetUserAsync(user);
+    }
+
+    private void ToggleProfileExpanded() => ProfileExpanded = !ProfileExpanded;
+    private void ToggleAppExpanded() => AppExpanded = !AppExpanded;
+
+    private void ShowChangePassword() => ShowPasswordFields = true;
+
+    private async Task ChangePassword()
+    {
+        var state = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = await UserManager.GetUserAsync(state.User);
+
+        var result = await UserManager.ChangePasswordAsync(user, CurrentPassword, NewPassword);
+
+        if (result.Succeeded)
+        {
+            Navigation.NavigateTo("/account/password-changed", true);
+            return;
+        }
+
+        foreach (var err in result.Errors)
+            ChangePasswordError = err.Description;
+    }
+
+}

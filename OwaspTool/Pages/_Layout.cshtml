@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - CureCode</title>
+
+    <!-- Bootstrap CDN per styling coerente sulle Razor Pages -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+
+    <!-- I tuoi CSS (site + override) -->
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/authlib-override.css" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Anta&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <!-- Header con pulsante Home in alto a destra -->
+    <header class="site-header py-3">
+        <div class="container d-flex justify-content-end align-items-center">
+            <a href="/" class="home-btn" title="Home" aria-label="Home">
+                <!-- House SVG (inline) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                    <path d="M8.354 1.146a.5.5 0 0 0-.708 0L1 7.793V14.5A1.5 1.5 0 0 0 2.5 16h3A1.5 1.5 0 0 0 7 14.5V11a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1v3.5A1.5 1.5 0 0 0 10.5 16h3A1.5 1.5 0 0 0 15 14.5V7.793l-6.646-6.647z"/>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <main class="py-4">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- JS (solo per componenti Bootstrap se servono) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="" crossorigin="anonymous"></script>
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

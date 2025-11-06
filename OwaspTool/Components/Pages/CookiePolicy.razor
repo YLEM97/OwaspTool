@@ -1,0 +1,166 @@
+﻿@page "/cookie-policy"
+<PageTitle>Cookie Policy</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="px-1">
+    <div class="section-divider"></div>
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+        <MudGrid Justify="Justify.Center">
+            <MudItem xs="12" Class="d-flex pt-0 justify-center">
+                <MudText Class="text-center pt-0 mt-0 home-title">
+                    <span class="curecode-brand">CureCode</span> Cookie Policy
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex pt-0 justify-center">
+                <MudText Typo="Typo.body1" Class="text-center pt-0 home-subtitle">
+                    Last update: <i>2025/11/05</i>
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+    <div class="section-divider"></div>
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+        <MudGrid Justify="Justify.FlexStart">
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.h5" Class="text-center mb-2 p-0 home-subtitle">
+                    1. What are Cookies?
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.body1" Class="pb-0">
+                    Cookies are small text files that are stored on your device (computer, tablet, or mobile phone) when you visit a website. They help the website remember your preferences and improve your browsing experience.
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+    <div class="section-divider"></div>
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+        <MudGrid Justify="Justify.FlexStart">
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.h5" Class="text-center mb-2 p-0 home-subtitle">
+                    2. Types of cookies we use
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudTable Items="@cookiesList" Bordered="true" Striped="true" Hover="true" Class="mb-8">
+                    <HeaderContent>
+                        <MudTh Style="background-color: #E9C46A; color: #264653; text-align: center; font-weight: bold;">Type of cookies</MudTh>
+                        <MudTh Style="background-color: #E9C46A; color: #264653; text-align: center; font-weight: bold;">Purpose</MudTh>
+                        <MudTh Style="background-color: #E9C46A; color: #264653; text-align: center; font-weight: bold;">Mandatory</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Type" Style="font-weight: 600;">@context.Type</MudTd>
+                        <MudTd DataLabel="Purpose">@context.Purpose</MudTd>
+                        <MudTd DataLabel="Mandatory">@context.Mandatory</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.body1" Class="text-center mb-2 p-0">
+                    Cookies we do not use
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.body1">
+                    <div class="mb-4">
+                        <ul class="ps-10 ms-2" style="list-style-type:disc;">
+                            <li class="mb-2">Advertising cookies</li>
+                            <li class="mb-2">Profiling cookies</li>
+                            <li>Third-party tracking cookies for marketing</li>
+                        </ul>
+                    </div>
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+    <div class="section-divider"></div>
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+        <MudGrid Justify="Justify.FlexStart">
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.h5" Class="text-center mb-2 p-0 home-subtitle">
+                    3. Personal data we collect during registration
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.body1" Class="text-center mb-2 p-0 home-subtitle">
+                    If you create an account on this website, we store the following personal data:
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.body1" Class="mb-4">
+                    <div class="mb-4">
+                        <ul class="ps-10 ms-2" style="list-style-type:disc;">
+                            <li class="mb-2">First name</li>
+                            <li class="mb-2">Last name</li>
+                            <li>Email address</li>
+                        </ul>
+                    </div>
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.body1" Class="pb-0">
+                    These are stored only in our authentication database to allow you to register, log in and access our services.
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+    <div class="section-divider"></div>
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+        <MudGrid Justify="Justify.FlexStart">
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.h5" Class="text-center mb-2 p-0 home-subtitle">
+                    4. How long do cookies last?
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.body1" Class="mb-4">
+                    <div class="mb-4">
+                        <ul class="ps-10 ms-2" style="list-style-type:disc;">
+                            <li class="mb-2">Session cookies are delated automatically when you close your browser.</li>
+                            <li class="mb-2">Preference cookies can remain stored to remember your consent choice, unless deleted manually in your browser.</li>
+                        </ul>
+                    </div>
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+    <div class="section-divider"></div>
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+        <MudGrid Justify="Justify.FlexStart">
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.h5" Class="text-center mb-2 p-0 home-subtitle">
+                    5. How to change or withdraw consent
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.body1" Class="pb-0">
+                    You can change your cookie preferences at any time using the cookie consent banner or via your browser settings.
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+    <div class="section-divider"></div>
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
+        <MudGrid Justify="Justify.FlexStart">
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.h5" Class="text-center mb-2 p-0 home-subtitle">
+                    6. Content
+                </MudText>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex justify-start pt-0">
+                <MudText Typo="Typo.body1" Class="pb-4">
+                    If you have any questions about this Cookie Policy or about personal data processing, please contact us at: <a href="mailto:ylenia.murgia@edu.unige.it">ylenia.murgia@@edu.unige.it</a>
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </MudContainer>
+</MudContainer>
+
+@code {
+    public record CureCodeCookies(string Type, string Purpose, string Mandatory);
+
+    private List<CureCodeCookies> cookiesList = new()
+    {
+        new CureCodeCookies("Strictly necessary and session cookies", "Required to operate the website and to maintain your login session. Without them, the site cannot function properly.", "Yes"),
+        new CureCodeCookies("Persistent cookies", "Used to remember your cookie preferences and settings on this website.", "No")
+    };
+}
