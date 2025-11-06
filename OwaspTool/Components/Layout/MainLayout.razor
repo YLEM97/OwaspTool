@@ -1,4 +1,8 @@
 ﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using BytexDigital.Blazor.Components.CookieConsent
+@inject AuthenticationStateProvider AuthStateProvider
 
 <MudThemeProvider Theme="@customTheme" />
 <MudDialogProvider />
@@ -11,7 +15,61 @@
             <img src="img/CC.png" alt="CureCode Logo" style="height:150px;" />
         </div>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.Login" Color="Color.Primary" Href="/" Size="Size.Large"/>
+        @if (IsLoggedIn)
+        {
+            <div class="d-none d-md-flex align-items-center">  <!-- solo desktop -->
+                <span class="mt-4" style="color:#264653;">Hi, @UserName!</span>
+                <MudIconButton Icon="@Icons.Material.Filled.AccountCircle"
+                               Color="Color.Secondary"
+                               Href="/account/profile"
+                               Size="Size.Medium" />
+
+                <MudButton Color="Color.Primary"
+                           Variant="Variant.Text"
+                           StartIcon="@Icons.Material.Filled.Logout"
+                           Href="/account/confirm-logout"
+                           Class="me-3"
+                           Size="Size.Medium">
+                    Logout
+                </MudButton>
+            </div>
+
+            <!-- versione solo mobile -->
+            <div class="d-flex d-md-none align-items-center mt-5">
+                <MudIconButton Icon="@Icons.Material.Filled.AccountCircle"
+                               Color="Color.Secondary"
+                               Href="/account/profile"
+                               Size="Size.Medium" />
+
+                <MudIconButton Icon="@Icons.Material.Filled.Logout"
+                               Color="Color.Primary"
+                               Href="/account/confirm-logout"
+                               Size="Size.Medium"
+                               Class="ms-2" />
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column flex-md-row mt-8">
+                <MudButton Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Login"
+                           Href="/account/login"
+                           Variant="Variant.Text"
+                           Class="mb-2 me-md-3"
+                           Size="Size.Medium">
+                    Login
+                </MudButton>
+
+                <MudButton Color="Color.Secondary"
+                           StartIcon="@Icons.Material.Filled.AppRegistration"
+                           Href="/account/register"
+                           Variant="Variant.Text"
+                           Class="mb-2 me-md-3"
+                           Size="Size.Medium">
+                    Register
+                </MudButton>
+            </div>
+        }
     </MudAppBar>
     <MudDrawer @bind-Open="@_open" Style="border-right: 3px solid #E9C46A" Variant="@DrawerVariant.Temporary">
         <NavMenu />
@@ -23,8 +81,33 @@
     </MudMainContent>
 </MudLayout>
 
+<div style="position:fixed; right:20px; bottom:20px; z-index:5000;">
+    <MudIconButton Icon="@Icons.Material.Filled.Cookie"
+                   Color="Color.Secondary"
+                   Size="Size.Large"
+                   @onclick="OpenCookieConsentPanelAsync" />
+</div>
+
 @code {
+
     private bool _open = false;
+    private bool IsLoggedIn = false;
+    private string? UserName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        IsLoggedIn = user?.Identity != null && user.Identity.IsAuthenticated;
+
+        if (IsLoggedIn)
+        {
+            var firstName = user?.FindFirst("Name")?.Value ?? "";
+            var lastName = user?.FindFirst("Surname")?.Value ?? "";
+
+            UserName = $"{firstName} {lastName}".Trim();
+        }
+    }
 
     private void ToggleDrawer()
     {
@@ -45,4 +128,11 @@
             TableHover = "#F1F8F7"
         }
     };
+
+    [Inject] private CookieConsentService CookieConsentService { get; set; }
+
+    private async Task OpenCookieConsentPanelAsync()
+    {
+        await CookieConsentService.ShowPreferencesModalAsync();
+    }
 }

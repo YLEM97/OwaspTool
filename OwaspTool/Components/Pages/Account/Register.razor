@@ -1,0 +1,15 @@
+﻿@page "/account/register"
+@inject IProjectUserSyncService ProjectUserSyncService
+
+        <div class="mt-15 authlib-reset">
+            <div class="authlib-form-container">
+                <RegistrationComponent OnRegistrationCompleted="HandleRegistrationCompleted"></RegistrationComponent>
+            </div>
+        </div>
+
+@code{
+    private async Task HandleRegistrationCompleted(string email)
+    {
+        await ProjectUserSyncService.CreateUserInMainDbAsync(email);
+    }
+}

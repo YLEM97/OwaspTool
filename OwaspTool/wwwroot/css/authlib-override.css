@@ -1,0 +1,342 @@
+﻿/* wrapper per isolare gli override */
+.authlib-reset {
+    font-family: inherit;
+    color: inherit;
+}
+
+/* Stile h1 coerente con site.css (colori e font del sito) */
+.authlib-reset h1 {
+    color: #264653; /* colore principale del sito */
+    font-family: 'Anta', sans-serif;
+    font-weight: 400;
+    font-size: 2.5rem; /* dimensione ispirata a .hero-home-title */
+    line-height: 1.2;
+    margin: 0 0 1rem 0;
+    letter-spacing: 0.5px;
+}
+
+/* Stile h2 secondario per coerenza */
+.authlib-reset h2 {
+    color: #264653;
+    font-weight: 400;
+    font-size: 1.5rem;
+    margin: 0 0 0.75rem 0;
+}
+
+/* Responsive: riduci dimensione su schermi piccoli */
+@media (max-width: 600px) {
+    .authlib-reset h1 {
+        font-size: 2rem;
+    }
+
+    .authlib-reset h2 {
+        font-size: 1.25rem;
+    }
+}
+
+/* ripristino base per form controls: NON resettare .btn perché rompe componenti esterni */
+.authlib-reset .form-floating,
+.authlib-reset .form-control,
+.authlib-reset input,
+.authlib-reset textarea,
+.authlib-reset label,
+.authlib-reset .alert {
+    all: unset;
+    box-sizing: border-box;
+}
+
+/* applichiamo regole utili ripristinando comportamento Bootstrap-like */
+.authlib-reset .form-floating {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.authlib-reset .form-control,
+.authlib-reset input {
+    display: block;
+    width: 100%;
+    padding: .5rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #212529;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: .375rem;
+}
+
+.authlib-reset label {
+    display: block;
+    margin-bottom: .25rem;
+    font-weight: 500;
+}
+
+/* Bottone stile "tema" coerente con site.css (manteniamo questa classe, ma NON forziamo reset globale .btn) */
+.authlib-reset .btn,
+.authlib-reset .btn.btn-primary {
+    display: inline-block;
+    padding: .5rem 1rem;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #2A9D8F, #264653);
+    color: #ffffff;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 8px 20px rgba(42,157,143,0.15);
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* Piccolo pulsante info che non entra in conflitto con reset dei form */
+.policy-btn {
+    background: transparent;
+    border: none;
+    color: #2A9D8F;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: .25rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.policy-btn:focus {
+    outline: 3px solid rgba(42,157,143,0.14);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px rgba(42,157,143,0.06);
+}
+
+/* Stili per la policy modal custom */
+.policy-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 1rem;
+}
+
+.policy-modal {
+    background: #fff;
+    max-width: 520px;
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 30px 60px rgba(38,70,83,0.15);
+    padding: 1rem;
+    animation: modalPop .12s ease-out;
+}
+
+@keyframes modalPop {
+    from { transform: translateY(6px) scale(.99); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.policy-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.policy-modal-close {
+    border: none;
+    background: transparent;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+/* contenuto leggibile */
+.policy-modal-content {
+    margin-top: .5rem;
+    color: #264653;
+    line-height: 1.45;
+}
+
+/* Hover / focus per coerenza con lo stile site.css */
+.authlib-reset .btn:hover {
+    background: #E9C46A;
+    color: #264653;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(42,157,143,0.25);
+}
+
+.authlib-reset .btn:focus {
+    outline: 3px solid rgba(42,157,143,0.14);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px rgba(42,157,143,0.06);
+}
+
+/* Colori "errore" */
+.authlib-reset .text-danger,
+.authlib-reset .validation-message,
+.authlib-reset span.validation-message,
+.authlib-reset .field-validation-error {
+    color: #dc3545 !important; /* rosso chiaro */
+}
+
+/* Stili per input invalidi — copriamo piu' convenzioni possibili */
+.authlib-reset input.invalid,
+.authlib-reset .form-control.invalid,
+.authlib-reset input.input-validation-error,
+.authlib-reset .form-control.input-validation-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 .12rem rgba(220,53,69,0.12) !important;
+}
+
+    /* Se il label è dopo l'input (come nel tuo markup) coloralo se input è invalido */
+    .authlib-reset input.invalid + label,
+    .authlib-reset .form-control.invalid + label,
+    .authlib-reset input.input-validation-error + label,
+    .authlib-reset .form-control.input-validation-error + label {
+        color: #dc3545 !important;
+        font-weight: 600;
+    }
+
+/* ValidationSummary - forza rosso e bordo per visibilità */
+.authlib-reset .validation-summary-valid,
+.authlib-reset .validation-summary-errors,
+.authlib-reset .validation-summary-valid .text-danger,
+.authlib-reset .validation-summary-errors .text-danger {
+    color: #dc3545 !important;
+}
+
+.authlib-reset .validation-summary-errors {
+    border-left: 4px solid #dc3545;
+    padding: .5rem .75rem;
+    background: rgba(220,53,69,0.03);
+    border-radius: 4px;
+    margin-bottom: .75rem;
+}
+
+/* Stati disabilitati */
+.authlib-reset .btn:disabled,
+.authlib-reset .btn[disabled] {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* --- limitare larghezza form e centrarlo (già presente se vuoi) --- */
+.authlib-reset .authlib-form-container {
+    width: 100%;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.authlib-reset .alert-success {
+    background: linear-gradient(180deg, rgba(42,157,143,0.08), rgba(38,70,83,0.02));
+    border: 1px solid #2A9D8F; /* bordo completo */
+    border-left: 4px solid #2A9D8F; /* evidenziazione sinistra */
+    color: #0f5132;
+    border-radius: 8px; /* angoli stondati */
+    padding: 12px 16px; /* spazio interno */
+    margin-top: 40px !important; /* margine sopra */
+}
+
+.authlib-reset .alert-danger {
+    background: linear-gradient(180deg, rgba(220,53,69,0.06), rgba(70,0,0,0.01));
+    border: 1px solid #dc3545;
+    border-left: 4px solid #dc3545;
+    color: #721c24;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 40px !important;
+}
+
+/* Checkbox: ripristino e stile coerente con il tema */
+/* Nota: escludiamo checkbox dal reset precedente, quindi possiamo usare l'aspetto nativo migliorato */
+.authlib-reset input[type="checkbox"],
+.authlib-reset input[type="checkbox"].form-check-input {
+    appearance: auto;
+    -webkit-appearance: auto;
+    -moz-appearance: auto;
+    width: 1.05rem;
+    height: 1.05rem;
+    margin: 0;
+    vertical-align: middle;
+    display: inline-block;
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    background-color: #fff;
+    accent-color: #2A9D8F;
+    cursor: pointer;
+}
+
+    /* Stato checked: rinforzo visivo per browser che non supportano accent-color */
+    .authlib-reset input[type="checkbox"]:checked {
+        background-image: none;
+        background-color: #2A9D8F;
+        border-color: #2A9D8F;
+        color: #fff;
+    }
+
+/* Label associata: cliccabile e allineata */
+.authlib-reset .form-check-label {
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-left: .5rem;
+    color: inherit;
+    user-select: none;
+}
+
+/* Assicura checkbox + label sulla stessa linea, vicini e allineati a sinistra */
+.authlib-reset .form-check {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* forza a sinistra */
+    gap: .5rem; /* distanza ridotta tra checkbox e testo */
+    padding-left: 0;
+    margin-left: 0;
+}
+
+/* Focus accessibile */
+.authlib-reset input[type="checkbox"]:focus {
+    outline: 3px solid rgba(42,157,143,0.12);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px rgba(42,157,143,0.04);
+}
+
+.authlib-form-container .form-floating {
+    position: relative;
+}
+
+    /* Padding coerente: assicurati che label e input usino lo stesso offset orizzontale */
+    .authlib-form-container .form-floating > .form-control {
+        padding: 1rem 0.75rem; /* top/bottom left/right */
+        box-sizing: border-box;
+    }
+
+    /* Posiziona la label in corrispondenza del padding-left dell'input */
+    .authlib-form-container .form-floating > label {
+        left: 0.75rem; /* deve corrispondere al padding-left dell'input */
+        top: 0.9rem; /* valore visivo per centrare la label iniziale */
+        transform-origin: left center; /* importante per non farla "scivolare" a destra */
+        transition: transform .15s ease, font-size .15s ease, top .15s ease;
+        pointer-events: none;
+    }
+
+    /* Stato ridotto (focus o quando l'input non è placeholder-shown)
+   Nota: rimuoviamo ogni translateX impostando esplicitamente translateY + scale */
+    .authlib-form-container .form-floating > .form-control:focus + label,
+    .authlib-form-container .form-floating > .form-control:not(:placeholder-shown) + label {
+        transform: scale(0.85); /* solo verticale + scale */
+        top: 0.3rem;
+    }
+
+    /* Assicura che la label iniziale non abbia translateX nascosto da altri override */
+    .authlib-form-container .form-floating > label {
+        transform: translateY(0) scale(1);
+    }
+
+    /* Se usi browser che non supportano :placeholder-shown coerentemente, applica anche per input con valore */
+    .authlib-form-container .form-floating > .form-control[value]:not([value=""]) + label {
+        transform: scale(0.85);
+        top: 0.3rem;
+    }
