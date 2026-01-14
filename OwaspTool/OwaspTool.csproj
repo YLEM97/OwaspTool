@@ -20,10 +20,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MudBlazor" Version="8.10.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\img\" />
+    <PackageReference Include="QuestPDF" Version="2025.12.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -588,3 +588,45 @@
     font-size: 1.25rem; /* leggermente più grande */
     z-index: 2;
 }
+
+.category-status-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* wrapper che avrà background, radius, shadow */
+.category-status-inner {
+    display: grid;
+    grid-template-columns: 1fr 160px; /* titolo | stato allineati */
+    align-items: center;
+    padding: 4px 8px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* stato normale: niente giallino, niente ombra */
+.category-status-row td {
+    padding: 2px 0;
+}
+
+/* hover: ingrandisci e applica bg + radius + shadow */
+.category-status-row:hover .category-status-inner {
+    background-color: #fdf9ee; /* giallino */
+    border-radius: 8px; /* ✅ angoli arrotondati sul bg */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.20);
+    transform: scaleY(1.12);
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.category-status-title {
+    margin-right: 8px;
+}
+
+.category-status-state {
+    justify-self: start;
+}
+
+
+
+
+

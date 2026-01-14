@@ -1,0 +1,749 @@
+﻿@page "/survey/{userWebAppId:int}"
+@using Microsoft.AspNetCore.Components.Authorization
+@using OwaspTool.Models.Database
+@using MudBlazor
+@using System.Security.Claims
+
+@inject ISurveyRepository SurveyRepo
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject AuthenticationStateProvider AuthStateProvider
+
+<PageTitle>Survey Editor</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-12 mb-12">
+    @if (Loading)
+    {
+        <MudProgressCircular Indeterminate="true" />
+    }
+    else if (!IsAuthorized)
+    {
+        <MudText Typo="Typo.h6" Color="Color.Error">
+            Not authorized.
+        </MudText>
+    }
+    else if (Survey == null)
+    {
+        <MudText Typo="Typo.h6">No questionnaire available.</MudText>
+    }
+    else if (UserApp == null)
+    {
+        <MudText Typo="Typo.h6">Application not founded.</MudText>
+    }
+    else
+    {
+        <MudPaper Class="pa-4 mb-4" Elevation="5">
+            <MudText Typo="Typo.h4" Color="Color.Primary">Questionnaire for: @UserApp.WebApplication?.Name</MudText>
+            <MudText Typo="Typo.subtitle2">
+                Level: @(UserApp.Level?.Label ?? UserApp.Level?.Acronym ?? "-")
+            </MudText>
+            <MudDivider Class="my-2" />
+            <MudText Typo="Typo.subtitle2">Go to your <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="GoBack">profile</MudButton></MudText>
+        </MudPaper>
+
+        <MudPaper Class="pa-3 mb-4" Elevation="5">
+
+            <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-5">Categories' status</MudText>
+
+            <div class="section-divider-profile"></div>
+
+            <div class="mb-5 mt-5">
+                <MudText Typo="Typo.subtitle2" Class="mb-2">Legend:</MudText>
+
+                <div class="d-flex flex-column">
+                    <div class="d-flex align-center mb-1">
+                        <span style="display:inline-block;width:14px;height:14px;
+                                 border:2px solid #000;background-color:#ffffff;margin-right:6px;">
+                        </span>
+                        <MudText Typo="Typo.body2">Not compiled yet</MudText>
+                    </div>
+                    <div class="d-flex align-center mb-1">
+                        <span style="display:inline-block;width:14px;height:14px;
+                                 border:2px solid #000;background-color:#E9C46A;margin-right:6px;">
+                        </span>
+                        <MudText Typo="Typo.body2">In progress</MudText>
+                    </div>
+                    <div class="d-flex align-center">
+                        <span style="display:inline-block;width:14px;height:14px;
+                     border:2px solid #000;background-color:#90BE6D;margin-right:6px;">
+                        </span>
+                        <MudText Typo="Typo.body2">Completed</MudText>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider-profile"></div>
+
+            <table class="category-status-table">
+                @foreach (var cat in Survey.Categories.OrderBy(c => c.DisplayOrder))
+                {
+                    <tr class="category-status-row">
+                        <td colspan="2">
+                            <div class="category-status-inner">
+                                
+                                <div class="category-status-title">
+                                    <MudText Typo="Typo.subtitle1">@cat.Title</MudText>
+                                </div>
+                                
+                                <div class="category-status-state">
+                                    <div class="d-flex align-center">
+                                        <span style="display:inline-block;width:14px;height:14px;
+                                                 border:2px solid #000;
+                                                 background-color:@GetCategoryStatusColor(cat.CategoryID);
+                                                 margin-right:6px;">
+                                        </span>
+                                        <MudText Typo="Typo.body2">@GetCategoryStatusLabel(cat.CategoryID)</MudText>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </MudPaper>
+
+        @foreach (var cat in Survey.Categories.OrderBy(c => c.DisplayOrder))
+        {
+            <MudPaper Class="pa-3 mb-3" Style="@GetCategoryStyle(cat.CategoryID)" Elevation="5">
+                <MudText Typo="Typo.h6">@cat.Title</MudText>
+                <div class="mb-2">
+                    @foreach (var q in cat.Questions.OrderBy(q => q.DisplayOrder))
+                    {
+                        var qid = q.QuestionID;
+                        <div class="mb-2">
+                            <MudText Typo="Typo.subtitle2">@q.Text</MudText>
+
+                            @* Free text (must be deleted... To be taken into consideration for the subsequent parts of the project) *@
+                            @if (!string.IsNullOrWhiteSpace(q.InputType) &&
+                                            q.InputType.Equals("text", System.StringComparison.OrdinalIgnoreCase))
+                            {
+                                <MudTextField T="string"
+                                              @bind-Value="OtherTextByQuestionId[qid]"
+                                              Placeholder="Insert text..."
+                                              Disabled="@(!IsQuestionEnabled(qid) || IsCategoryReadOnly(cat.CategoryID))" />
+                            }
+                            @* Checklist: multiple choice *@
+                            else if (!string.IsNullOrWhiteSpace(q.InputType) &&
+                            q.InputType.Equals("checklist", System.StringComparison.OrdinalIgnoreCase))
+                            {
+                                @foreach (var ao in q.AnswerOptionQuestions.OrderBy(a => a.DisplayOrder))
+                                {
+                                    var aoId = ao.AnswerOptionID;
+                                    <MudCheckBox T="bool"
+                                                 Value="@IsChecklistOptionSelected(qid, aoId)"
+                                                 ValueChanged="@(async (bool isChecked) => await OnChecklistOptionChangedAsync(qid, aoId, isChecked))"
+                                                 Immediate="true"
+                                                 Disabled="@(!IsQuestionEnabled(qid) || IsCategoryReadOnly(cat.CategoryID))"
+                                                 Label="@ao.Answer.Text" />
+                                }
+                            }
+                            @* Radio: single choice *@
+                            else
+                            {
+                                <MudRadioGroup T="int?"
+                                               Value="@GetSelected(qid)"
+                                               ValueChanged="@( (int? v) => OnSelectedOptionChangedAsync(qid, v) )"
+                                               Disabled="@(!IsQuestionEnabled(qid) || IsCategoryReadOnly(cat.CategoryID))">
+                                    @foreach (var ao in q.AnswerOptionQuestions.OrderBy(a => a.DisplayOrder))
+                                    {
+                                        <MudRadio T="int?" Value="@((int?)ao.AnswerOptionID)">
+                                            @ao.Answer.Text
+                                        </MudRadio>
+                                    }
+                                </MudRadioGroup>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <MudButton Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           OnClick="() => SaveCategory(cat.CategoryID)"
+                           Disabled="@(!IsCategorySaveEnabled(cat.CategoryID) || IsCategoryReadOnly(cat.CategoryID))">
+                    Salva categoria
+                </MudButton>
+                <MudButton Color="Color.Secondary"
+                           Variant="Variant.Outlined"
+                           OnClick="() => ResetCategory(cat.CategoryID)"
+                           Disabled="@(IsCategoryReadOnly(cat.CategoryID) || IsCategoryReadOnly(cat.CategoryID))">
+                    Reset
+                </MudButton>
+            </MudPaper>
+        }
+        <MudPaper Class="pa-3 mt-4 d-flex justify-center" Elevation="0">
+            <MudButton Color="@GetSaveSurveyButtonColor()"
+                       Variant="Variant.Filled"
+                       Disabled="@IsSaveSurveyButtonDisabled()"
+                       OnClick="OnSaveOrModifySurveyAsync">
+                @GetSaveSurveyButtonText()
+            </MudButton>
+        </MudPaper>
+
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int userWebAppId { get; set; }
+
+    private bool Loading = true;
+    private bool IsAuthorized = false;
+    private Survey? Survey;
+    private UserWebApp? UserApp;
+    private SurveyInstance? Instance;
+
+    // Radio: single choice
+    private Dictionary<int, int?> SelectedOptionByQuestionId = new();
+
+    // Checklist: multiple choice
+    private Dictionary<int, HashSet<int>> SelectedOptionsChecklistByQuestionId = new();
+
+    // Free text
+    private Dictionary<int, string?> OtherTextByQuestionId = new();
+
+    // Enabled questions
+    private Dictionary<int, bool> EnabledQuestionByQuestionId = new();
+
+    // Category status
+    private Dictionary<int, int> CategoryStatusByCategoryId = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Loading = true;
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user?.Identity == null || !user.Identity.IsAuthenticated)
+        {
+            IsAuthorized = false;
+            Loading = false;
+            return;
+        }
+
+        var email = user.FindFirst(ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            IsAuthorized = false;
+            Loading = false;
+            return;
+        }
+
+        Survey = await SurveyRepo.GetDefaultSurveyAsync();
+        if (Survey == null)
+        {
+            Loading = false;
+            return;
+        }
+
+        UserApp = await SurveyRepo.GetUserWebAppIfOwnedByEmailAsync(userWebAppId, email);
+        if (UserApp == null)
+        {
+            IsAuthorized = false;
+            Loading = false;
+            return;
+        }
+
+        IsAuthorized = true;
+
+        Instance = await SurveyRepo.CreateOrGetSurveyInstanceAsync(userWebAppId, Survey.SurveyID);
+
+        foreach (var cat in Survey.Categories)
+        {
+            foreach (var q in cat.Questions)
+            {
+                if (!SelectedOptionByQuestionId.ContainsKey(q.QuestionID))
+                    SelectedOptionByQuestionId[q.QuestionID] = null;
+
+                if (!SelectedOptionsChecklistByQuestionId.ContainsKey(q.QuestionID))
+                    SelectedOptionsChecklistByQuestionId[q.QuestionID] = new HashSet<int>();
+
+                if (!OtherTextByQuestionId.ContainsKey(q.QuestionID))
+                    OtherTextByQuestionId[q.QuestionID] = null;
+
+                if (!EnabledQuestionByQuestionId.ContainsKey(q.QuestionID))
+                    EnabledQuestionByQuestionId[q.QuestionID] = false;
+            }
+        }
+
+        if (Instance != null)
+        {
+            var given = await SurveyRepo.GetGivenAnswersAsync(Instance.SurveyInstanceID);
+            foreach (var ga in given)
+            {
+                if (ga.AnswerOption != null)
+                {
+                    var qid = ga.AnswerOption.QuestionID;
+
+                    var question = Survey.Categories
+                        .SelectMany(c => c.Questions)
+                        .FirstOrDefault(q => q.QuestionID == qid);
+
+                    if (question != null &&
+                        !string.IsNullOrWhiteSpace(question.InputType) &&
+                        question.InputType.Equals("checklist", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (ga.AnswerOptionID.HasValue)
+                        {
+                            SelectedOptionsChecklistByQuestionId[qid].Add(ga.AnswerOptionID.Value);
+                        }
+                    }
+                    else
+                    {
+                        SelectedOptionByQuestionId[qid] = ga.AnswerOptionID;
+                    }
+
+                    OtherTextByQuestionId[qid] = ga.OtherText;
+                }
+            }
+        }
+
+        if (Instance != null)
+        {
+            var catStatuses = await SurveyRepo.GetCategoryStatusesAsync(Instance.SurveyInstanceID);
+            CategoryStatusByCategoryId = catStatuses
+                .GroupBy(s => s.CategoryID)
+                .ToDictionary(g => g.Key, g => g.OrderByDescending(x => x.LastSavedAt).First().StatusID);
+        }
+
+        InitializeEnabledQuestions();
+
+        Loading = false;
+    }
+
+    private int? GetSelected(int questionId)
+    {
+        SelectedOptionByQuestionId.TryGetValue(questionId, out var v);
+        return v;
+    }
+
+    private bool IsChecklistOptionSelected(int questionId, int answerOptionId)
+    {
+        return SelectedOptionsChecklistByQuestionId.TryGetValue(questionId, out var set)
+               && set.Contains(answerOptionId);
+    }
+
+    private async Task OnSelectedOptionChangedAsync(int questionId, int? value)
+    {
+        SelectedOptionByQuestionId[questionId] = value;
+
+        if (Instance != null)
+        {
+            try
+            {
+                await SurveyRepo.SaveSingleAnswerAsync(Instance.SurveyInstanceID, questionId, value);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Answer saving error: {ex.Message}", Severity.Error);
+            }
+        }
+
+        RecomputeEnabledQuestionsFromSelections();
+        StateHasChanged();
+    }
+
+    private async Task OnChecklistOptionChangedAsync(int questionId, int answerOptionId, bool isChecked)
+    {
+        if (!SelectedOptionsChecklistByQuestionId.ContainsKey(questionId))
+            SelectedOptionsChecklistByQuestionId[questionId] = new HashSet<int>();
+
+        if (isChecked)
+            SelectedOptionsChecklistByQuestionId[questionId].Add(answerOptionId);
+        else
+            SelectedOptionsChecklistByQuestionId[questionId].Remove(answerOptionId);
+
+        if (Instance != null)
+        {
+            try
+            {
+                await SurveyRepo.SaveMultipleAnswersAsync(
+                    Instance.SurveyInstanceID,
+                    questionId,
+                    SelectedOptionsChecklistByQuestionId[questionId].ToList()
+                );
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Checklist saving error: {ex.Message}", Severity.Error);
+            }
+        }
+
+        RecomputeEnabledQuestionsFromSelections();
+        StateHasChanged();
+    }
+
+    private async Task SaveCategory(int categoryId)
+    {
+        try
+        {
+            var cat = Survey!.Categories.FirstOrDefault(c => c.CategoryID == categoryId);
+            if (cat == null)
+            {
+                Snackbar.Add("Category not found.", Severity.Error);
+                return;
+            }
+
+            var selectedMap = new Dictionary<int, List<int>>();
+            var otherMap = new Dictionary<int, string?>();
+
+            foreach (var q in cat.Questions)
+            {
+                var qid = q.QuestionID;
+                var isChecklist = !string.IsNullOrWhiteSpace(q.InputType) &&
+                                  q.InputType.Equals("checklist", StringComparison.OrdinalIgnoreCase);
+
+                if (isChecklist)
+                {
+                    if (SelectedOptionsChecklistByQuestionId.TryGetValue(qid, out var set) && set.Any())
+                        selectedMap[qid] = set.ToList();
+                    else
+                        selectedMap[qid] = new List<int>();
+                }
+                else
+                {
+                    SelectedOptionByQuestionId.TryGetValue(qid, out var sel);
+                    selectedMap[qid] = sel.HasValue ? new List<int> { sel.Value } : new List<int>();
+                }
+
+                OtherTextByQuestionId.TryGetValue(qid, out var ot);
+                otherMap[qid] = ot;
+            }
+
+            await SurveyRepo.SaveCategoryAnswersAsync(
+                Instance!.SurveyInstanceID,
+                categoryId,
+                selectedMap,
+                otherMap,
+                statusId: (int)OwaspTool.Models.SurveyStatus.InProgress
+            );
+
+            CategoryStatusByCategoryId[categoryId] = (int)OwaspTool.Models.SurveyStatus.InProgress;
+
+            Snackbar.Add($"Category '{cat.Title}' saved.", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Saving error: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task ResetCategory(int categoryId)
+    {
+        var cat = Survey!.Categories.FirstOrDefault(c => c.CategoryID == categoryId);
+        if (cat == null)
+        {
+            Snackbar.Add("Category not found.", Severity.Error);
+            return;
+        }
+
+        // Memory reset
+        foreach (var q in cat.Questions)
+        {
+            SelectedOptionByQuestionId[q.QuestionID] = null;
+            if (SelectedOptionsChecklistByQuestionId.ContainsKey(q.QuestionID))
+                SelectedOptionsChecklistByQuestionId[q.QuestionID].Clear();
+            OtherTextByQuestionId[q.QuestionID] = null;
+        }
+
+        RecomputeEnabledQuestionsFromSelections();
+        StateHasChanged();
+
+        try
+        {
+            // Category deleted from DB
+            await SurveyRepo.DeleteCategoryAnswersAsync(
+                Instance!.SurveyInstanceID,
+                categoryId
+            );
+
+            // Status = 1 (Not compiled yet)
+            await SurveyRepo.SetCategoryStatusAsync(
+                Instance.SurveyInstanceID,
+                categoryId,
+                1 
+            );
+
+            // Also updates the local status, so the colour changes immediately
+            CategoryStatusByCategoryId[categoryId] = 1;
+
+            Snackbar.Add($"Category '{cat.Title}' reset.", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Reset error: {ex.Message}", Severity.Error);
+        }
+
+        //Snackbar.Add($"Categoria '{cat.Title}' resettata nella UI.", Severity.Info);
+    }
+
+
+    private void GoBack() => Navigation.NavigateTo("/account/profile");
+
+    private void InitializeEnabledQuestions()
+    {
+        var keys = EnabledQuestionByQuestionId.Keys.ToList();
+        foreach (var k in keys)
+            EnabledQuestionByQuestionId[k] = false;
+
+        var firstQuestion = Survey?.Categories
+            .OrderBy(c => c.DisplayOrder)
+            .SelectMany(c => c.Questions.OrderBy(q => q.DisplayOrder))
+            .FirstOrDefault();
+
+        if (firstQuestion != null)
+        {
+            EnabledQuestionByQuestionId[firstQuestion.QuestionID] = true;
+        }
+
+        RecomputeEnabledQuestionsFromSelections();
+    }
+
+    private void RecomputeEnabledQuestionsFromSelections()
+    {
+        foreach (var k in EnabledQuestionByQuestionId.Keys.ToList())
+            EnabledQuestionByQuestionId[k] = false;
+
+        var firstQuestion = Survey?.Categories
+            .OrderBy(c => c.DisplayOrder)
+            .SelectMany(c => c.Questions.OrderBy(q => q.DisplayOrder))
+            .FirstOrDefault();
+
+        if (firstQuestion == null)
+            return;
+
+        int currentQId = firstQuestion.QuestionID;
+        EnabledQuestionByQuestionId[currentQId] = true;
+
+        var visited = new HashSet<int> { currentQId };
+
+        while (true)
+        {
+            int? nextQuestionId = null;
+
+            var currentQuestion = Survey?.Categories
+                .SelectMany(c => c.Questions)
+                .FirstOrDefault(q => q.QuestionID == currentQId);
+
+            if (currentQuestion == null)
+                break;
+
+            var isChecklist = !string.IsNullOrWhiteSpace(currentQuestion.InputType) &&
+                              currentQuestion.InputType.Equals("checklist", StringComparison.OrdinalIgnoreCase);
+
+            if (isChecklist)
+            {
+                if (SelectedOptionsChecklistByQuestionId.TryGetValue(currentQId, out var set) && set.Any())
+                {
+                    foreach (var aoId in set)
+                    {
+                        var goTo = GetGoToQuestionIdForAnswerOption(aoId);
+                        if (goTo != null)
+                        {
+                            nextQuestionId = goTo;
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (SelectedOptionByQuestionId.TryGetValue(currentQId, out var sel) && sel != null)
+                {
+                    nextQuestionId = GetGoToQuestionIdForAnswerOption(sel);
+                }
+            }
+
+            if (nextQuestionId == null)
+                break;
+
+            if (visited.Contains(nextQuestionId.Value))
+                break;
+
+            EnabledQuestionByQuestionId[nextQuestionId.Value] = true;
+            visited.Add(nextQuestionId.Value);
+            currentQId = nextQuestionId.Value;
+        }
+    }
+
+    private int? GetGoToQuestionIdForAnswerOption(int? answerOptionId)
+    {
+        if (answerOptionId == null || Survey == null)
+            return null;
+
+        foreach (var cat in Survey.Categories)
+        {
+            foreach (var q in cat.Questions)
+            {
+                foreach (var aoq in q.AnswerOptionQuestions)
+                {
+                    if (aoq.AnswerOptionID == answerOptionId)
+                        return aoq.GoToQuestionID;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private bool IsQuestionEnabled(int questionId)
+    {
+        if (EnabledQuestionByQuestionId.TryGetValue(questionId, out var enabled))
+            return enabled;
+        return false;
+    }
+
+    private bool IsCategorySaveEnabled(int categoryId)
+    {
+        var cat = Survey?.Categories.FirstOrDefault(c => c.CategoryID == categoryId);
+        if (cat == null) return false;
+        return cat.Questions.Any(q => IsQuestionEnabled(q.QuestionID));
+    }
+
+    private string GetCategoryStyle(int categoryId)
+    {
+        if (CategoryStatusByCategoryId.TryGetValue(categoryId, out var statusId))
+        {
+            if (statusId == (int)OwaspTool.Models.SurveyStatus.Completed)
+                return "border:8px solid #90BE6D;border-radius:8px;"; 
+
+            if (statusId == (int)OwaspTool.Models.SurveyStatus.InProgress)
+                return "border:8px solid #E9C46A;border-radius:8px;"; 
+        }
+
+        // White container for Not compiled yet (or status not assigned yet)
+        return string.Empty;
+    }
+
+    private string GetCategoryStatusLabel(int categoryId)
+    {
+        if (CategoryStatusByCategoryId.TryGetValue(categoryId, out var statusId))
+        {
+            if (statusId == (int)OwaspTool.Models.SurveyStatus.InProgress)
+                return "In progress";
+
+            if (statusId == (int)OwaspTool.Models.SurveyStatus.Completed)
+                return "Completed";
+        }
+
+        return "Not compiled yet";
+    }
+
+
+    private string GetCategoryStatusColor(int categoryId)
+    {
+        if (CategoryStatusByCategoryId.TryGetValue(categoryId, out var statusId))
+        {
+            if (statusId == (int)OwaspTool.Models.SurveyStatus.Completed)
+                return "#90BE6D"; 
+
+            if (statusId == (int)OwaspTool.Models.SurveyStatus.InProgress)
+                return "#E9C46A";
+        }
+
+        // White container for Not compiled yet (or status not assigned yet)
+        return "#FFFFFF";
+    }
+
+    private bool IsCategoryReadOnly(int categoryId)
+    {
+        return CategoryStatusByCategoryId.TryGetValue(categoryId, out var statusId)
+               && statusId == (int)OwaspTool.Models.SurveyStatus.Completed;
+    }
+
+    private bool IsSurveyCompleted()
+    {
+        if (Survey == null) return false;
+
+        return Survey.Categories.All(c =>
+            CategoryStatusByCategoryId.TryGetValue(c.CategoryID, out var statusId) &&
+            statusId == (int)OwaspTool.Models.SurveyStatus.Completed);
+    }
+
+    private bool CanSaveSurvey()
+    {
+        if (Survey == null) return false;
+
+        // The survey can only be saved if all categories are In Progress (id = 2)
+        return Survey.Categories.All(c =>
+            CategoryStatusByCategoryId.TryGetValue(c.CategoryID, out var statusId) &&
+            statusId == (int)OwaspTool.Models.SurveyStatus.InProgress);
+    }
+
+    private bool IsSaveSurveyButtonDisabled()
+    {
+        // ‘Modify Survey’ mode: if everything is completed (id = 3), the button is enabled.
+        if (IsSurveyCompleted())
+            return false;
+
+        // ‘Save Survey’ mode: enabled only if all categories are In Progress (id = 2)
+        return !CanSaveSurvey();
+    }
+
+    private string GetSaveSurveyButtonText()
+    {
+        return IsSurveyCompleted() ? "Modify Survey" : "Save Survey";
+    }
+
+    private Color GetSaveSurveyButtonColor()
+    {
+        // Save Survey -> green button
+        if (!IsSurveyCompleted())
+            return Color.Success;
+
+        // Modify Survey -> orange button
+        return Color.Warning;
+    }
+
+
+    private async Task OnSaveOrModifySurveyAsync()
+    {
+        if (Survey == null || Instance == null)
+            return;
+
+        // Case 1: not yet completed. Move everything to Completed (id = 3)
+        if (!IsSurveyCompleted())
+        {
+            foreach (var cat in Survey.Categories)
+            {
+                var catId = cat.CategoryID;
+
+                // update only if it is at least In Progress (id = 2)
+                if (CategoryStatusByCategoryId.TryGetValue(catId, out var statusId) &&
+                    statusId == (int)OwaspTool.Models.SurveyStatus.InProgress)
+                {
+                    CategoryStatusByCategoryId[catId] = (int)OwaspTool.Models.SurveyStatus.Completed;
+
+                    await SurveyRepo.SetCategoryStatusAsync(
+                        Instance.SurveyInstanceID,
+                        catId,
+                        (int)OwaspTool.Models.SurveyStatus.Completed
+                    );
+                }
+            }
+
+            Snackbar.Add("Survey completed.", Severity.Success);
+        }
+        // Case 2: already completed. Reopen for changes (everything returns to id = 2)
+        else
+        {
+            foreach (var cat in Survey.Categories)
+            {
+                var catId = cat.CategoryID;
+
+                CategoryStatusByCategoryId[catId] = (int)OwaspTool.Models.SurveyStatus.InProgress;
+
+                await SurveyRepo.SetCategoryStatusAsync(
+                    Instance.SurveyInstanceID,
+                    catId,
+                    (int)OwaspTool.Models.SurveyStatus.InProgress
+                );
+            }
+
+            Snackbar.Add("Survey reopened for changes.", Severity.Info);
+        }
+
+        StateHasChanged();
+    }
+
+
+}

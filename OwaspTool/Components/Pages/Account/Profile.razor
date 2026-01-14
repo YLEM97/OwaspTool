@@ -12,6 +12,9 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
+@inject IUserWebAppRepository UserWebAppRepository
+
+<PageTitle>Profile</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-16 mb-16">
 
@@ -27,7 +30,7 @@
 
             <MudCollapse Expanded="ProfileExpanded">
 
-                <MudText Typo="Typo.h3" Color="Color.Primary" Class="mb-2">Profile</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-2">Profile</MudText>
 
                 <MudText Typo="Typo.body1"><b>First Name:</b> @FirstName</MudText>
                 <MudText Typo="Typo.body1"><b>Last Name:</b> @LastName</MudText>
@@ -85,7 +88,35 @@
                 @(AppExpanded ? "Hide your app information" : "View your app information")
             </MudButton>
             <MudCollapse Expanded="AppExpanded">
+                <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-2">Your applications</MudText>
 
+                @if (UserApps is null)
+                {
+                    <MudProgressCircular Indeterminate="true" />
+                }
+                else if (!UserApps.Any())
+                {
+                    <MudText Typo="Typo.body1">You haven't added any applications yet.</MudText>
+                }
+                else
+                {
+                    <MudTable Items="UserApps" Dense="true" Hover="true" Class="mb-5">
+                        <HeaderContent>
+                            <MudTh>Web application name</MudTh>
+                            <MudTh>Security level</MudTh>
+                            <MudTh>Actions</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@context.Name</MudTd>
+                            <MudTd>@(string.IsNullOrWhiteSpace(context.LevelLabel) ? context.LevelAcronym : context.LevelLabel)</MudTd>
+                            <MudTd>
+                                <MudIconButton Href="@($"/survey/{context.UserWebAppID}")" Icon="@Icons.Material.Filled.QuestionAnswer" Color="Color.Secondary"></MudIconButton>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                    <div class="section-divider-profile"></div>
+                    <MudText Typo="Typo.body1" Class="mt-4"><MudLink Href="/web-application-registry">Click here </MudLink>to manage your applications.</MudText>
+                }
             </MudCollapse>
         </MudStack>
     </MudPaper>
@@ -108,6 +139,7 @@
     private string ChangePasswordError = "";
 
     private ApplicationUser? UserEntity;
+    private List<UserWebAppDTO>? UserApps;
 
     protected override async Task OnInitializedAsync()
     {
@@ -119,6 +151,15 @@
         Email = user.FindFirst(ClaimTypes.Email)?.Value ?? "";
 
         UserEntity = await UserManager.GetUserAsync(user);
+
+        if (!string.IsNullOrWhiteSpace(Email))
+        {
+            UserApps = await UserWebAppRepository.GetAllByUserAsync(Email);
+        }
+        else
+        {
+            UserApps = new List<UserWebAppDTO>();
+        }
     }
 
     private void ToggleProfileExpanded() => ProfileExpanded = !ProfileExpanded;

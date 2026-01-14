@@ -7,12 +7,15 @@
 <MudThemeProvider Theme="@customTheme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<MudPopoverProvider />
 
 <MudLayout>
     <MudAppBar Elevation="4" Class="position-relative custom-appbar">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Primary" Edge="Edge.Start" OnClick="ToggleDrawer" Size="Size.Large"/>
         <div class="appbar-title-centered mt-3 pb-1">
-            <img src="img/CC.png" alt="CureCode Logo" style="height:150px;" />
+            <a href="/">
+                <img src="img/CC.png" alt="CureCode Logo" style="height:150px;" />
+            </a>
         </div>
         <MudSpacer />
         @if (IsLoggedIn)

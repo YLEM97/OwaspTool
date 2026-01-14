@@ -7,9 +7,14 @@ using MudBlazor.Services;
 using OwaspTool.Components;
 using OwaspTool.DAL;
 using OwaspTool.Services;
+using OwaspTool.ViewModels;
+using OwaspTool.EndPoints;
 using System.Globalization;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -20,12 +25,18 @@ builder.Services.AddMudServices();
 builder.Services.AddDbContext<OwaspToolContext>(item => item.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 builder.Services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Authconn")));
 
+builder.Services.AddTransient<IUserWebAppRepository, UserWebAppRepository>();
+builder.Services.AddTransient<ISurveyRepository, SurveyRepository>();
+builder.Services.AddTransient<ISurveyRequirementsRepository, SurveyRequirementsRepository>();
+builder.Services.AddTransient<IWebAppRegistryViewModel, WebAppRegistryViewModel>();
+
 builder.Services.AddScoped<HttpClient>(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.Configuration["AppUrl"])
 });
 
 builder.Services.AddScoped<IProjectUserSyncService, ProjectUserSyncService>();
+builder.Services.AddScoped<IRequirementsPdfGeneratorService, RequirementsPdfGeneratorService>();
 
 builder.Services.AddAuthLibrary();
 
@@ -88,11 +99,23 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseStatusCodePages(context =>
+{
+    var statusCode = context.HttpContext.Response.StatusCode;
+
+    if (statusCode == 404)
+    {
+        context.HttpContext.Response.Redirect("/error-404");
+    }
+    return Task.CompletedTask;
+});
+
 app.MapRazorPages();
 
 app.UseAntiforgery();
 
 app.MapSignOutEndpoint();
+app.MapSurveyRequirementsEndpoints();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

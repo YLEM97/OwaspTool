@@ -20,5 +20,6 @@ namespace OwaspTool.DTOs
         public int? LevelID { get; set; }
         public string LevelAcronym { get; set; } = string.Empty;
         public string LevelLabel { get; set; } = string.Empty;
+        public bool IsSurveyCompleted { get; set; } = false;
     }
 }

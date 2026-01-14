@@ -16,20 +16,14 @@ namespace OwaspTool.DTOs
 
             if (R.Chapter != null)
             {
-                Chapter = new ChapterDTO
-                {
-                    Number = R.Chapter.Number,
-                    Title = R.Chapter.Title
-                };
+                // Use the ChapterDTO constructor to populate ChapterID, Number and Title
+                Chapter = new ChapterDTO(R.Chapter);
             }
 
             if (R.Section != null)
             {
-                Section = new SectionDTO
-                {
-                    Number = R.Section.Number,
-                    Title = R.Section.Title
-                };
+                // Use the SectionDTO constructor to populate SectionID, Number and Title
+                Section = new SectionDTO(R.Section);
             }
         }
         public int ASVSRequirementID { get; set; }

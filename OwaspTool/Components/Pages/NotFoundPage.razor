@@ -1,0 +1,68 @@
+﻿@page "/error-404"
+@using MudBlazor
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+<PageTitle>Page not found</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-12">
+    <MudPaper Elevation="0" Class="pa-8 d-flex align-center justify-center" Style="background: transparent;">
+        <MudGrid Justify="Justify.Center" AlignItems="AlignItems.Center">
+            <MudItem xs="12">
+                <div class="d-flex justify-center mb-6">
+                    <div style="max-width:520px; width:100%;">
+                        <a href="https://storyset.com/online">
+                            <img src="img/404-illustration.png" alt="Online illustrations by Storyset" style="width:100%; height:auto; border-radius:8px; box-shadow: 0 8px 20px rgba(0,0,0,0.08);" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <MudText Typo="Typo.h4" Color="Color.Primary" Class="mb-5" Style="text-align:center;">Oops! We couldn't find the page you were looking for.</MudText>
+
+                    <div class="d-flex justify-center" style="gap:12px;">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="GoBack" StartIcon="@Icons.Material.Filled.ArrowBack">Go back</MudButton>
+                        <MudButton Variant="Variant.Text" Href="mailto:ylenia.murgia@edu.unige.it" StartIcon="@Icons.Material.Filled.ContactMail">Contact support</MudButton>
+                    </div>
+
+                    <div class="mt-6 text-center">
+                        @if (!string.IsNullOrWhiteSpace(Route))
+                        {
+                            <MudText Typo="Typo.body2" Class="mb-3" Style="text-align:center;" Color="Color.Secondary">
+                                Tried URL: <code style="text-align:center; display:inline-block;">@Route</code>. If you followed a broken link, please let us know so we can fix it.
+                            </MudText>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2" Class="mb-3" Style="text-align:center;" Color="Color.Secondary">
+                                If you followed a broken link, please let us know so we can fix it.
+                            </MudText>
+                        }
+                    </div>
+                </div>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Parameter]
+    public string? Route { get; set; }
+
+    private void GoHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    private async Task GoBack()
+    {
+        try
+        {
+            await JS.InvokeVoidAsync("history.back");
+        }
+        catch
+        {
+            NavigationManager.NavigateTo("/");
+        }
+    }
+}

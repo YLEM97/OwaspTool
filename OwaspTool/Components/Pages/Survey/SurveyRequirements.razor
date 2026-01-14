@@ -1,0 +1,210 @@
+@page "/survey/{userWebAppId:int}/requirements"
+@using OwaspTool.DAL
+@inject ISurveyRequirementsRepository RequirementsRepo
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+@using MudBlazor
+
+<PageTitle>Survey Requirements</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <div class="header-section">
+        <div class="header-title">
+            <MudIcon Icon="@Icons.Material.Filled.ListAlt" Style="margin-right: 1rem; font-size: 2.5rem;" />
+            Requirements derived from survey answers
+        </div>
+    </div>
+
+    @if (IsLoading)
+    {
+        <div class="loading-container">
+            <MudProgressCircular Color="Color.Primary" Size="Size.Large" />
+            <div class="loading-text">Loading ASVS Requirements...</div>
+        </div>
+    }
+
+    @if (!IsLoading && CheckedAccess)
+    {
+        @if (!HasAccess)
+        {
+            <MudText Color="Color.Warning">You do not have permission to view these requirements.</MudText>
+            <MudButton Variant="Variant.Outlined" OnClick="GoBack">Back</MudButton>
+        }
+        else if (!Requirements.Any())
+        {
+            <MudText Color="Color.Warning">Please complete the survey to view the OWASP ASVS requirements.</MudText>
+            <MudButton Variant="Variant.Outlined" OnClick="GoBack">Back</MudButton>
+        }
+        else
+        {
+            <div class="mb-4" style="display:flex; align-items:center; gap:12px;">
+                <MudText Typo="Typo.subtitle1">Total requirements:</MudText>
+                <MudChip T="int" Size="Size.Small">@Requirements.Count</MudChip>
+
+                <MudSpacer />
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.PictureAsPdf"
+                           Href="@($"/download-requirements/{userWebAppId}")"
+                           Target="_blank">
+                    Download requirements as PDF
+                </MudButton>
+            </div>
+
+
+            <MudPaper Class="p-4" Elevation="0" Style="background: transparent;">
+                <MudExpansionPanels Elevation="0">
+                    @foreach (var chapter in GroupedRequirements.OrderBy(c => c.Key.ChapterID))
+                    {
+                        <MudExpansionPanel Class="chapter-panel">
+                            <TitleContent>
+                                <div style="display: flex; align-items: center;">
+                                    <MudIcon Icon="@Icons.Material.Filled.MenuBook" Style="margin-right: 1rem;" />
+                                    <span style="font-size: 1.1rem;">@($"{chapter.Key.Number} - {chapter.Key.Title}")</span>
+                                    <MudSpacer />
+                                    @if (chapter.Value.Count() == 1 && @chapter.Value.SelectMany(s => s.Value).Count() == 1)
+                                    {
+                                        <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
+                                            @chapter.Value.Count() section - @chapter.Value.SelectMany(s => s.Value).Count() requirement
+                                        </MudChip>
+                                    }
+                                    else if (chapter.Value.Count() == 1 && @chapter.Value.SelectMany(s => s.Value).Count() > 1)
+                                    {
+                                        <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
+                                            @chapter.Value.Count() section - @chapter.Value.SelectMany(s => s.Value).Count() requirements
+                                        </MudChip>
+                                    }
+                                    else
+                                    {
+                                        <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
+                                            @chapter.Value.Count() sections - @chapter.Value.SelectMany(s => s.Value).Count() requirements
+                                        </MudChip>
+                                    }
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudExpansionPanels ExpandMultiple="true" Elevation="0">
+                                    @foreach (var section in chapter.Value.OrderBy(s => s.Key.SectionID))
+                                    {
+                                        <MudExpansionPanel Class="section-panel" Dense="true">
+                                            <TitleContent>
+                                                <div style="display: flex; align-items: center;">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Article" Style="margin-right: 0.75rem; font-size: 1.2rem;" />
+                                                    <span>@($"{section.Key.Number} - {section.Key.Title}")</span>
+                                                    <MudSpacer />
+                                                    @if (section.Value.Count() == 1)
+                                                    {
+                                                        <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
+                                                            @(section.Value.Count()) requirement
+                                                        </MudChip>
+                                                    }
+                                                    else
+                                                    {
+                                                        <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
+                                                            @(section.Value.Count()) requirements
+                                                        </MudChip>
+                                                    }
+                                                </div>
+                                            </TitleContent>
+                                            <ChildContent>
+                                                @{
+                                                    var requirements = section.Value.OrderBy(r => r.ASVSRequirementID).ToList();
+                                                }
+                                                @if (requirements?.Count > 0)
+                                                {
+                                                    <MudTable Items="@requirements" Dense="true" Class="requirements-table" Hover="true" Striped="false">
+                                                        <HeaderContent>
+                                                            <MudTh Style="width: 150px;">
+                                                                <div style="display: flex; align-items: center;">
+                                                                    <MudIcon Icon="@Icons.Material.Filled.Tag" Style="margin-right: 0.5rem; font-size: 1rem;" />
+                                                                    Number
+                                                                </div>
+                                                            </MudTh>
+                                                            <MudTh>
+                                                                <div style="display: flex; align-items: center;">
+                                                                    <MudIcon Icon="@Icons.Material.Filled.Description" Style="margin-right: 0.5rem; font-size: 1rem;" />
+                                                                    Requirement Description
+                                                                </div>
+                                                            </MudTh>
+                                                        </HeaderContent>
+                                                        <RowTemplate>
+                                                            <MudTd DataLabel="Number">
+                                                                <span class="requirement-number">@context.Number</span>
+                                                            </MudTd>
+                                                            <MudTd DataLabel="Text">
+                                                                <div class="requirement-text">@context.Text</div>
+                                                            </MudTd>
+                                                        </RowTemplate>
+                                                    </MudTable>
+                                                }
+                                                else
+                                                {
+                                                    <div class="no-requirements">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Info" Style="font-size: 2rem; color: #6c757d; margin-bottom: 0.5rem;" />
+                                                        <div>No requirements available in this section</div>
+                                                    </div>
+                                                }
+                                            </ChildContent>
+                                        </MudExpansionPanel>
+                                    }
+                                </MudExpansionPanels>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                </MudExpansionPanels>
+            </MudPaper>
+        }
+    }
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int userWebAppId { get; set; }
+
+    private bool IsLoading = true;
+    private List<DTOs.RequirementDTO>? Requirements;
+    private bool HasAccess = false;
+    private bool CheckedAccess = false;
+
+    // Raggruppa i requisiti per Chapter e Section
+    private Dictionary<DTOs.ChapterDTO, Dictionary<DTOs.SectionDTO, List<DTOs.RequirementDTO>>> GroupedRequirements = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        string? email = null;
+        if (user?.Identity != null && user.Identity.IsAuthenticated)
+            email = user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
+
+        var reqs = await RequirementsRepo.GetRequirementsForUserWebAppIfOwnerAsync(userWebAppId, email);
+        if (reqs == null)
+        {
+            HasAccess = false;
+            Requirements = new List<DTOs.RequirementDTO>();
+        }
+        else
+        {
+            HasAccess = true;
+            Requirements = reqs;
+            // Raggruppa per Chapter e Section
+            GroupedRequirements = Requirements
+                .GroupBy(r => r.Chapter!)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.GroupBy(r => r.Section!)
+                          .ToDictionary(sg => sg.Key, sg => sg.ToList())
+                );
+        }
+        CheckedAccess = true;
+        IsLoading = false;
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

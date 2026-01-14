@@ -1,11 +1,12 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthProvider
 
 <PageTitle>CureCode</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="px-1">
 
-    <!-- Hero Section con design migliorato -->
     <MudPaper Class="hero-gradient mt-16 mb-16 pa-12" Elevation="0">
         <MudGrid Justify="Justify.Center" AlignItems="AlignItems.Center" Spacing="6">
             <MudItem xs="12" lg="6" Class="text-sm-start">
@@ -20,7 +21,7 @@
                 </MudText>
                 <MudButton Variant="Variant.Filled"
                            Class="pulse-button"
-                           Href="/">
+                           OnClick="HandleGoToProfile">
                     Get Started Now
                 </MudButton>
             </MudItem>
@@ -257,5 +258,20 @@
         await Task.Delay(1000); //To be deleted in production
 
         NavigationManager.NavigateTo("/asvs-requirements");
+    }
+
+    private async Task HandleGoToProfile()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity!.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/account/profile");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/account/login", forceLoad:true);
+        }
     }
 }

@@ -1,0 +1,128 @@
+﻿@page "/web-application-registry"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+@using OwaspTool.Models.Database
+@using OwaspTool.DTOs
+@using OwaspTool.ViewModels
+
+@attribute [Authorize]
+@inject IUserWebAppRepository Repository
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>Web Application Registry</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-16 mb-16">
+    <MudPaper Elevation="4" Class="py-8 px-10">
+        <MudText Typo="Typo.h4" Class="mb-4" Color="Color.Primary">Web Application Registry</MudText>
+
+        <MudStack Spacing="2">
+            <MudTextField @bind-Value="ViewModel.NewName" Label="Application Name" Required="true" />
+
+            <MudSelect @bind-Value="ViewModel.NewLevelID" Label="Security Level">
+                @foreach (var level in Levels)
+                {
+                    <MudSelectItem Value="@level.LevelID">@level.Label (@level.Acronym)</MudSelectItem>
+                }
+            </MudSelect>
+
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ViewModel.AddAsync">
+                Add Application
+            </MudButton>
+
+            <MudDivider Class="my-4" />
+
+            @if (ViewModel.IsLoading)
+            {
+                <MudProgressCircular Color="Color.Primary" Size="Size.Large" />
+            }
+            else
+            {
+                <MudTable Items="ViewModel.userWebApps">
+                    <HeaderContent>
+                        <MudTh>Name</MudTh>
+                        <MudTh>Level</MudTh>
+                        <MudTh>Actions</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.Name</MudTd>
+                        <MudTd>@context.LevelLabel (@context.LevelAcronym)</MudTd>
+                        <MudTd>
+                            <MudIconButton 
+                                Href="@($"/survey/{context.UserWebAppID}")" 
+                                Icon="@Icons.Material.Filled.QuestionAnswer" 
+                                Color="Color.Secondary"
+                                Class="me-2"
+                                Title="Compile Questionnaire">
+                            </MudIconButton>
+                            @if (context.IsSurveyCompleted)
+                            {
+                                <MudIconButton 
+                                    Href="@($"/survey/{context.UserWebAppID}/requirements")"
+                                    Icon="@Icons.Material.Filled.ListAlt"
+                                    Color="Color.Secondary"
+                                    Class="me-2"
+                                    Title="View requirements" />
+                            }
+                            <MudIconButton 
+                                Color="Color.Error" 
+                                Icon="@Icons.Material.Filled.DeleteForever" 
+                                OnClick="@(() => ConfirmDelete(context.UserWebAppID))"
+                                Variant="Variant.Filled"
+                                Title="Delete">
+                            </MudIconButton>
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+        </MudStack>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private WebAppRegistryViewModel ViewModel;
+    private List<Level> Levels = new();
+    private int DeleteId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ViewModel = new WebAppRegistryViewModel(Repository, AuthStateProvider);
+        await ViewModel.LoadAsync();
+        Levels = await ViewModel.GetLevelsAsync();
+    }
+
+    private async Task ConfirmDelete(int userWebAppId)
+    {
+
+        bool? result = await DialogService.ShowMessageBox(
+            "Confirm Delete",
+            (MarkupString)$"Are you sure you want to delete this application?<br /> If you have already completed the questionnaire, or if you have provided any responses, those data will also be permanently deleted. <br /> <b>This action cannot be undone.</b>",
+            yesText: "Yes",
+            noText: "Cancel",
+            options: new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall }
+        );
+
+        if (result == true)
+        {
+            await DeleteConfirmed(userWebAppId);
+        }
+    }
+
+    private async Task DeleteConfirmed(int userWebAppId)
+    {
+        try
+        {
+            await ViewModel.DeleteAsync(userWebAppId);
+
+            Snackbar.Add("Application deleted", Severity.Success);
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Delete failed: {ex.Message}", Severity.Error);
+        }
+    }
+}
