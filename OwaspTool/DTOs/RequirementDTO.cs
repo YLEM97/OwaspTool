@@ -33,5 +33,15 @@ namespace OwaspTool.DTOs
         public int SectionID { get; set; }
         public ChapterDTO? Chapter { get; set; }
         public SectionDTO? Section { get; set; }
+
+        // Nullable: null = not set (radio initially unselected)
+        // 0 = NotImplemented, 1 = Implemented, 2 = NotApplicable
+        public int? ImplementationStatus { get; set; }
+
+        // New: user notes for this requirement (nullable)
+        public string? Notes { get; set; }
+
+        // New: AI conversation/notes (nullable)
+        public string? AiNotes { get; set; }
     }
 }

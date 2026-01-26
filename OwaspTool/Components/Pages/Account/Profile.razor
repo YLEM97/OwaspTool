@@ -13,6 +13,7 @@
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 @inject IUserWebAppRepository UserWebAppRepository
+@inject IDialogService DialogService
 
 <PageTitle>Profile</PageTitle>
 
@@ -110,12 +111,37 @@
                             <MudTd>@context.Name</MudTd>
                             <MudTd>@(string.IsNullOrWhiteSpace(context.LevelLabel) ? context.LevelAcronym : context.LevelLabel)</MudTd>
                             <MudTd>
-                                <MudIconButton Href="@($"/survey/{context.UserWebAppID}")" Icon="@Icons.Material.Filled.QuestionAnswer" Color="Color.Secondary"></MudIconButton>
+                                <MudIconButton 
+                                    Href="@($"/survey/{context.UserWebAppID}")" 
+                                    Icon="@Icons.Material.Filled.QuestionAnswer" 
+                                    Color="Color.Secondary"
+                                    Class="me-2"
+                                    Title="Complete questionnaire">
+                                </MudIconButton>
+
+                                @* Show requirements link only if survey completed *@
+                                @if (context.IsSurveyCompleted)
+                                {
+                                    <MudIconButton 
+                                        Href="@($"/survey/{context.UserWebAppID}/requirements")"
+                                        Icon="@Icons.Material.Filled.ListAlt"
+                                        Color="Color.Secondary"
+                                        Class="me-2"
+                                        Title="View requirements" />
+                                }
+
+                                <MudIconButton 
+                                    Color="Color.Error" 
+                                    Icon="@Icons.Material.Filled.DeleteForever" 
+                                    OnClick="@(() => ConfirmDelete(context.UserWebAppID))"
+                                    Variant="Variant.Filled"
+                                    Title="Delete">
+                                </MudIconButton>
                             </MudTd>
                         </RowTemplate>
                     </MudTable>
                     <div class="section-divider-profile"></div>
-                    <MudText Typo="Typo.body1" Class="mt-4"><MudLink Href="/web-application-registry">Click here </MudLink>to manage your applications.</MudText>
+                    <MudText Typo="Typo.body1" Class="mt-4"><MudLink Href="/web-application-registry">Click here</MudLink> to add a new application.</MudText>
                 }
             </MudCollapse>
         </MudStack>
@@ -155,6 +181,12 @@
         if (!string.IsNullOrWhiteSpace(Email))
         {
             UserApps = await UserWebAppRepository.GetAllByUserAsync(Email);
+
+            // Determine completed flag per app (sequential to avoid DbContext conflicts)
+            foreach (var uwa in UserApps)
+            {
+                uwa.IsSurveyCompleted = await UserWebAppRepository.IsSurveyCompletedAsync(uwa.UserWebAppID);
+            }
         }
         else
         {
@@ -184,4 +216,47 @@
             ChangePasswordError = err.Description;
     }
 
+    private async Task ConfirmDelete(int userWebAppId)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Confirm Delete",
+            (MarkupString)$"Are you sure you want to delete this application?<br /> If you have already completed the questionnaire, or if you have provided any responses, those data will also be permanently deleted. <br /> <b>This action cannot be undone.</b>",
+            yesText: "Yes",
+            noText: "Cancel",
+            options: new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall }
+        );
+
+        if (result == true)
+        {
+            await DeleteConfirmed(userWebAppId);
+        }
+    }
+
+    private async Task DeleteConfirmed(int userWebAppId)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                Snackbar.Add("Unable to determine user email for deletion.", Severity.Error);
+                return;
+            }
+
+            await UserWebAppRepository.DeleteAsync(userWebAppId, Email);
+
+            // reload user apps and completion flags
+            UserApps = await UserWebAppRepository.GetAllByUserAsync(Email);
+            foreach (var uwa in UserApps)
+            {
+                uwa.IsSurveyCompleted = await UserWebAppRepository.IsSurveyCompletedAsync(uwa.UserWebAppID);
+            }
+
+            Snackbar.Add("Application deleted", Severity.Success);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Delete failed: {ex.Message}", Severity.Error);
+        }
+    }
 }

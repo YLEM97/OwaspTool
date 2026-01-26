@@ -1,10 +1,20 @@
 @page "/survey/{userWebAppId:int}/requirements"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @using OwaspTool.DAL
-@inject ISurveyRequirementsRepository RequirementsRepo
+@using OwaspTool.DTOs
 @using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Hosting
+@using MudBlazor
+@using System.Security.Claims
+@using System.Linq
+@inject ISurveyRequirementsRepository RequirementsRepo
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavigationManager
-@using MudBlazor
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+@inject IDialogService DialogService
+@inject IWebHostEnvironment Env
 
 <PageTitle>Survey Requirements</PageTitle>
 
@@ -23,188 +33,444 @@
             <div class="loading-text">Loading ASVS Requirements...</div>
         </div>
     }
-
-    @if (!IsLoading && CheckedAccess)
+    else if (!CheckedAccess)
     {
-        @if (!HasAccess)
-        {
-            <MudText Color="Color.Warning">You do not have permission to view these requirements.</MudText>
-            <MudButton Variant="Variant.Outlined" OnClick="GoBack">Back</MudButton>
-        }
-        else if (!Requirements.Any())
-        {
-            <MudText Color="Color.Warning">Please complete the survey to view the OWASP ASVS requirements.</MudText>
-            <MudButton Variant="Variant.Outlined" OnClick="GoBack">Back</MudButton>
-        }
-        else
-        {
-            <div class="mb-4" style="display:flex; align-items:center; gap:12px;">
-                <MudText Typo="Typo.subtitle1">Total requirements:</MudText>
-                <MudChip T="int" Size="Size.Small">@Requirements.Count</MudChip>
+        <MudText Color="Color.Secondary">Checking access...</MudText>
+    }
+    else if (!HasAccess)
+    {
+        <MudText Color="Color.Warning">You do not have permission to view these requirements.</MudText>
+        <MudButton Variant="Variant.Outlined" OnClick="GoBack">Back</MudButton>
+    }
+    else if (Requirements == null || !Requirements.Any())
+    {
+        <MudText Color="Color.Warning">Please complete the survey to view the OWASP ASVS requirements.</MudText>
+        <MudButton Variant="Variant.Outlined" OnClick="GoBack">Back</MudButton>
+    }
+    else
+    {
+        <div class="mb-4" style="display:flex; align-items:center; gap:12px;">
+            <MudText Typo="Typo.subtitle1">Total requirements:</MudText>
+            <MudChip T="string" Size="Size.Small">@Requirements.Count</MudChip>
 
-                <MudSpacer />
+            <MudSpacer />
 
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.PictureAsPdf"
-                           Href="@($"/download-requirements/{userWebAppId}")"
-                           Target="_blank">
-                    Download requirements as PDF
-                </MudButton>
-            </div>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.PictureAsPdf"
+                       Href="@($"/download-requirements/{userWebAppId}")"
+                       Target="_blank">
+                Download requirements as PDF
+            </MudButton>
 
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Secondary"
+                       StartIcon="@Icons.Material.Filled.Assessment"
+                       OnClick="@(() => NavigationManager.NavigateTo($"/survey/{userWebAppId}/implementation-status"))">
+                Implementation status
+            </MudButton>
+        </div>
 
-            <MudPaper Class="p-4" Elevation="0" Style="background: transparent;">
-                <MudExpansionPanels Elevation="0">
-                    @foreach (var chapter in GroupedRequirements.OrderBy(c => c.Key.ChapterID))
-                    {
-                        <MudExpansionPanel Class="chapter-panel">
-                            <TitleContent>
-                                <div style="display: flex; align-items: center;">
-                                    <MudIcon Icon="@Icons.Material.Filled.MenuBook" Style="margin-right: 1rem;" />
-                                    <span style="font-size: 1.1rem;">@($"{chapter.Key.Number} - {chapter.Key.Title}")</span>
-                                    <MudSpacer />
-                                    @if (chapter.Value.Count() == 1 && @chapter.Value.SelectMany(s => s.Value).Count() == 1)
-                                    {
-                                        <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
-                                            @chapter.Value.Count() section - @chapter.Value.SelectMany(s => s.Value).Count() requirement
-                                        </MudChip>
-                                    }
-                                    else if (chapter.Value.Count() == 1 && @chapter.Value.SelectMany(s => s.Value).Count() > 1)
-                                    {
-                                        <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
-                                            @chapter.Value.Count() section - @chapter.Value.SelectMany(s => s.Value).Count() requirements
-                                        </MudChip>
-                                    }
-                                    else
-                                    {
-                                        <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
+        <MudPaper Class="p-4" Elevation="0" Style="background: transparent;">
+            <MudExpansionPanels Elevation="0">
+                @foreach (var chapter in GroupedRequirements.OrderBy(c => c.Key.ChapterID))
+                {
+                    <div>
+                        @if (VisibleChapters.Contains(chapter.Key.ChapterID))
+                        {
+                            <MudExpansionPanel Class="chapter-panel">
+                                <TitleContent>
+                                    <div style="display: flex; align-items: center;">
+                                        <MudIcon Icon="@Icons.Material.Filled.MenuBook" Style="margin-right: 1rem;" />
+                                        <span style="font-size: 1.1rem;">@($"{chapter.Key.Number} - {chapter.Key.Title}")</span>
+                                        <MudSpacer />
+                                        <MudChip T="string" Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;">
                                             @chapter.Value.Count() sections - @chapter.Value.SelectMany(s => s.Value).Count() requirements
                                         </MudChip>
-                                    }
-                                </div>
-                            </TitleContent>
-                            <ChildContent>
-                                <MudExpansionPanels ExpandMultiple="true" Elevation="0">
-                                    @foreach (var section in chapter.Value.OrderBy(s => s.Key.SectionID))
-                                    {
-                                        <MudExpansionPanel Class="section-panel" Dense="true">
-                                            <TitleContent>
-                                                <div style="display: flex; align-items: center;">
-                                                    <MudIcon Icon="@Icons.Material.Filled.Article" Style="margin-right: 0.75rem; font-size: 1.2rem;" />
-                                                    <span>@($"{section.Key.Number} - {section.Key.Title}")</span>
-                                                    <MudSpacer />
-                                                    @if (section.Value.Count() == 1)
-                                                    {
-                                                        <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
-                                                            @(section.Value.Count()) requirement
+                                    </div>
+                                </TitleContent>
+                                <ChildContent>
+                                    <MudExpansionPanels ExpandMultiple="true" Elevation="0">
+                                        @foreach (var section in chapter.Value.OrderBy(s => s.Key.SectionID))
+                                        {
+                                            <MudExpansionPanel Class="section-panel" Dense="true">
+                                                <TitleContent>
+                                                    <div style="display: flex; align-items: center; width: 100%;">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Article" Style="margin-right: 0.75rem; font-size: 1.2rem;" />
+                                                        <span>@($"{section.Key.Number} - {section.Key.Title}")</span>
+                                                        <MudSpacer />
+                                                        <MudChip T="string" Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;">
+                                                            @(section.Value.Count()) requirements
                                                         </MudChip>
+
+                                                        <div @onclick:stopPropagation style="margin-left: 1rem;">
+                                                            <MudButton Variant="Variant.Filled"
+                                                                       Color="Color.Success"
+                                                                       Size="Size.Small"
+                                                                       StartIcon="@Icons.Material.Filled.Save"
+                                                                       OnClick="@(() => SaveSectionStatuses(section.Key.SectionID))"
+                                                                       Disabled="@((SectionSavingStates.TryGetValue(section.Key.SectionID, out var s) ? s : false))">
+                                                                @if (SectionSavingStates.TryGetValue(section.Key.SectionID, out var isSaving) && isSaving)
+                                                                {
+                                                                    <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />
+                                                                    <span>Saving...</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span>Save status</span>
+                                                                }
+                                                            </MudButton>
+                                                        </div>
+                                                    </div>
+                                                </TitleContent>
+                                                <ChildContent>
+                                                    @{
+                                                        var requirements = section.Value.OrderBy(r => r.ASVSRequirementID).ToList();
+                                                    }
+                                                    @if (requirements?.Count > 0)
+                                                    {
+                                                        <div style="max-height:520px; overflow:auto;">
+                                                            <Virtualize Items="requirements" ItemSize="160" Context="req">
+                                                                <ItemContent>
+                                                                    @{
+                                                                        var r = req;
+                                                                    }
+                                                                    <div class="requirement-row" style="display:flex; gap:12px; align-items:flex-start; padding:12px; border-bottom:1px solid rgba(0,0,0,0.04);">
+                                                                        <div style="width:120px; flex:0 0 120px;">
+                                                                            <span class="requirement-number" style="font-size:1.16rem; font-weight:600;">@r.Number</span>
+                                                                        </div>
+
+                                                                        <div style="width:360px; flex:0 0 360px; padding-right:12px;">
+                                                                            <div class="requirement-text" style="font-size:1.06rem; line-height:1.4;">@r.Text</div>
+                                                                        </div>
+
+                                                                        <div style="display:flex; gap:12px; align-items:flex-start; flex:1; min-width:200px;">
+                                                                            <div style="width:220px; flex:0 0 220px;">
+                                                                                <MudRadioGroup T="int?" Value="@r.ImplementationStatus" ValueChanged="@(v => OnStatusChanged(r, v))">
+                                                                                    <MudRadio T="int?" Value="1" Color="Color.Primary">Implemented</MudRadio>
+                                                                                    <MudRadio T="int?" Value="0" Color="Color.Secondary">Not implemented</MudRadio>
+                                                                                    <MudRadio T="int?" Value="2" Color="Color.Default">Not applicable</MudRadio>
+                                                                                </MudRadioGroup>
+                                                                            </div>
+
+                                                                            <div style="flex:1;">
+                                                                                <MudTextField T="string"
+                                                                                              @bind-Value="r.Notes"
+                                                                                              Placeholder="Add personal notes (optional)"
+                                                                                              Immediate="true"
+                                                                                              Lines="4"
+                                                                                              Class="mt-0"
+                                                                                              MaxLength="2000"
+                                                                                              Style="@GetNotesStyle(r.Notes)" />
+
+                                                                                @if (ShowAiFeatures)
+                                                                                {
+                                                                                    <MudTextField T="string"
+                                                                                                  @bind-Value="r.AiNotes"
+                                                                                                  Placeholder="AI conversation (paste here from dialog) - optional"
+                                                                                                  Immediate="true"
+                                                                                                  Lines="4"
+                                                                                                  Class="mt-2"
+                                                                                                  MaxLength="4000"
+                                                                                                  Style="@GetAiNotesStyle(r.AiNotes)" />
+                                                                                }
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; width:140px;">
+                                                                            @if (ShowAiFeatures)
+                                                                            {
+                                                                                <MudButton Variant="Variant.Text"
+                                                                                           Color="Color.Primary"
+                                                                                           StartIcon="@Icons.Material.Filled.SmartToy"
+                                                                                           Size="Size.Small"
+                                                                                           OnClick="@(() => OpenAiForRequirementAsync(r))">
+                                                                                    Ask AI
+                                                                                </MudButton>
+                                                                            }
+
+                                                                            @if (!string.IsNullOrWhiteSpace(r.Notes))
+                                                                            {
+                                                                                <MudText Typo="Typo.caption" Class="mt-1" Color="Color.Dark">Notes present</MudText>
+                                                                            }
+                                                                            @if (ShowAiFeatures && !string.IsNullOrWhiteSpace(r.AiNotes))
+                                                                            {
+                                                                                <MudText Typo="Typo.caption" Class="mt-1" Color="Color.Dark">AI notes present</MudText>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </ItemContent>
+                                                            </Virtualize>
+                                                        </div>
                                                     }
                                                     else
                                                     {
-                                                        <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
-                                                            @(section.Value.Count()) requirements
-                                                        </MudChip>
+                                                        <div class="no-requirements">
+                                                            <MudIcon Icon="@Icons.Material.Filled.Info" Style="font-size: 2rem; color: #6c757d; margin-bottom: 0.5rem;" />
+                                                            <div>No requirements available in this section</div>
+                                                        </div>
                                                     }
-                                                </div>
-                                            </TitleContent>
-                                            <ChildContent>
-                                                @{
-                                                    var requirements = section.Value.OrderBy(r => r.ASVSRequirementID).ToList();
-                                                }
-                                                @if (requirements?.Count > 0)
-                                                {
-                                                    <MudTable Items="@requirements" Dense="true" Class="requirements-table" Hover="true" Striped="false">
-                                                        <HeaderContent>
-                                                            <MudTh Style="width: 150px;">
-                                                                <div style="display: flex; align-items: center;">
-                                                                    <MudIcon Icon="@Icons.Material.Filled.Tag" Style="margin-right: 0.5rem; font-size: 1rem;" />
-                                                                    Number
-                                                                </div>
-                                                            </MudTh>
-                                                            <MudTh>
-                                                                <div style="display: flex; align-items: center;">
-                                                                    <MudIcon Icon="@Icons.Material.Filled.Description" Style="margin-right: 0.5rem; font-size: 1rem;" />
-                                                                    Requirement Description
-                                                                </div>
-                                                            </MudTh>
-                                                        </HeaderContent>
-                                                        <RowTemplate>
-                                                            <MudTd DataLabel="Number">
-                                                                <span class="requirement-number">@context.Number</span>
-                                                            </MudTd>
-                                                            <MudTd DataLabel="Text">
-                                                                <div class="requirement-text">@context.Text</div>
-                                                            </MudTd>
-                                                        </RowTemplate>
-                                                    </MudTable>
-                                                }
-                                                else
-                                                {
-                                                    <div class="no-requirements">
-                                                        <MudIcon Icon="@Icons.Material.Filled.Info" Style="font-size: 2rem; color: #6c757d; margin-bottom: 0.5rem;" />
-                                                        <div>No requirements available in this section</div>
-                                                    </div>
-                                                }
-                                            </ChildContent>
-                                        </MudExpansionPanel>
-                                    }
-                                </MudExpansionPanels>
-                            </ChildContent>
-                        </MudExpansionPanel>
-                    }
-                </MudExpansionPanels>
-            </MudPaper>
-        }
+                                                </ChildContent>
+                                            </MudExpansionPanel>
+                                        }
+                                    </MudExpansionPanels>
+                                </ChildContent>
+                            </MudExpansionPanel>
+                        }
+                        else
+                        {
+                            <div style="padding:12px; color:var(--mud-palette-text-secondary); border:1px dashed rgba(0,0,0,0.04); margin-bottom:8px;">
+                                Caricamento capitolo <strong>@chapter.Key.Title</strong>...
+                            </div>
+                        }
+                    </div>
+                }
+            </MudExpansionPanels>
+        </MudPaper>
     }
 </MudContainer>
 
 @code {
-    [Parameter]
-    public int userWebAppId { get; set; }
+    [Parameter] public int userWebAppId { get; set; }
 
     private bool IsLoading = true;
-    private List<DTOs.RequirementDTO>? Requirements;
+    private List<RequirementDTO>? Requirements;
     private bool HasAccess = false;
     private bool CheckedAccess = false;
+    private string? _currentUserEmail;
+    private bool _data_loaded = false;
 
-    // Raggruppa i requisiti per Chapter e Section
-    private Dictionary<DTOs.ChapterDTO, Dictionary<DTOs.SectionDTO, List<DTOs.RequirementDTO>>> GroupedRequirements = new();
+    private Dictionary<int, bool> SectionSavingStates = new();
+    private Dictionary<ChapterDTO, Dictionary<SectionDTO, List<RequirementDTO>>> GroupedRequirements = new();
+    private HashSet<int> VisibleChapters = new();
 
-    protected override async Task OnInitializedAsync()
+    private bool ShowAiFeatures = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        IsLoading = true;
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        string? email = null;
-        if (user?.Identity != null && user.Identity.IsAuthenticated)
-            email = user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
-
-        var reqs = await RequirementsRepo.GetRequirementsForUserWebAppIfOwnerAsync(userWebAppId, email);
-        if (reqs == null)
+        if (firstRender && !_data_loaded)
         {
-            HasAccess = false;
-            Requirements = new List<DTOs.RequirementDTO>();
+            _data_loaded = true;
+            ShowAiFeatures = Env?.IsDevelopment() == true;
+            await LoadDataAsync();
+            _ = RevealChaptersGraduallyAsync();
         }
-        else
-        {
-            HasAccess = true;
-            Requirements = reqs;
-            // Raggruppa per Chapter e Section
-            GroupedRequirements = Requirements
-                .GroupBy(r => r.Chapter!)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.GroupBy(r => r.Section!)
-                          .ToDictionary(sg => sg.Key, sg => sg.ToList())
-                );
-        }
-        CheckedAccess = true;
-        IsLoading = false;
     }
 
-    private void GoBack()
+    private async Task LoadDataAsync()
     {
-        NavigationManager.NavigateTo("/");
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        try
+        {
+            IsLoading = true;
+
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            string? email = null;
+            if (user?.Identity != null && user.Identity.IsAuthenticated)
+                email = user.FindFirst(ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
+
+            _currentUserEmail = email;
+
+            var reqs = await RequirementsRepo.GetRequirementsForUserWebAppIfOwnerAsync(userWebAppId, email);
+            if (reqs == null)
+            {
+                HasAccess = false;
+                Requirements = new List<RequirementDTO>();
+            }
+            else
+            {
+                HasAccess = true;
+                Requirements = reqs;
+                GroupedRequirements = Requirements
+                    .GroupBy(r => r.Chapter!)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.GroupBy(r => r.Section!)
+                              .ToDictionary(sg => sg.Key, sg => sg.ToList())
+                    );
+
+                foreach (var chapter in GroupedRequirements.Values)
+                {
+                    foreach (var section in chapter.Keys)
+                    {
+                        SectionSavingStates[section.SectionID] = false;
+                    }
+                }
+            }
+
+            CheckedAccess = true;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"ERROR Type: {ex.GetType().Name}");
+            Console.Error.WriteLine($"ERROR Message: {ex.Message}");
+            HasAccess = false;
+            Requirements = new List<RequirementDTO>();
+            CheckedAccess = true;
+        }
+        finally
+        {
+            IsLoading = false;
+            sw.Stop();
+            Console.WriteLine($"[TIMING] LoadDataAsync completed in {sw.ElapsedMilliseconds} ms");
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task RevealChaptersGraduallyAsync(int delayPerChapterMs = 30)
+    {
+        try
+        {
+            var chapterIds = GroupedRequirements.Keys.Select(k => k.ChapterID).ToList();
+            foreach (var id in chapterIds)
+            {
+                VisibleChapters.Add(id);
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(delayPerChapterMs);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"RevealChaptersGraduallyAsync error: {ex.Message}");
+        }
+    }
+
+    private void GoBack() => NavigationManager.NavigateTo("/");
+
+    private async Task SaveSectionStatuses(int sectionId)
+    {
+        SectionSavingStates[sectionId] = true;
+        await InvokeAsync(StateHasChanged);
+
+        try
+        {
+            var invalid = Requirements
+                ?.Where(r => r.SectionID == sectionId && !string.IsNullOrWhiteSpace(r.Notes) && !r.ImplementationStatus.HasValue)
+                .ToList();
+
+            if (invalid != null && invalid.Any())
+            {
+                var ids = invalid.Select(x => x.Number ?? x.ASVSRequirementID.ToString()).ToList();
+                var preview = ids.Take(6);
+                var more = ids.Count > 6 ? $" e altri {ids.Count - 6}" : string.Empty;
+                var list = string.Join(", ", preview) + more;
+
+                Snackbar.Add($"Per salvare le note devi anche impostare lo stato per: {list}.", Severity.Warning, config =>
+                {
+                    config.VisibleStateDuration = 6000;
+                });
+
+                SectionSavingStates[sectionId] = false;
+                await InvokeAsync(StateHasChanged);
+                return;
+            }
+
+            var sectionRequirements = Requirements
+                .Where(r => r.SectionID == sectionId && r.ImplementationStatus.HasValue)
+                .ToList();
+
+            foreach (var req in sectionRequirements)
+            {
+                await RequirementsRepo.SaveRequirementStatusAsync(
+                    userWebAppId,
+                    req.ASVSRequirementID,
+                    req.ImplementationStatus.Value,
+                    _currentUserEmail,
+                    req.Notes,
+                    req.AiNotes
+                );
+            }
+
+            Snackbar.Add("Stati e note salvati correttamente.", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error saving section {sectionId} statuses: {ex.Message}");
+            Snackbar.Add("Errore durante il salvataggio. Riprova.", Severity.Error);
+        }
+        finally
+        {
+            SectionSavingStates[sectionId] = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void OnStatusChanged(RequirementDTO requirement, int? newStatus)
+    {
+        requirement.ImplementationStatus = newStatus;
+    }
+
+    private string GetNotesStyle(string? notes)
+    {
+        var bg = string.IsNullOrWhiteSpace(notes) ? "#FFF8E1" : "#E6F4EA";
+        return $"background:{bg}; border-radius:6px; padding:6px; width:100%;";
+    }
+
+    private string GetAiNotesStyle(string? aiNotes)
+    {
+        var bg = string.IsNullOrWhiteSpace(aiNotes) ? "#FFF8F0" : "#F0F7FF";
+        return $"background:{bg}; border-radius:6px; padding:6px; width:100%;";
+    }
+
+    private async Task OpenAiForRequirementAsync(RequirementDTO r)
+    {
+        if (!ShowAiFeatures)
+            return;
+
+        var parameters = new DialogParameters
+        {
+            { nameof(AiRequirementDialog.RequirementNumber), r.Number ?? r.ASVSRequirementID.ToString() },
+            { nameof(AiRequirementDialog.RequirementText), r.Text ?? string.Empty }
+        };
+
+        var options = new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        var dialogRef = DialogService.Show<AiRequirementDialog>("AI Help", parameters, options);
+        var result = await dialogRef.Result;
+
+        // se non otteniamo una conversazione, esci
+        if (!(result?.Data is string conv) || string.IsNullOrWhiteSpace(conv))
+            return;
+
+        // se campo vuoto incolla direttamente
+        if (string.IsNullOrWhiteSpace(r.AiNotes))
+        {
+            r.AiNotes = conv;
+            Snackbar.Add("Conversazione AI incollata in AiNotes.", Severity.Info);
+            await InvokeAsync(StateHasChanged);
+            return;
+        }
+
+        // altrimenti chiedi all'utente cosa fare
+        var choiceRef = DialogService.Show<AiPasteChoiceDialog>("AI Paste Options", new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.ExtraSmall });
+        var choiceResult = await choiceRef.Result;
+
+        // se utente annulla o non fornisce azione, non modificare
+        if (!(choiceResult?.Data is string action))
+            return;
+
+        switch (action)
+        {
+            case "replace":
+                r.AiNotes = conv;
+                Snackbar.Add("AI Notes sostituito.", Severity.Success);
+                break;
+            case "append":
+                var sep = "\n\n---\n\n";
+                var time = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
+                r.AiNotes = r.AiNotes + sep + $"(AI conversation appended at {time})\n\n" + conv;
+                Snackbar.Add("Conversazione aggiunta in coda a AiNotes.", Severity.Success);
+                break;
+            default:
+                break;
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
 }

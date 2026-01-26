@@ -22,6 +22,8 @@ public partial class OwaspToolContext : DbContext
 
     public virtual DbSet<ASVSRequirement> ASVSRequirements { get; set; }
 
+    public virtual DbSet<ASVSRequirementStatus> ASVSRequirementStatus { get; set; }
+
     public virtual DbSet<Answer> Answers { get; set; }
 
     public virtual DbSet<AnswerOption> AnswerOptions { get; set; }
@@ -95,6 +97,34 @@ public partial class OwaspToolContext : DbContext
             entity.HasOne(d => d.Section).WithMany(p => p.ASVSRequirements)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__ASVSRequi__Secti__6A30C649");
+        });
+
+        modelBuilder.Entity<ASVSRequirementStatus>(entity =>
+        {
+            entity.HasKey(e => e.ASVSRequirementStatusID).HasName("PK__ASVSReqS__XXXXXXXXXXXXX");
+
+            entity.Property(e => e.Modified).HasDefaultValueSql("(getdate())");
+
+            entity.Property(e => e.Notes)
+                .HasColumnType("nvarchar(max)")
+                .IsUnicode(true)
+                .IsRequired(false);
+
+            // Mapping per nuovo campo AiNotes
+            entity.Property(e => e.AiNotes)
+                .HasColumnType("nvarchar(max)")
+                .IsUnicode(true)
+                .IsRequired(false);
+
+            entity.HasOne(d => d.UserWebApp).WithMany()
+                .HasForeignKey(d => d.UserWebAppID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ASVSReqSt__UserW__XXXXXX");
+
+            entity.HasOne(d => d.ASVSRequirement).WithMany()
+                .HasForeignKey(d => d.ASVSRequirementID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ASVSReqSt__ASVSR__XXXXXX");
         });
 
         modelBuilder.Entity<Answer>(entity =>

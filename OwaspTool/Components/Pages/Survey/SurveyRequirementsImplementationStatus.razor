@@ -1,0 +1,223 @@
+@page "/survey/{userWebAppId:int}/implementation-status"
+@using OwaspTool.DAL
+@inject ISurveyRequirementsRepository RequirementsRepo
+@inject IUserWebAppRepository UserWebAppRepo
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+@using MudBlazor
+@using System.Security.Claims
+
+<PageTitle>Implementation Status</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
+    <div class="header-section">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div class="header-title" style="color:#ffffff;">
+                Implementation status - WebApp @(WebAppName ?? userWebAppId.ToString())
+            </div>
+            <MudSpacer />
+            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack" Color="Color.Secondary">Back</MudButton>
+        </div>
+    </div>
+
+    @if (IsLoading)
+    {
+        <div style="padding:24px;">
+            <MudProgressCircular Color="Color.Primary" Size="Size.Large" />
+            <MudText>Loading...</MudText>
+        </div>
+    }
+    else if (!CheckedAccess)
+    {
+        <MudText Color="Color.Warning">Checking access...</MudText>
+    }
+    else if (!HasAccess)
+    {
+        <MudPaper Class="p-4 mt-3" Elevation="0">
+            <MudText Color="Color.Warning">You do not have permission to view the implementation status for this application.</MudText>
+            <div style="margin-top:12px;">
+                <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack">Back</MudButton>
+            </div>
+        </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="p-4 mt-3" Elevation="0">
+
+            <div style="display:flex; gap:12px; margin-top:8px; align-items:center;">
+                <div style="display:flex; align-items:center; gap:4px;">
+                    <MudText Typo="Typo.body2">Implemented:</MudText>
+                    <MudChip T="string" Color="Color.Success" Size="Size.Small">@ImplementedCount</MudChip>
+                </div>
+                <div style="display:flex; align-items:center; gap:4px;">
+                    <MudText Typo="Typo.body2">Not implemented:</MudText>
+                    <MudChip T="string" Color="Color.Error" Size="Size.Small">@NotImplementedCount</MudChip>
+                </div>
+                <div style="display:flex; align-items:center; gap:4px;">
+                    <MudText Typo="Typo.body2">Not applicable:</MudText>
+                    <MudChip T="string" Color="Color.Info" Size="Size.Small">@NotApplicableCount</MudChip>
+                </div>
+                <div style="display:flex; align-items:center; gap:4px;">
+                    <MudText Typo="Typo.body2">Missing:</MudText>
+                    <MudChip T="string" Color="Color.Warning" Size="Size.Small">@MissingCount</MudChip>
+                </div>
+                <div style="flex:1"></div>
+                <MudText Typo="Typo.caption">Implementation status saved: @SavedCount / @TotalCount</MudText>
+            </div>
+
+            <div style="margin-top:16px; margin-bottom:16px;">
+                <MudTable Items="SectionSummaries" Dense="true" Elevation="10">
+                    <HeaderContent>
+                        <MudTh>Section</MudTh>
+                        <MudTh>Implemented</MudTh>
+                        <MudTh>Not implemented</MudTh>
+                        <MudTh>Not applicable</MudTh>
+                        <MudTh>Missing</MudTh>
+                        <MudTh>Status</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.SectionTitle</MudTd>
+                        <MudTd>@context.Implemented</MudTd>
+                        <MudTd>@context.NotImplemented</MudTd>
+                        <MudTd>@context.NotApplicable</MudTd>
+                        <MudTd>@context.Missing</MudTd>
+                        <MudTd>
+                            @if (context.Missing == 0)
+                            {
+                                <MudChip T="string" Color="Color.Success" Size="Size.Small">All saved</MudChip>
+                            }
+                            else
+                            {
+                                <MudChip T="string" Color="Color.Warning" Size="Size.Small">Missing</MudChip>
+                            }
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </div>
+        </MudPaper>
+    }
+
+</MudContainer>
+
+@code {
+    [Parameter]
+    public int userWebAppId { get; set; }
+
+    private bool IsLoading = true;
+    private List<DTOs.RequirementDTO>? Requirements;
+    private bool CheckedAccess = false;
+    private bool HasAccess = false;
+    private string? _currentUserEmail;
+
+    private string? WebAppName;
+
+    private int ImplementedCount;
+    private int NotImplementedCount;
+    private int NotApplicableCount;
+    private int MissingCount;
+    private int SavedCount;
+    private int TotalCount;
+
+    private List<SectionStatusSummary> SectionSummaries = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            IsLoading = true;
+
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            string? email = null;
+            if (user?.Identity != null && user.Identity.IsAuthenticated)
+                email = user.FindFirst(ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
+
+            _currentUserEmail = email;
+
+            // check ownership/access: repository returns null if not owner
+            var reqs = await RequirementsRepo.GetRequirementsForUserWebAppIfOwnerAsync(userWebAppId, email);
+            if (reqs == null)
+            {
+                HasAccess = false;
+                Requirements = new List<DTOs.RequirementDTO>();
+                CheckedAccess = true;
+                return;
+            }
+
+            HasAccess = true;
+            Requirements = reqs;
+
+            // recupera il nome della WebApp solo se l'utente ha accesso
+            try
+            {
+                WebAppName = UserWebAppRepo.GetAppNameFromUserWebAppId(userWebAppId);
+                if (string.IsNullOrWhiteSpace(WebAppName))
+                    WebAppName = null;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error fetching webapp name: {ex.Message}");
+                WebAppName = null;
+            }
+
+            // calcoli
+            ImplementedCount = Requirements.Count(r => r.ImplementationStatus == 1);
+            NotImplementedCount = Requirements.Count(r => r.ImplementationStatus == 0);
+            NotApplicableCount = Requirements.Count(r => r.ImplementationStatus == 2);
+            MissingCount = Requirements.Count(r => !r.ImplementationStatus.HasValue);
+            TotalCount = Requirements.Count;
+            SavedCount = TotalCount - MissingCount;
+
+            var grouped = Requirements
+                .GroupBy(r => r.Section)
+                .Where(g => g.Key != null)
+                .Select(g => new SectionStatusSummary
+                {
+                    SectionId = g.Key!.SectionID,
+                    SectionTitle = $"{g.Key.Number} - {g.Key.Title}",
+                    Implemented = g.Count(i => i.ImplementationStatus == 1),
+                    NotImplemented = g.Count(i => i.ImplementationStatus == 0),
+                    NotApplicable = g.Count(i => i.ImplementationStatus == 2),
+                    Missing = g.Count(i => !i.ImplementationStatus.HasValue)
+                })
+                .OrderBy(s => s.SectionId)
+                .ToList();
+
+            SectionSummaries = grouped;
+            CheckedAccess = true;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading implementation status: {ex.Message}");
+            Requirements = new List<DTOs.RequirementDTO>();
+            HasAccess = false;
+            CheckedAccess = true;
+        }
+        finally
+        {
+            IsLoading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo($"/survey/{userWebAppId}/requirements");
+    }
+
+    private class SectionStatusSummary
+    {
+        public int SectionId { get; set; }
+        public string SectionTitle { get; set; } = string.Empty;
+        public int Implemented { get; set; }
+        public int NotImplemented { get; set; }
+        public int NotApplicable { get; set; }
+        public int Missing { get; set; }
+    }
+}

@@ -2,15 +2,17 @@ using AuthLibrary.Areas.Auth.Authentication;
 using AuthLibrary.Areas.Auth.DAL;
 using AuthLibrary.Areas.Auth.Extensions;
 using BytexDigital.Blazor.Components.CookieConsent;
+using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using OwaspTool.Components;
 using OwaspTool.DAL;
+using OwaspTool.EndPoints;
 using OwaspTool.Services;
 using OwaspTool.ViewModels;
-using OwaspTool.EndPoints;
-using System.Globalization;
 using QuestPDF.Infrastructure;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +29,10 @@ builder.Services.AddDbContext<AppIdentityDbContext>(options => options.UseSqlSer
 
 builder.Services.AddTransient<IUserWebAppRepository, UserWebAppRepository>();
 builder.Services.AddTransient<ISurveyRepository, SurveyRepository>();
-builder.Services.AddTransient<ISurveyRequirementsRepository, SurveyRequirementsRepository>();
+
+// IMPORTANT: use Scoped for repositories that depend on a scoped DbContext
+builder.Services.AddScoped<ISurveyRequirementsRepository, SurveyRequirementsRepository>();
+
 builder.Services.AddTransient<IWebAppRegistryViewModel, WebAppRegistryViewModel>();
 
 builder.Services.AddScoped<HttpClient>(sp => new HttpClient
@@ -79,6 +84,15 @@ builder.Services.AddCookieConsent(o =>
 });
 
 builder.Services.AddCookieConsentHttpContextServices();
+
+// ONLY DEVELOPMENT ENVIRONMENT RIGHT NOW - COMMENT IN PRODUCTION
+builder.Services.AddHttpClient("Ollama", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:11434");
+});
+
+// MVC / Controllers
+builder.Services.AddControllers();
 
 var app = builder.Build();
 

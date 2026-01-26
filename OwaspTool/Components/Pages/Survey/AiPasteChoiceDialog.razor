@@ -1,0 +1,36 @@
+@using MudBlazor
+@inherits ComponentBase
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6" Class="mb-2">The AI Notes field already contains text.</MudText>
+        <MudText Typo="Typo.body2" Class="mb-3">
+            Do you want to replace the existing content, add the new conversation to the queue, or cancel?
+        </MudText>
+
+        <div class="d-flex justify-end" style="gap:8px;">
+            <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="Replace">Replace</MudButton>
+            <MudButton Color="Color.Primary" Variant="Variant.Outlined" OnClick="Append">Add</MudButton>
+            <MudButton Variant="Variant.Text" OnClick="Cancel">Cancel</MudButton>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance? MudDialog { get; set; }
+
+    private void Replace()
+    {
+        MudDialog?.Close(DialogResult.Ok("replace"));
+    }
+
+    private void Append()
+    {
+        MudDialog?.Close(DialogResult.Ok("append"));
+    }
+
+    private void Cancel()
+    {
+        MudDialog?.Cancel();
+    }
+}
