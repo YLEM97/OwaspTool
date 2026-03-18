@@ -1,0 +1,137 @@
+﻿@page "/wstg-tests"
+@using OwaspTool.DAL
+@using OwaspTool.DTOs
+@using Microsoft.EntityFrameworkCore
+@using MudBlazor
+@using Markdig
+@inject OwaspToolContext DbContext
+@inject NavigationService NavService
+
+<PageTitle>WSTG Tests — CureCode</PageTitle>
+
+<div class="cc-wstg-page">
+
+    <!-- HEADER -->
+    <div class="cc-wstg-header">
+        <div class="cc-wstg-header-icon">
+            <MudIcon Icon="@Icons.Material.Filled.BugReport" Style="font-size: 2rem; color: #7483f3;" />
+        </div>
+        <h1 class="cc-wstg-header-title">OWASP WSTG Tests <span class="cc-wstg-version-badge">v4.2</span></h1>
+        <p class="cc-wstg-header-subtitle">Web Security Testing Guide — Test cases organized by chapter</p>
+
+        @if (GroupedTests != null)
+        {
+            <div class="cc-wstg-stats">
+                <div class="cc-wstg-stat">
+                    <span class="cc-wstg-stat-number">@GroupedTests.Count</span>
+                    <span class="cc-wstg-stat-label">Chapters</span>
+                </div>
+                <div class="cc-wstg-stat-divider"></div>
+                <div class="cc-wstg-stat">
+                    <span class="cc-wstg-stat-number">@GroupedTests.SelectMany(c => c.Value).Count()</span>
+                    <span class="cc-wstg-stat-label">Tests</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- CONTENT -->
+    <div class="cc-wstg-content">
+        @if (GroupedTests == null)
+        {
+            <div class="cc-wstg-loading">
+                <MudProgressCircular Indeterminate="true" Style="color: #7483f3;" Size="Size.Large" />
+                <span>Loading WSTG Tests...</span>
+            </div>
+        }
+        else
+        {
+            <MudExpansionPanels Elevation="0" Class="cc-wstg-chapters">
+                @foreach (var chapter in GroupedTests.OrderBy(c => c.Key.WSTGChapterID))
+                {
+                    <MudExpansionPanel Class="cc-wstg-chapter-panel" DisableRipple="true">
+                        <TitleContent>
+                            <div class="cc-wstg-chapter-title">
+                                <div class="cc-wstg-chapter-icon">
+                                    <MudIcon Icon="@Icons.Material.Filled.MenuBook" Style="font-size: 1.1rem;" />
+                                </div>
+                                <span class="cc-wstg-chapter-name">@chapter.Key.Number — @chapter.Key.Title</span>
+                                <MudSpacer />
+                                <span class="cc-wstg-count-badge">
+                                    @chapter.Value.Count tests
+                                </span>
+                            </div>
+                        </TitleContent>
+                        <ChildContent>
+                            @{
+                                var tests = chapter.Value.OrderBy(t => t.WSTGTestID).ToList();
+                            }
+                            @if (tests.Count > 0)
+                            {
+                                <div class="cc-wstg-tests-list">
+                                    @foreach (var test in tests)
+                                    {
+                                        <div class="cc-wstg-test-row">
+                                            <div class="cc-wstg-test-header">
+                                                <span class="cc-wstg-test-number">@test.NumberWSTG</span>
+                                                <span class="cc-wstg-test-title">
+                                                    @if (!string.IsNullOrWhiteSpace(test.Link))
+                                                    {
+                                                        <a href="@test.Link" target="_blank" rel="noopener noreferrer" class="cc-wstg-test-link">
+                                                            @test.Title
+                                                            <MudIcon Icon="@Icons.Material.Filled.OpenInNew" Style="font-size: 13px; margin-left: 4px; vertical-align: middle;" />
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        @test.Title
+                                                    }
+                                                </span>
+                                            </div>
+                                            @if (!string.IsNullOrWhiteSpace(test.TextHtml))
+                                            {
+                                                <div class="cc-wstg-test-desc">
+                                                    @((MarkupString)test.TextHtml)
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="cc-wstg-empty">
+                                    <MudIcon Icon="@Icons.Material.Filled.Info" Style="color: #7483f3; font-size: 1.2rem;" />
+                                    <span>No tests available in this chapter</span>
+                                </div>
+                            }
+                        </ChildContent>
+                    </MudExpansionPanel>
+                }
+            </MudExpansionPanels>
+        }
+    </div>
+</div>
+
+@code {
+    private Dictionary<WSTGChapterDTO, List<WSTGTestDTO>>? GroupedTests;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var tests = await DbContext.WSTGTests
+            .Include(t => t.WSTGChapter)
+            .Where(t => t.Active == true)
+            .ToListAsync();
+
+        var testDTOs = tests.Select(t => new WSTGTestDTO(t)).ToList();
+
+        var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+        foreach (var dto in testDTOs)
+            dto.TextHtml = Markdown.ToHtml(dto.Text ?? string.Empty, pipeline);
+
+        GroupedTests = testDTOs
+            .Where(t => t.Chapter != null)
+            .GroupBy(t => t.Chapter!)
+            .ToDictionary(g => g.Key!, g => g.ToList());
+    }
+}

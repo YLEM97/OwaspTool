@@ -1,9 +1,23 @@
 ﻿@page "/confirm-email/{userId}/{token}"
 @inject NavigationManager Navigation
 
-<div class="mt-15 authlib-reset">
-    <div class="authlib-form-container">
-        <ConfirmEmailComponent userId="@userId" token="@token"></ConfirmEmailComponent>
+
+<div class="cc-auth-page">
+    <div class="cc-auth-bg-glow cc-auth-bg-glow--left"></div>
+    <div class="cc-auth-bg-glow cc-auth-bg-glow--right"></div>
+
+    <div class="cc-auth-card">
+        <div class="cc-auth-card__header">
+            <img src="img/logo_CureCode.png"
+                 alt="CureCode"
+                 style="height:36px;width:auto;margin-right:8px;" />
+        </div>
+
+        <div class="cc-auth-card__body authlib-confirm">
+            <div class="authlib-form-container">
+                <ConfirmEmailComponent userId="@userId" token="@token"></ConfirmEmailComponent>
+            </div>
+        </div>
     </div>
 </div>
 

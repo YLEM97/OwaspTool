@@ -1,277 +1,276 @@
 ﻿@page "/"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @using Microsoft.AspNetCore.Components.Authorization
-@inject NavigationManager NavigationManager
+@using OwaspTool.Components.Shared
 @inject AuthenticationStateProvider AuthProvider
+@inject NavigationService NavService
 
 <PageTitle>CureCode</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="px-1">
+<HeroSection />
 
-    <MudPaper Class="hero-gradient mt-16 mb-16 pa-12" Elevation="0">
-        <MudGrid Justify="Justify.Center" AlignItems="AlignItems.Center" Spacing="6">
-            <MudItem xs="12" lg="6" Class="text-sm-start">
-                <MudText Class="hero-home-title mb-4">
-                    Welcome to <span class="curecode-brand">CureCode</span>
-                </MudText>
-                <MudText Typo="Typo.h5" Class="hero-home-subtitle mb-6">
-                    Your smart assistant for secure-by-design healthcare web development
-                </MudText>
-                <MudText Typo="Typo.body1" Class="hero-home-body mb-8">
-                    CureCode helps healthcare developers apply security best practices with ease by generating tailored requirements based on the OWASP ASVS 5.0 standard. No guesswork, no lengthy documents — just clarity, compliance, and confidence.
-                </MudText>
-                <MudButton Variant="Variant.Filled"
-                           Class="pulse-button"
-                           OnClick="HandleGoToProfile">
-                    Get Started Now
-                </MudButton>
-            </MudItem>
-            <MudItem xs="12" lg="6" Class="h-100 d-flex align-center justify-center hero-img">
-                <div class="floating-element">
-                    <img src="img/hero-image.png"
-                         alt="Medical computer technology with stethoscope representing healthcare web security" />
-                </div>
-            </MudItem>
-        </MudGrid>
-    </MudPaper>
-
-    <!-- Sezione divider -->
-    <div class="section-divider"></div>
-
-    <div class="ps-0 sm:ps-12 pe-0 sm:pe-12">
-        <!-- Feature Highlights ridisegnate -->
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="12" Class="d-flex justify-center">
-                    <MudText Class="text-center mb-4 home-title">
-                        Why Choose <span class="curecode-brand">CureCode</span>?
-                    </MudText>
-                </MudItem>
-                <MudItem xs="12" Class="d-flex justify-center">
-                    <MudText Typo="Typo.h5" Class="text-center mb-12 home-subtitle">
-                        Discover the powerful features that make healthcare security development easier and more effective
-                    </MudText>
-                </MudItem>
-            </MudGrid>
-        </MudContainer>
-
-        <MudGrid Class="mb-16">
-            <MudItem xs="12" sm="4">
-                <MudPaper Class="feature-card pa-8 text-center h-100" Elevation="0">
-                    <div class="icon-container pulse-icon">
-                        <MudIcon Icon="@Icons.Material.Filled.Security" Size="Size.Large" Style="color: white;" />
-                    </div>
-                    <MudText Typo="Typo.h5" Class="mb-3 home-card-title">Security First</MudText>
-                    <MudText Typo="Typo.body1" Class="home-card-body">
-                        Align your project with the OWASP ASVS 5.0 standard. Ensure secure-by-design practices in healthcare development with confidence.
-                    </MudText>
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="4">
-                <MudPaper Class="feature-card pa-8 text-center h-100" Elevation="0">
-                    <div class="icon-container pulse-icon">
-                        <MudIcon Icon="@Icons.Material.Filled.Speed" Size="Size.Large" Style="color: white;"/>
-                    </div>
-                    <MudText Typo="Typo.h5" Class="mb-3 home-card-title">Fast & Guided</MudText>
-                    <MudText Typo="Typo.body1" Class="home-card-body">
-                        Answer a short questionnaire and instantly get requirements tailored to your app's architecture and risk level. Simple and efficient.
-                    </MudText>
-                </MudPaper>
-            </MudItem>
-            <MudItem xs="12" sm="4">
-                <MudPaper Class="feature-card pa-8 text-center h-100" Elevation="0">
-                    <div class="icon-container pulse-icon">
-                        <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Size="Size.Large" Style="color: white;" />
-                    </div>
-                    <MudText Typo="Typo.h5" Class="mb-3 home-card-title">Regulatory Friendly</MudText>
-                    <MudText Typo="Typo.body1" Class="home-card-body">
-                        Support for GDPR and healthcare-specific security needs — simplified, structured, and compliant.
-                    </MudText>
-                </MudPaper>
-            </MudItem>
-        </MudGrid>
-
-        <!-- Stats Section -->
-        <MudPaper Class="stats-section pa-12 mb-16 text-center" Elevation="0">
-            <MudGrid Justify="Justify.SpaceAround" AlignItems="AlignItems.Center">
-                <MudItem xs="12" sm="4">
-                    <MudText Typo="Typo.h2" Style="font-weight: 700; margin-bottom: 8px; color: #264653;">345</MudText>
-                    <MudText Typo="Typo.body1" Style="opacity: 0.9; color: #264653;">Security Requirements</MudText>
-                </MudItem>
-                <MudItem xs="12" sm="4">
-                    <MudText Typo="Typo.h2" Style="font-weight: 700; margin-bottom: 8px; color: #264653;">100%</MudText>
-                    <MudText Typo="Typo.body1" Style="opacity: 0.9; color: #264653;">OWASP ASVS 5.0 Coverage</MudText>
-                </MudItem>
-                <MudItem xs="12" sm="4">
-                    <MudText Typo="Typo.h2" Style="font-weight: 700; margin-bottom: 8px; color: #264653;">5 min</MudText>
-                    <MudText Typo="Typo.body1" Style="opacity: 0.9; color: #264653;">Average Setup Time</MudText>
-                </MudItem>
-            </MudGrid>
-        </MudPaper>
-
-        <!-- Action Cards ridisegnate -->
-        <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="pa-0">
-            <MudGrid Justify="Justify.Center">
-                <MudItem xs="12" Class="d-flex justify-center">
-                    <MudText Class="text-center mb-4 home-title">
-                        Ready to Get Started?
-                    </MudText>
-                </MudItem>
-                <MudItem xs="12" Class="d-flex justify-center">
-                    <MudText Typo="Typo.h5" Class="text-center mb-12 home-subtitle">
-                        Choose your path to secure healthcare development
-                    </MudText>
-                </MudItem>
-            </MudGrid>
-        </MudContainer>
-
-        <MudGrid Class="mb-20">
-            <MudItem xs="12" md="4">
-                <MudCard Class="action-card h-100" Elevation="0">
-                    <div class="home-action-card">
-                        <img src="img/lente.jpg"
-                             alt="ASVS Requirements"/>
-                    </div>
-                    <MudCardContent Class="pa-6">
-                        <MudText Typo="Typo.h5" Class="mb-3 home-card-title">
-                            Explore OWASP ASVS 5.0
-                        </MudText>
-                        <MudText Typo="Typo.body1" Class="home-card-body">
-                            Browse and understand all ASVS requirements, carefully organized for developers working in healthcare environments.
-                        </MudText>
-                    </MudCardContent>
-                    @* <MudCardActions Class="pa-6 pt-0">
-                        <MudButton Variant="Variant.Outlined"
-                                   Class="home-card-outlined-button"
-                                   Href="/asvs-requirements">
-                            View Requirements
-                            <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Class="ml-2" />
-                        </MudButton>
-                    </MudCardActions> *@
-                    <MudCardActions Class="pa-6 pt-0">
-                        <MudButton Variant="Variant.Outlined"
-                                   Class="home-card-outlined-button"
-                                   OnClick="NavigateToAsvs"
-                                   Disabled="@isNavigating">
-                            @if (isNavigating)
-                            {
-                                <MudProgressCircular Size="Size.Small" Indeterminate="true" Style="margin-right: 8px;" />
-                                <span>Loading...</span>
-                            }
-                            else
-                            {
-                                <span>View Requirements</span>
-                                <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Class="ml-2" />
-                            }
-                        </MudButton>
-                    </MudCardActions>
-                </MudCard>
-            </MudItem>
-
-
-            <MudItem xs="12" md="4">
-                <MudCard Class="action-card h-100" Elevation="0">
-                    <div class="home-action-card">
-                        <img src="img/safetyfirst.jpg"
-                             alt="Safety first" />
-                    </div>
-                    <MudCardContent Class="pa-6">
-                        <MudText Typo="Typo.h5" Class="mb-3 home-card-title">
-                            Choose the security level
-                        </MudText>
-                        <MudText Typo="Typo.body1" Class="home-card-body">
-                            Based on our workflow, choose the security level of your healthcare web application
-                        </MudText>
-                    </MudCardContent>
-                    <MudCardActions Class="pa-6 pt-0">
-                        <MudButton Variant="Variant.Outlined"
-                                   Class="home-card-outlined-button"
-                                   Href="/security-level">
-                            Security Level
-                            <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Class="ml-2" />
-                        </MudButton>
-                    </MudCardActions>
-                </MudCard>
-            </MudItem>
-
-            <MudItem xs="12" md="4">
-                <MudCard Class="action-card h-100" Elevation="0">
-                    <div class="home-action-card">
-                        <img src="img/questionmark.jpg"
-                             alt="Question marks" />
-                    </div>
-                    <MudCardContent Class="pa-6">
-                        <MudText Typo="Typo.h5" Class="mb-3 home-card-title">
-                            Generate Your Requirements
-                        </MudText>
-                        <MudText Typo="Typo.body1" Class="home-card-body">
-                            Launch our intelligent questionnaire and get security controls tailored specifically to your application, instantly and clearly.
-                        </MudText>
-                    </MudCardContent>
-                    <MudCardActions Class="pa-6 pt-0">
-                        <MudButton Variant="Variant.Filled"
-                                   Class="home-card-filled-button"
-                                   Href="/">
-                            Start Questionnaire
-                            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Class="ml-2" />
-                        </MudButton>
-                    </MudCardActions>
-                </MudCard>
-            </MudItem>
-        </MudGrid>
+<!-- ===================== WELCOME SECTION ===================== -->
+<section class="cc-welcome-section" id="welcome-section">
+    <div class="cc-welcome-section-container">
+        <h2 class="cc-welcome-section-title">
+            Explore and Exploit
+            <span class="cc-brand-word">
+                <span class="cc-letter-welcome" style="color:#34acd8;">C</span>
+                <span class="cc-letter-welcome" style="color:#34acd8;">u</span>
+                <span class="cc-letter-welcome" style="color:#34acd8;">r</span>
+                <span class="cc-letter-welcome" style="color:#34acd8;">e</span>
+                <span class="cc-letter-welcome" style="color:#7483f3;">C</span>
+                <span class="cc-letter-welcome" style="color:#7483f3;">o</span>
+                <span class="cc-letter-welcome" style="color:#7483f3;">d</span>
+                <span class="cc-letter-welcome pe-2" style="color:#7483f3;">e</span>
+            </span>
+            Potential
+        </h2>
+        <h5 class="cc-welcome-section-subtitle">
+            Your smart assistant for secure by-design healthcare web development
+        </h5>
+        <p class="cc-welcome-section-content">
+            CureCode helps healthcare developers apply security best practices with ease.
+            Based on a quick survey, it generates tailored security requirements from the <b>OWASP ASVS 5.0</b> standard
+            and surfaces the relevant <b>OWASP WSTG</b> tests to validate your healthcare web application, all in one place.
+            <br />
+            <br />
+            <i>No guesswork, no lengthy documents — just clarity, compliance, and confidence.</i>
+        </p>
+        <MudButton Variant="Variant.Filled"
+                   Class="cc-pulse-button"
+                   OnClick="HandleGoToProfile">
+            <b>Get Started</b>
+        </MudButton>
     </div>
-    
+</section>
 
-</MudContainer>
+<SectionDivider />
 
-@if (isNavigating)
-{
-    <div class="page-transition-overlay">
-        <div class="transition-content">
-            <MudIcon Icon="@Icons.Material.Filled.Security"
-                     Style="font-size: 4rem; margin-bottom: 1rem; color: #E9C46A;" />
-            <div class="transition-title">
-                Loading ASVS Requirements
-                <div class="loading-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+<!-- ===================== WHY CHOOSE SECTION ===================== -->
+<section class="cc-why-choose-section">
+    <div class="cc-why-choose-section-header">
+        <h2 class="cc-why-choose-section-title">
+            Why choose
+            <span class="cc-brand-word">
+                <span class="cc-letter-welcome" style="color:#34acd8;">C</span>
+                <span class="cc-letter-welcome" style="color:#34acd8;">u</span>
+                <span class="cc-letter-welcome" style="color:#34acd8;">r</span>
+                <span class="cc-letter-welcome" style="color:#34acd8;">e</span>
+                <span class="cc-letter-welcome" style="color:#7483f3;">C</span>
+                <span class="cc-letter-welcome" style="color:#7483f3;">o</span>
+                <span class="cc-letter-welcome" style="color:#7483f3;">d</span>
+                <span class="cc-letter-welcome" style="color:#7483f3;">e</span>
+            </span>
+            ?
+        </h2>
+        <div class="cc-why-stats">
+            <div class="cc-why-stat">
+                <span class="cc-why-stat-number">5<span class="cc-why-stat-suffix">min</span></span>
+                <span class="cc-why-stat-label">Average setup time</span>
+                <p class="cc-why-stat-desc">Answer a short questionnaire and instantly get requirements tailored to your app's architecture and risk level. Simple and efficient.</p>
             </div>
-            <div class="transition-subtitle">
-                Preparing security standards for you...
+            <div class="cc-why-stat-divider"></div>
+            <div class="cc-why-stat">
+                <span class="cc-why-stat-number">2</span>
+                <span class="cc-why-stat-label">Security frameworks</span>
+                <p class="cc-why-stat-desc">Based on your answers, CureCode selects the most relevant items from both OWASP ASVS and WSTG, giving you a focused requirements checklist and a matching test list, each in a dedicated tab.</p>
             </div>
-            <MudProgressCircular Size="Size.Large"
-                                 Indeterminate="true"
-                                 Style="color: #E9C46A;" />
+            <div class="cc-why-stat-divider"></div>
+            <div class="cc-why-stat">
+                <span class="cc-why-stat-number">0</span>
+                <span class="cc-why-stat-label">Security Expertise Required</span>
+                <p class="cc-why-stat-desc">CureCode is built for developers, not security specialists. Just answer a short questionnaire about your application and let the platform generate a tailored security checklist. No prior knowledge of security standards needed.</p>
+            </div>
         </div>
     </div>
-}
+</section>
+
+<SectionDivider Inverted="true" />
+
+<!-- FEATURES CAROUSEL SECTION -->
+<section class="cc-features-carousel-section">
+
+    <div class="cc-features-carousel-header">
+        <span class="cc-carousel-label-tag">What you can do</span>
+        <h2 class="cc-why-choose-section-title">
+            Ready to Get
+            <span class="carousel-gradient-text">Started?</span>
+        </h2>
+        <h5 class="cc-why-choose-section-subtitle">Choose your path to secure healthcare web application development</h5>
+    </div>
+
+    <div class="cc-carousel-outer">
+        <div class="cc-carousel-viewport"
+             style="-webkit-mask-image: @CarouselMaskStyle; mask-image: @CarouselMaskStyle;">
+
+            <div class="cc-carousel-track" style="--slide-index: @currentSlide;">
+
+                <!-- CARD 1 — ASVS -->
+                <div class="cc-service-card">
+                    <div class="cc-service-card-top">
+                        <div class="cc-service-card-icon-wrap cc-service-card-icon-wrap--teal">
+                            <MudIcon Icon="@Icons.Material.Filled.Security" Style="color:#34acd8;font-size:22px;" />
+                        </div>
+                        <span class="cc-service-card-tag cc-service-card-tag--teal">ASVS</span>
+                    </div>
+                    <h1 class="cc-service-card-title">Explore OWASP<br />ASVS 5.0</h1>
+                    <p class="cc-service-card-desc">Browse and understand all OWASP ASVS 5.0 requirements, carefully organized by chapters and status.</p>
+                    <div class="cc-service-card-footer">
+                        <span class="cc-service-card-metric">500+</span>
+                        <span class="cc-service-card-metric-label">requirements</span>
+                    </div>
+                    <MudButton Variant="Variant.Outlined"
+                               Class="cc-carousel-card-btn cc-carousel-card-btn--outlined"
+                               OnClick="@(() => NavService.NavigateTo("/asvs-requirements"))">
+                        <span>View Requirements</span>
+                        <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Class="ml-2" />
+                    </MudButton>
+                </div>
+
+                <!-- CARD 2 — WSTG -->
+                <div class="cc-service-card">
+                    <div class="cc-service-card-top">
+                        <div class="cc-service-card-icon-wrap cc-service-card-icon-wrap--purple">
+                            <MudIcon Icon="@Icons.Material.Filled.Assignment" Style="color:#7483f3;font-size:22px;" />
+                        </div>
+                        <span class="cc-service-card-tag cc-service-card-tag--purple">WSTG</span>
+                    </div>
+                    <h1 class="cc-service-card-title">Explore OWASP<br />WSTG Tests</h1>
+                    <p class="cc-service-card-desc">Browse the full OWASP WSTG, organized by category.</p>
+                    <div class="cc-service-card-footer">
+                        <span class="cc-service-card-metric">200+</span>
+                        <span class="cc-service-card-metric-label">tests</span>
+                    </div>
+                    <MudButton Variant="Variant.Outlined"
+                               Class="cc-carousel-card-btn cc-carousel-card-btn--outlined"
+                               OnClick="@(() => NavService.NavigateTo("/wstg-tests"))">
+                        <span>View tests</span>
+                        <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Class="ml-2" />
+                    </MudButton>
+                </div>
+
+                <!-- CARD 3 — Security Level -->
+                <div class="cc-service-card">
+                    <div class="cc-service-card-top">
+                        <div class="cc-service-card-icon-wrap cc-service-card-icon-wrap--blue">
+                            <MudIcon Icon="@Icons.Material.Filled.Shield" Style="color:#4e8de8;font-size:22px;" />
+                        </div>
+                        <span class="cc-service-card-tag cc-service-card-tag--blue">Security Level</span>
+                    </div>
+                    <h1 class="cc-service-card-title">Choose Your<br />Security Level</h1>
+                    <p class="cc-service-card-desc">Based on our workflow, choose the security level that best fits your healthcare web application's architecture and risk exposure.</p>
+                    <div class="cc-service-card-footer">
+                        <span class="cc-service-card-metric">3</span>
+                        <span class="cc-service-card-metric-label">ASVS levels available</span>
+                    </div>
+                    <MudButton Variant="Variant.Outlined"
+                               Class="cc-carousel-card-btn cc-carousel-card-btn--outlined"
+                               OnClick="@(() => NavService.NavigateTo("/security-level"))">
+                        <span>Security Level</span>
+                        <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Class="ml-2" />
+                    </MudButton>
+                </div>
+
+                <!-- CARD 4 — Questionnaire -->
+                <div class="cc-service-card">
+                    <div class="cc-service-card-top">
+                        <div class="cc-service-card-icon-wrap cc-service-card-icon-wrap--teal">
+                            <MudIcon Icon="@Icons.Material.Filled.Quiz" Style="color:#34acd8;font-size:22px;" />
+                        </div>
+                        <span class="cc-service-card-tag cc-service-card-tag--teal">Questionnaire</span>
+                    </div>
+                    <h1 class="cc-service-card-title">Generate Your<br />Requirements</h1>
+                    <p class="cc-service-card-desc">Answer a short questionnaire about your app and instantly get a tailored checklist of ASVS requirements and WSTG test cases.</p>
+                    <div class="cc-service-card-footer">
+                        <span class="cc-service-card-metric">5 min</span>
+                        <span class="cc-service-card-metric-label">average setup time</span>
+                    </div>
+                    <MudButton Variant="Variant.Filled"
+                               Class="cc-carousel-card-btn cc-carousel-card-btn--filled"
+                               OnClick="HandleGoToProfile">
+                        <span>Start Questionnaire</span>
+                        <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Class="ml-2" />
+                    </MudButton>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FRECCIA SINISTRA -->
+        <button class="cc-carousel-arrow cc-carousel-arrow--left"
+                @onclick="PrevSlide"
+                disabled="@(currentSlide == 0)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+
+        <!-- FRECCIA DESTRA -->
+        <button class="cc-carousel-arrow cc-carousel-arrow--right"
+                @onclick="NextSlide"
+                disabled="@(currentSlide >= MaxSlide)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+    </div>
+
+    <!-- DOTS -->
+    <div class="cc-carousel-dots">
+        @for (int i = 0; i <= MaxSlide; i++)
+        {
+            var dotIdx = i;
+            <button class="cc-carousel-dot @(currentSlide == dotIdx ? "cc-carousel-dot--active" : "")"
+                    @onclick="() => GoToSlide(dotIdx)">
+            </button>
+        }
+    </div>
+
+</section>
+
+<SectionDivider Flip="true" />
 
 @code {
-    private bool isNavigating = false;
+    private bool animate;
 
-    private async Task NavigateToAsvs()
+    protected override void OnAfterRender(bool firstRender)
     {
-        isNavigating = true;
-        StateHasChanged();
-
-        await Task.Delay(1000); //To be deleted in production
-
-        NavigationManager.NavigateTo("/asvs-requirements");
+        if (firstRender)
+        {
+            animate = true;
+            StateHasChanged();
+        }
     }
 
     private async Task HandleGoToProfile()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
 
-        if (user.Identity!.IsAuthenticated)
+        if (authState.User.Identity!.IsAuthenticated)
         {
-            NavigationManager.NavigateTo("/account/profile");
+            await NavService.NavigateTo("/account/profile");
         }
         else
         {
-            NavigationManager.NavigateTo("/account/login", forceLoad:true);
+            await NavService.NavigateTo("/account/login", true);
         }
     }
+
+    private int currentSlide = 0;
+    private const int MaxSlide = 3;
+
+    private string CarouselMaskStyle =>
+        $"linear-gradient(to right, " +
+        $"{(currentSlide == 0 ? "black 0%" : "transparent 0%, black 10%")}, " +
+        $"black {(currentSlide == MaxSlide ? "100%" : "90%")}, " +
+        $"{(currentSlide == MaxSlide ? "black 100%" : "transparent 100%")})";
+
+    private void NextSlide() { if (currentSlide < MaxSlide) currentSlide++; }
+    private void PrevSlide() { if (currentSlide > 0) currentSlide--; }
+    private void GoToSlide(int index) { currentSlide = index; }
 }

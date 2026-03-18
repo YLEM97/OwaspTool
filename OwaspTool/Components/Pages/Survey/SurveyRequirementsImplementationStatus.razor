@@ -1,4 +1,4 @@
-@page "/survey/{userWebAppId:int}/implementation-status"
+﻿@page "/survey/{userWebAppId:int}/implementation-status"
 @using OwaspTool.DAL
 @inject ISurveyRequirementsRepository RequirementsRepo
 @inject IUserWebAppRepository UserWebAppRepo
@@ -8,108 +8,136 @@
 @using MudBlazor
 @using System.Security.Claims
 
-<PageTitle>Implementation Status</PageTitle>
+<PageTitle>Implementation Status — CureCode</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge">
-    <div class="header-section">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <div class="header-title" style="color:#ffffff;">
-                Implementation status - WebApp @(WebAppName ?? userWebAppId.ToString())
-            </div>
-            <MudSpacer />
-            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack" Color="Color.Secondary">Back</MudButton>
+<div class="cc-impl-page">
+
+    <!-- HEADER -->
+    <div class="cc-impl-header">
+        <div class="cc-impl-header-icon">
+            <MudIcon Icon="@Icons.Material.Filled.FactCheck" Style="font-size:1.8rem; color:#34acd8;" />
         </div>
+        <h1 class="cc-impl-header-title">
+            <span class="cc-impl-brand">CureCode</span>: Implementation Status
+        </h1>
+        <p class="cc-impl-header-subtitle">
+            @(WebAppName != null ? $"WebApp: {WebAppName}" : $"WebApp #{userWebAppId}")
+        </p>
+
+        @if (!IsLoading && HasAccess)
+        {
+            <div class="cc-impl-stats">
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number cc-impl-stat--green">@ImplementedCount</span>
+                    <span class="cc-impl-stat-label">Implemented</span>
+                </div>
+                <div class="cc-impl-stat-divider"></div>
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number cc-impl-stat--red">@NotImplementedCount</span>
+                    <span class="cc-impl-stat-label">Not implemented</span>
+                </div>
+                <div class="cc-impl-stat-divider"></div>
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number cc-impl-stat--blue">@NotApplicableCount</span>
+                    <span class="cc-impl-stat-label">Not applicable</span>
+                </div>
+                <div class="cc-impl-stat-divider"></div>
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number cc-impl-stat--orange">@MissingCount</span>
+                    <span class="cc-impl-stat-label">Missing</span>
+                </div>
+                <div class="cc-impl-stat-divider"></div>
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number">@SavedCount / @TotalCount</span>
+                    <span class="cc-impl-stat-label">Saved</span>
+                </div>
+            </div>
+        }
     </div>
 
+    <!-- TOOLBAR -->
+    <div class="cc-impl-toolbar">
+        <button class="cc-impl-btn cc-impl-btn--outline" @onclick="GoBack">
+            <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Style="font-size:1rem;" />
+            Back to Requirements
+        </button>
+    </div>
+
+    <!-- STATES -->
     @if (IsLoading)
     {
-        <div style="padding:24px;">
-            <MudProgressCircular Color="Color.Primary" Size="Size.Large" />
-            <MudText>Loading...</MudText>
+        <div class="cc-impl-loading">
+            <MudProgressCircular Indeterminate="true" Style="color:#34acd8;" Size="Size.Large" />
+            <span>Loading implementation status...</span>
         </div>
     }
     else if (!CheckedAccess)
     {
-        <MudText Color="Color.Warning">Checking access...</MudText>
+        <div class="cc-impl-loading">
+            <MudProgressCircular Indeterminate="true" Style="color:#7483f3;" Size="Size.Medium" />
+            <span>Checking access...</span>
+        </div>
     }
     else if (!HasAccess)
     {
-        <MudPaper Class="p-4 mt-3" Elevation="0">
-            <MudText Color="Color.Warning">You do not have permission to view the implementation status for this application.</MudText>
-            <div style="margin-top:12px;">
-                <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="GoBack">Back</MudButton>
-            </div>
-        </MudPaper>
+        <div class="cc-impl-state-box">
+            <MudIcon Icon="@Icons.Material.Filled.Lock" Style="font-size:2.5rem; color:rgba(231,111,81,0.7);" />
+            <p class="cc-impl-state-text">You do not have permission to view the implementation status for this application.</p>
+            <button class="cc-impl-btn cc-impl-btn--outline" @onclick="GoBack">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Style="font-size:1rem;" /> Back
+            </button>
+        </div>
     }
     else
     {
-        <MudPaper Class="p-4 mt-3" Elevation="0">
-
-            <div style="display:flex; gap:12px; margin-top:8px; align-items:center;">
-                <div style="display:flex; align-items:center; gap:4px;">
-                    <MudText Typo="Typo.body2">Implemented:</MudText>
-                    <MudChip T="string" Color="Color.Success" Size="Size.Small">@ImplementedCount</MudChip>
-                </div>
-                <div style="display:flex; align-items:center; gap:4px;">
-                    <MudText Typo="Typo.body2">Not implemented:</MudText>
-                    <MudChip T="string" Color="Color.Error" Size="Size.Small">@NotImplementedCount</MudChip>
-                </div>
-                <div style="display:flex; align-items:center; gap:4px;">
-                    <MudText Typo="Typo.body2">Not applicable:</MudText>
-                    <MudChip T="string" Color="Color.Info" Size="Size.Small">@NotApplicableCount</MudChip>
-                </div>
-                <div style="display:flex; align-items:center; gap:4px;">
-                    <MudText Typo="Typo.body2">Missing:</MudText>
-                    <MudChip T="string" Color="Color.Warning" Size="Size.Small">@MissingCount</MudChip>
-                </div>
-                <div style="flex:1"></div>
-                <MudText Typo="Typo.caption">Implementation status saved: @SavedCount / @TotalCount</MudText>
-            </div>
-
-            <div style="margin-top:16px; margin-bottom:16px;">
-                <MudTable Items="SectionSummaries" Dense="true" Elevation="10">
-                    <HeaderContent>
-                        <MudTh>Section</MudTh>
-                        <MudTh>Implemented</MudTh>
-                        <MudTh>Not implemented</MudTh>
-                        <MudTh>Not applicable</MudTh>
-                        <MudTh>Missing</MudTh>
-                        <MudTh>Status</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd>@context.SectionTitle</MudTd>
-                        <MudTd>@context.Implemented</MudTd>
-                        <MudTd>@context.NotImplemented</MudTd>
-                        <MudTd>@context.NotApplicable</MudTd>
-                        <MudTd>@context.Missing</MudTd>
-                        <MudTd>
-                            @if (context.Missing == 0)
-                            {
-                                <MudChip T="string" Color="Color.Success" Size="Size.Small">All saved</MudChip>
-                            }
-                            else
-                            {
-                                <MudChip T="string" Color="Color.Warning" Size="Size.Small">Missing</MudChip>
-                            }
-                        </MudTd>
-                    </RowTemplate>
-                </MudTable>
-            </div>
-        </MudPaper>
+        <!-- TABLE -->
+        <div class="cc-impl-table-wrap">
+            <table class="cc-impl-table">
+                <thead>
+                    <tr>
+                        <th>Section</th>
+                        <th>Implemented</th>
+                        <th>Not implemented</th>
+                        <th>Not applicable</th>
+                        <th>Missing</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in SectionSummaries)
+                    {
+                        <tr>
+                            <td class="cc-impl-td-section">@row.SectionTitle</td>
+                            <td><span class="cc-impl-pill cc-impl-pill--green">@row.Implemented</span></td>
+                            <td><span class="cc-impl-pill cc-impl-pill--red">@row.NotImplemented</span></td>
+                            <td><span class="cc-impl-pill cc-impl-pill--blue">@row.NotApplicable</span></td>
+                            <td><span class="cc-impl-pill cc-impl-pill--orange">@row.Missing</span></td>
+                            <td>
+                                @if (row.Missing == 0)
+                                {
+                                    <span class="cc-impl-badge cc-impl-badge--ok">✓ All saved</span>
+                                }
+                                else
+                                {
+                                    <span class="cc-impl-badge cc-impl-badge--warn">⚠ Missing</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
-
-</MudContainer>
+</div>
 
 @code {
-    [Parameter]
-    public int userWebAppId { get; set; }
+    [Parameter] public int userWebAppId { get; set; }
 
     private bool IsLoading = true;
     private List<DTOs.RequirementDTO>? Requirements;
     private bool CheckedAccess = false;
     private bool HasAccess = false;
     private string? _currentUserEmail;
-
     private string? WebAppName;
 
     private int ImplementedCount;
@@ -121,52 +149,33 @@
 
     private List<SectionStatusSummary> SectionSummaries = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadDataAsync();
-    }
+    protected override async Task OnInitializedAsync() => await LoadDataAsync();
 
     private async Task LoadDataAsync()
     {
         try
         {
             IsLoading = true;
-
             var authState = await AuthStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
             string? email = null;
             if (user?.Identity != null && user.Identity.IsAuthenticated)
                 email = user.FindFirst(ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
-
             _currentUserEmail = email;
 
-            // check ownership/access: repository returns null if not owner
             var reqs = await RequirementsRepo.GetRequirementsForUserWebAppIfOwnerAsync(userWebAppId, email);
-            if (reqs == null)
-            {
-                HasAccess = false;
-                Requirements = new List<DTOs.RequirementDTO>();
-                CheckedAccess = true;
-                return;
-            }
+            if (reqs == null) { HasAccess = false; Requirements = new(); CheckedAccess = true; return; }
 
             HasAccess = true;
             Requirements = reqs;
 
-            // recupera il nome della WebApp solo se l'utente ha accesso
             try
             {
                 WebAppName = UserWebAppRepo.GetAppNameFromUserWebAppId(userWebAppId);
-                if (string.IsNullOrWhiteSpace(WebAppName))
-                    WebAppName = null;
+                if (string.IsNullOrWhiteSpace(WebAppName)) WebAppName = null;
             }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Error fetching webapp name: {ex.Message}");
-                WebAppName = null;
-            }
+            catch (Exception ex) { Console.Error.WriteLine($"Error fetching webapp name: {ex.Message}"); WebAppName = null; }
 
-            // calcoli
             ImplementedCount = Requirements.Count(r => r.ImplementationStatus == 1);
             NotImplementedCount = Requirements.Count(r => r.ImplementationStatus == 0);
             NotApplicableCount = Requirements.Count(r => r.ImplementationStatus == 2);
@@ -174,7 +183,7 @@
             TotalCount = Requirements.Count;
             SavedCount = TotalCount - MissingCount;
 
-            var grouped = Requirements
+            SectionSummaries = Requirements
                 .GroupBy(r => r.Section)
                 .Where(g => g.Key != null)
                 .Select(g => new SectionStatusSummary
@@ -189,27 +198,17 @@
                 .OrderBy(s => s.SectionId)
                 .ToList();
 
-            SectionSummaries = grouped;
             CheckedAccess = true;
         }
         catch (Exception ex)
         {
             Console.Error.WriteLine($"Error loading implementation status: {ex.Message}");
-            Requirements = new List<DTOs.RequirementDTO>();
-            HasAccess = false;
-            CheckedAccess = true;
+            Requirements = new(); HasAccess = false; CheckedAccess = true;
         }
-        finally
-        {
-            IsLoading = false;
-            await InvokeAsync(StateHasChanged);
-        }
+        finally { IsLoading = false; await InvokeAsync(StateHasChanged); }
     }
 
-    private void GoBack()
-    {
-        NavigationManager.NavigateTo($"/survey/{userWebAppId}/requirements");
-    }
+    private void GoBack() => NavigationManager.NavigateTo($"/survey/{userWebAppId}/requirements");
 
     private class SectionStatusSummary
     {

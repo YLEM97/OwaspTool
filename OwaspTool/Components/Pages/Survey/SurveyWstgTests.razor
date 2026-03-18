@@ -1,0 +1,433 @@
+﻿@page "/survey/{userWebAppId:int}/wstg-tests"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@using OwaspTool.DAL
+@using OwaspTool.DTOs
+@using OwaspTool.Models.Database
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Hosting
+@using Microsoft.EntityFrameworkCore
+@using MudBlazor
+@using Markdig
+@using System.Security.Claims
+@inject OwaspToolContext Db
+@inject IUserWebAppRepository UserWebAppRepo
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+@inject IWebHostEnvironment Env
+
+<PageTitle>Survey WSTG Tests — CureCode</PageTitle>
+
+<div class="cc-wstg-page">
+
+    <!-- HEADER -->
+    <div class="cc-wstg-header">
+        <div class="cc-wstg-header-icon">
+            <MudIcon Icon="@Icons.Material.Filled.BugReport" Style="font-size:1.8rem; color:#34acd8;" />
+        </div>
+        <h1 class="cc-wstg-header-title">
+            <span class="cc-wstg-brand">CureCode</span>: WSTG Tests
+        </h1>
+        <p class="cc-wstg-header-subtitle">
+            OWASP WSTG test cases derived from your survey answers
+        </p>
+
+        @if (Chapters != null && Chapters.Any())
+        {
+            <div class="cc-wstg-stats">
+                <div class="cc-wstg-stat">
+                    <span class="cc-wstg-stat-number">@Chapters.Count</span>
+                    <span class="cc-wstg-stat-label">Chapters</span>
+                </div>
+                <div class="cc-wstg-stat-divider"></div>
+                <div class="cc-wstg-stat">
+                    <span class="cc-wstg-stat-number">@TotalTestCount</span>
+                    <span class="cc-wstg-stat-label">Tests</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- STATES -->
+    @if (IsLoading)
+    {
+        <div class="cc-wstg-loading">
+            <MudProgressCircular Indeterminate="true" Style="color:#34acd8;" Size="Size.Large" />
+            <span>Loading WSTG tests...</span>
+        </div>
+    }
+    else if (!CheckedAccess)
+    {
+        <div class="cc-wstg-loading">
+            <MudProgressCircular Indeterminate="true" Style="color:#7483f3;" Size="Size.Medium" />
+            <span>Checking access...</span>
+        </div>
+    }
+    else if (!HasAccess)
+    {
+        <div class="cc-wstg-state-box">
+            <MudIcon Icon="@Icons.Material.Filled.Lock" Style="font-size:2.5rem; color:rgba(231,111,81,0.7);" />
+            <p class="cc-wstg-state-text">You do not have permission to view these tests.</p>
+            <button class="cc-wstg-btn cc-wstg-btn--outline" @onclick="GoBack">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Style="font-size:1rem;" /> Back
+            </button>
+        </div>
+    }
+    else if (Chapters == null || !Chapters.Any())
+    {
+        <div class="cc-wstg-state-box">
+            <MudIcon Icon="@Icons.Material.Filled.AssignmentLate" Style="font-size:2.5rem; color:rgba(52,172,216,0.5);" />
+            <p class="cc-wstg-state-text">Please complete the survey or there are no applicable WSTG tests for this application.</p>
+            <button class="cc-wstg-btn cc-wstg-btn--outline" @onclick="GoBack">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Style="font-size:1rem;" /> Back
+            </button>
+        </div>
+    }
+    else
+    {
+        <!-- TOOLBAR -->
+        <div class="cc-wstg-toolbar">
+            <a class="cc-wstg-btn cc-wstg-btn--primary"
+               href="@($"/download-wstg-tests/{userWebAppId}")"
+               target="_blank">
+                <MudIcon Icon="@Icons.Material.Filled.PictureAsPdf" Style="font-size:1rem;" />
+                Download PDF
+            </a>
+            <button class="cc-wstg-btn cc-wstg-btn--secondary"
+                    @onclick="@(() => NavigationManager.NavigateTo($"/survey/{userWebAppId}/test-status"))">
+                <MudIcon Icon="@Icons.Material.Filled.Assessment" Style="font-size:1rem;" />
+                Test Status
+            </button>
+        </div>
+
+        <!-- CHAPTERS -->
+        <div class="cc-wstg-content">
+            <MudExpansionPanels Elevation="0" Class="cc-wstg-chapters">
+                @foreach (var chapterVm in Chapters)
+                {
+                    var chapter = chapterVm.Chapter;
+                    @if (VisibleChapters.Contains(chapter.WSTGChapterID))
+                    {
+                        <MudExpansionPanel Class="cc-asvs-chapter-panel" DisableRipple="true"
+                                           ExpandedChanged="@((bool expanded) => OnChapterExpanded(chapterVm, expanded))">
+                            <TitleContent>
+                                <div class="cc-asvs-chapter-title">
+                                    <div class="cc-asvs-chapter-icon">
+                                        <MudIcon Icon="@Icons.Material.Filled.BugReport" Style="font-size:1.1rem;" />
+                                    </div>
+                                    <span class="cc-asvs-chapter-name">@chapter.Number — @chapter.Title</span>
+                                    <MudSpacer />
+                                    <span class="cc-asvs-count-badge">
+                                        @chapterVm.Tests.Count tests
+                                    </span>
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                @if (chapterVm.IsLoadingMarkdown && !chapterVm.MarkdownLoaded)
+                                {
+                                    <div class="cc-wstg-inner-loading">
+                                        <MudProgressCircular Size="Size.Small" Indeterminate="true"
+                                                             Style="color:#34acd8;" />
+                                        <span>Loading tests...</span>
+                                    </div>
+                                }
+                                else if (chapterVm.MarkdownLoaded)
+                                {
+                                    <div class="cc-wstg-tests-list">
+                                        <Virtualize Items="@chapterVm.Tests" Context="t" ItemSize="340">
+                                            <ItemContent>
+                                                <div class="cc-wstg-test-row">
+
+                                                    <!-- RIGA 1: numero+titolo - save -->
+                                                    <div class="cc-wstg-test-top">
+                                                        <span class="cc-wstg-test-number">
+                                                            @(t.Test.NumberWSTG ?? t.Test.Number)
+                                                        </span>
+                                                        <span class="cc-wstg-test-title">@t.Test.Title</span>
+                                                        <div class="cc-wstg-test-top-actions">
+                                                            <button class="cc-wstg-save-btn"
+                                                                    @onclick="@(() => SaveTestStatusAsync(t))"
+                                                                    disabled="@(ChapterSavingStates.TryGetValue(chapter.WSTGChapterID, out var saving) && saving)">
+                                                                @if (ChapterSavingStates.TryGetValue(chapter.WSTGChapterID, out var isSaving) && isSaving)
+                                                                {
+                                                                    <MudProgressCircular Size="Size.Small"
+                                                                                         Indeterminate="true"
+                                                                                         Style="color:#07193e;width:14px;height:14px;" />
+                                                                    <span>Saving...</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <MudIcon Icon="@Icons.Material.Filled.Save"
+                                                                             Style="font-size:0.95rem;" />
+                                                                    <span>Save</span>
+                                                                }
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- RIGA 2: corpo HTML -->
+                                                    <div class="cc-wstg-test-body">
+                                                        @((MarkupString)(t.Test.TextHtml ?? string.Empty))
+                                                    </div>
+
+                                                    @if (!string.IsNullOrWhiteSpace(t.Test.Link))
+                                                    {
+                                                        <div class="cc-wstg-test-link">
+                                                            <MudIcon Icon="@Icons.Material.Filled.OpenInNew"
+                                                                     Style="font-size:0.9rem; color:#34acd8;" />
+                                                            <a href="@t.Test.Link" target="_blank" class="cc-wstg-link">
+                                                                Documentation link
+                                                            </a>
+                                                        </div>
+                                                    }
+
+                                                    <!-- RIGA 3: status radio + note -->
+                                                    <div class="cc-wstg-test-bottom">
+                                                        <div class="cc-wstg-status-row">
+                                                            <MudRadioGroup T="int?"
+                                                                           Value="@t.Status"
+                                                                           ValueChanged="@(v => OnStatusChanged(t, v))"
+                                                                           Class="cc-wstg-radio-group">
+                                                                <MudRadio T="int?" Value="0" Color="Color.Default">Not started</MudRadio>
+                                                                <MudRadio T="int?" Value="1" Color="Color.Success">Pass</MudRadio>
+                                                                <MudRadio T="int?" Value="2" Color="Color.Error">Issues</MudRadio>
+                                                                <MudRadio T="int?" Value="3" Color="Color.Secondary">Not applicable</MudRadio>
+                                                            </MudRadioGroup>
+                                                        </div>
+                                                        <div class="cc-wstg-notes-col">
+                                                            <label class="cc-wstg-notes-label">Notes</label>
+                                                            <textarea class="cc-wstg-textarea"
+                                                                      placeholder="Add notes (optional)"
+                                                                      maxlength="2000"
+                                                                      @bind="t.Notes"
+                                                                      @bind:event="oninput"></textarea>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </ItemContent>
+                                        </Virtualize>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="cc-wstg-inner-loading">
+                                        <span>Click to load tests...</span>
+                                    </div>
+                                }
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                    else
+                    {
+                        <div class="cc-wstg-chapter-placeholder">
+                            Loading chapter <strong>@chapter.Title</strong>...
+                        </div>
+                    }
+                }
+            </MudExpansionPanels>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public int userWebAppId { get; set; }
+
+    private bool IsLoading = true;
+    private bool HasAccess = false;
+    private bool CheckedAccess = false;
+    private string? _currentUserEmail;
+    private bool _data_loaded = false;
+
+    private int TotalTestCount => Chapters?.Sum(c => c.Tests.Count) ?? 0;
+    private Dictionary<int, bool> ChapterSavingStates = new();
+    private HashSet<int> VisibleChapters = new();
+
+    private class TestItem
+    {
+        public WSTGTestDTO Test { get; set; } = new();
+        public int? Status { get; set; }
+        public string? Notes { get; set; }
+    }
+
+    private class ChapterViewModel
+    {
+        public WSTGChapterDTO Chapter { get; set; } = new();
+        public List<TestItem> Tests { get; set; } = new();
+        public bool IsLoadingMarkdown { get; set; } = false;
+        public bool MarkdownLoaded { get; set; } = false;
+    }
+
+    private List<ChapterViewModel> Chapters = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_data_loaded)
+        {
+            _data_loaded = true;
+            await LoadDataAsync();
+            _ = RevealChaptersGraduallyAsync();
+        }
+    }
+
+    private async Task LoadDataAsync()
+    {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        try
+        {
+            IsLoading = true;
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            string? email = null;
+            if (user?.Identity != null && user.Identity.IsAuthenticated)
+                email = user.FindFirst(ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
+            _currentUserEmail = email;
+
+            if (string.IsNullOrWhiteSpace(email)) { HasAccess = false; CheckedAccess = true; Chapters = new(); return; }
+
+            var owner = await Db.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (owner == null) { HasAccess = false; CheckedAccess = true; Chapters = new(); return; }
+
+            var uwa = await Db.UserWebApps.FirstOrDefaultAsync(u => u.UserWebAppID == userWebAppId);
+            if (uwa == null || uwa.UserID != owner.UserID) { HasAccess = false; CheckedAccess = true; Chapters = new(); return; }
+
+            HasAccess = true;
+
+            var surveyCompleted = await UserWebAppRepo.IsSurveyCompletedAsync(userWebAppId);
+            if (!surveyCompleted) { Chapters = new(); CheckedAccess = true; return; }
+
+            var surveyInstance = await Db.SurveyInstances
+                .Where(si => si.UserWebAppID == userWebAppId)
+                .OrderByDescending(si => si.StartDate)
+                .FirstOrDefaultAsync();
+
+            List<int> answerOptionIds = new();
+            if (surveyInstance != null)
+                answerOptionIds = await Db.GivenAnswers
+                    .Where(ga => ga.SurveyInstanceID == surveyInstance.SurveyInstanceID && ga.AnswerOptionID != null)
+                    .Select(ga => ga.AnswerOptionID!.Value)
+                    .Distinct()
+                    .ToListAsync();
+
+            if (!answerOptionIds.Any()) { Chapters = new(); CheckedAccess = true; return; }
+
+            var matches = await Db.WSTGTestAnswers
+                .Where(wta => answerOptionIds.Contains(wta.AnswerOptionID))
+                .Include(wta => wta.WSTGTest).ThenInclude(t => t.WSTGChapter)
+                .OrderBy(wta => wta.DisplayOrder)
+                .ToListAsync();
+
+            var tests = matches
+                .Select(m => m.WSTGTest)
+                .Where(t => t != null && (t.Active ?? true))
+                .GroupBy(t => t.WSTGTestID)
+                .Select(g => g.First()!)
+                .ToList();
+
+            var statuses = await Db.WSTGTestStatuses
+                .Where(s => s.UserWebAppID == userWebAppId)
+                .ToDictionaryAsync(s => s.WSTGTestID, s => s);
+
+            var items = tests.Select(t =>
+            {
+                var dto = new WSTGTestDTO(t) { TextHtml = null };
+                var ti = new TestItem { Test = dto };
+                if (statuses.TryGetValue(dto.WSTGTestID, out var st)) { ti.Status = st.Status; ti.Notes = st.Notes; }
+                return ti;
+            }).ToList();
+
+            var grouped = items
+                .GroupBy(i => i.Test.Chapter ?? new WSTGChapterDTO { WSTGChapterID = i.Test.WSTGChapterID, Number = string.Empty, Title = "Uncategorized" })
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            Chapters = grouped
+                .Select(kv => new ChapterViewModel { Chapter = kv.Key, Tests = kv.Value })
+                .OrderBy(c => c.Chapter.WSTGChapterID)
+                .ToList();
+
+            ChapterSavingStates = Chapters.ToDictionary(c => c.Chapter.WSTGChapterID, c => false);
+            CheckedAccess = true;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"ERROR {ex.GetType().Name}: {ex.Message}");
+            HasAccess = false; Chapters = new(); CheckedAccess = true;
+        }
+        finally
+        {
+            IsLoading = false;
+            sw.Stop();
+            Console.WriteLine($"[TIMING] LoadDataAsync completed in {sw.ElapsedMilliseconds} ms");
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task RevealChaptersGraduallyAsync(int delayPerChapterMs = 30)
+    {
+        try
+        {
+            foreach (var id in Chapters.Select(k => k.Chapter.WSTGChapterID).ToList())
+            {
+                VisibleChapters.Add(id);
+                await InvokeAsync(StateHasChanged);
+                await Task.Delay(delayPerChapterMs);
+            }
+        }
+        catch (Exception ex) { Console.Error.WriteLine($"RevealChaptersGraduallyAsync: {ex.Message}"); }
+    }
+
+    private void GoBack() => NavigationManager.NavigateTo("/");
+    private void OnStatusChanged(TestItem item, int? newStatus) => item.Status = newStatus;
+
+    private async Task SaveTestStatusAsync(TestItem item)
+    {
+        if (item?.Test == null) return;
+        var chapterId = item.Test.WSTGChapterID;
+        ChapterSavingStates[chapterId] = true;
+        await InvokeAsync(StateHasChanged);
+        try
+        {
+            if (string.IsNullOrWhiteSpace(_currentUserEmail)) { Snackbar.Add("User not authenticated.", Severity.Error); return; }
+            var user = await Db.Users.FirstOrDefaultAsync(u => u.Email == _currentUserEmail);
+            if (user == null) { Snackbar.Add("User not found.", Severity.Error); return; }
+            var uwa = await Db.UserWebApps.FirstOrDefaultAsync(u => u.UserWebAppID == userWebAppId);
+            if (uwa == null || uwa.UserID != user.UserID) { Snackbar.Add("Permission denied.", Severity.Error); return; }
+
+            var existing = await Db.WSTGTestStatuses
+                .FirstOrDefaultAsync(s => s.UserWebAppID == userWebAppId && s.WSTGTestID == item.Test.WSTGTestID);
+            if (existing == null)
+                Db.WSTGTestStatuses.Add(new WSTGTestStatus { UserWebAppID = userWebAppId, WSTGTestID = item.Test.WSTGTestID, Status = item.Status ?? 0, Notes = item.Notes, Modified = DateTime.UtcNow });
+            else
+            { existing.Status = item.Status ?? 0; existing.Notes = item.Notes; existing.Modified = DateTime.UtcNow; Db.WSTGTestStatuses.Update(existing); }
+
+            await Db.SaveChangesAsync();
+            Snackbar.Add("Test status saved.", Severity.Success);
+        }
+        catch (Exception ex) { Console.Error.WriteLine($"Error saving WSTG test: {ex.Message}"); Snackbar.Add("Error saving. Please retry.", Severity.Error); }
+        finally { ChapterSavingStates[chapterId] = false; await InvokeAsync(StateHasChanged); }
+    }
+
+    private async Task OnChapterExpanded(ChapterViewModel chapterVm, bool expanded)
+    {
+        if (!expanded || chapterVm.MarkdownLoaded) return;
+        chapterVm.IsLoadingMarkdown = true;
+        await InvokeAsync(StateHasChanged);
+        await Task.Run(() =>
+        {
+            foreach (var ti in chapterVm.Tests)
+                if (string.IsNullOrEmpty(ti.Test.TextHtml))
+                {
+                    ti.Test.TextHtml = Markdown.ToHtml(ti.Test.Text ?? string.Empty, _markdownPipeline);
+                    ti.Test.TextHtml = ti.Test.TextHtml.Replace("<table>", "<table class=\"wstg-table\">");
+                }
+        });
+        chapterVm.IsLoadingMarkdown = false;
+        chapterVm.MarkdownLoaded = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private static readonly MarkdownPipeline _markdownPipeline =
+        new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+}

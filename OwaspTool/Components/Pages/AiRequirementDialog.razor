@@ -71,7 +71,6 @@
 
     private void AddMessage(bool isUser, string text)
     {
-        // se l'AI restituisce già Markdown, lo convertiamo in HTML
         var html = Markdown.ToHtml(text ?? string.Empty);
         Messages.Add(new AiMessage
         {
@@ -105,8 +104,6 @@
             var response = await Http.PostAsJsonAsync("/api/ai/requirement-help", payload);
             var answer = await response.Content.ReadAsStringAsync();
 
-            // L'endpoint può restituire testo puro o JSON;
-            // se è JSON con un campo "answer", estraiamolo, altrimenti usiamo la stringa intera.
             string answerText;
             try
             {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using OwaspTool.DAL;
+using OwaspTool.DTOs;
 using OwaspTool.Models.Database;
 using OwaspTool.Services;
 using System.Security.Claims;
@@ -50,6 +51,111 @@ namespace OwaspTool.EndPoints
                     "application/pdf",
                     fileDownloadName: $"ASVS-{applicationName}.pdf"
                 );
+            });
+
+            // --- only the /download-wstg-tests handler is replaced/updated here ---
+            app.MapGet("/download-wstg-tests/{userWebAppId:int}", async (
+                int userWebAppId,
+                OwaspToolContext db,
+                IUserWebAppRepository userWebAppRepo,
+                ITestsPdfGeneratorService pdfService,
+                HttpContext http
+            ) =>
+            {
+                var user = http.User;
+
+                string? email =
+                    user?.FindFirst(ClaimTypes.Email)?.Value ??
+                    user?.FindFirst("email")?.Value;
+
+                if (string.IsNullOrWhiteSpace(email))
+                    return Results.Unauthorized();
+
+                var owner = await db.Users.FirstOrDefaultAsync(u => u.Email == email);
+                if (owner == null)
+                    return Results.Unauthorized();
+
+                var uwa = await db.UserWebApps.FirstOrDefaultAsync(u => u.UserWebAppID == userWebAppId);
+                if (uwa == null || uwa.UserID != owner.UserID)
+                    return Results.Unauthorized();
+
+                // require survey completed
+                var isCompleted = await userWebAppRepo.IsSurveyCompletedAsync(userWebAppId);
+                if (!isCompleted)
+                    return Results.BadRequest("Survey incomplete or no applicable tests.");
+
+                // find latest survey instance
+                var surveyInstance = await db.SurveyInstances
+                    .Where(si => si.UserWebAppID == userWebAppId)
+                    .OrderByDescending(si => si.StartDate)
+                    .FirstOrDefaultAsync();
+
+                if (surveyInstance == null)
+                    return Results.BadRequest("No survey instance found.");
+
+                var answerOptionIds = await db.GivenAnswers
+                    .Where(ga => ga.SurveyInstanceID == surveyInstance.SurveyInstanceID && ga.AnswerOptionID != null)
+                    .Select(ga => ga.AnswerOptionID!.Value)
+                    .Distinct()
+                    .ToListAsync();
+
+                if (!answerOptionIds.Any())
+                    return Results.BadRequest("No answers to derive tests.");
+
+                var matches = await db.WSTGTestAnswers
+                    .Where(wta => answerOptionIds.Contains(wta.AnswerOptionID))
+                    .Include(wta => wta.WSTGTest)
+                        .ThenInclude(t => t.WSTGChapter)
+                    .OrderBy(wta => wta.DisplayOrder)
+                    .ToListAsync();
+
+                var tests = matches
+                    .Select(m => m.WSTGTest)
+                    .Where(t => t != null && (t.Active ?? true))
+                    .GroupBy(t => t.WSTGTestID)
+                    .Select(g => g.First()!)
+                    .ToList();
+
+                // load statuses (and notes) for relevant tests from WSTGTestStatuses
+                var testIds = tests.Select(t => t.WSTGTestID).ToList();
+                var statuses = await db.WSTGTestStatuses
+                    .Where(s => s.UserWebAppID == userWebAppId && testIds.Contains(s.WSTGTestID))
+                    .ToListAsync();
+
+                var statusMap = statuses.ToDictionary(s => s.WSTGTestID, s => s);
+
+                // build grouped dictionary WSTGChapterDTO -> List<WSTGTestDTO>, populating TestStatus and Notes
+                var dtoList = tests
+                    .Select(t =>
+                    {
+                        var dto = new WSTGTestDTO(t);
+
+                        if (statusMap.TryGetValue(t.WSTGTestID, out var st))
+                        {
+                            dto.TestStatus = st.Status;
+                            dto.Notes = st.Notes;
+                            dto.AiNotes = st.AiNotes;
+                        }
+                        else
+                        {
+                            dto.TestStatus = null;
+                            dto.Notes = null;
+                            dto.AiNotes = null;
+                        }
+
+                        return dto;
+                    })
+                    .ToList();
+
+                var grouped = dtoList
+                    .GroupBy(dto => dto.Chapter ?? new WSTGChapterDTO { WSTGChapterID = dto.WSTGChapterID, Number = string.Empty, Title = "Uncategorized" })
+                    .ToDictionary(g => g.Key, g => g.ToList());
+
+                var applicationName = userWebAppRepo.GetAppNameFromUserWebAppId(userWebAppId);
+
+                var pdfBytes = pdfService.CreatePdf(grouped, applicationName);
+
+                return Results.File(pdfBytes, "application/pdf", fileDownloadName: $"WSTG-{applicationName}.pdf");
             });
 
             // Endpoint corretto: riceve DTO JSON nel body e usa il DbSet corretto (ASVSRequirementStatuses)

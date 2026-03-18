@@ -1,4 +1,4 @@
-@page "/survey/{userWebAppId:int}/requirements"
+﻿@page "/survey/{userWebAppId:int}/requirements"
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @using OwaspTool.DAL
 @using OwaspTool.DTOs
@@ -16,219 +16,257 @@
 @inject IDialogService DialogService
 @inject IWebHostEnvironment Env
 
-<PageTitle>Survey Requirements</PageTitle>
+<PageTitle>Survey Requirements — CureCode</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge">
-    <div class="header-section">
-        <div class="header-title">
-            <MudIcon Icon="@Icons.Material.Filled.ListAlt" Style="margin-right: 1rem; font-size: 2.5rem;" />
-            Requirements derived from survey answers
+<div class="cc-sreq-page">
+
+    <!-- HEADER -->
+    <div class="cc-sreq-header">
+        <div class="cc-sreq-header-icon">
+            <MudIcon Icon="@Icons.Material.Filled.ListAlt" Style="font-size:1.8rem; color:#34acd8;" />
         </div>
+        <h1 class="cc-sreq-header-title">
+            <span class="cc-sreq-brand">CureCode</span>: Survey Requirements
+        </h1>
+        <p class="cc-sreq-header-subtitle">
+            OWASP ASVS requirements derived from your survey answers
+        </p>
+
+        @if (Requirements != null && Requirements.Any())
+        {
+            <div class="cc-sreq-stats">
+                <div class="cc-sreq-stat">
+                    <span class="cc-sreq-stat-number">@GroupedRequirements.Count</span>
+                    <span class="cc-sreq-stat-label">Chapters</span>
+                </div>
+                <div class="cc-sreq-stat-divider"></div>
+                <div class="cc-sreq-stat">
+                    <span class="cc-sreq-stat-number">@GroupedRequirements.SelectMany(c => c.Value).Count()</span>
+                    <span class="cc-sreq-stat-label">Sections</span>
+                </div>
+                <div class="cc-sreq-stat-divider"></div>
+                <div class="cc-sreq-stat">
+                    <span class="cc-sreq-stat-number">@Requirements.Count</span>
+                    <span class="cc-sreq-stat-label">Requirements</span>
+                </div>
+            </div>
+        }
     </div>
 
+    <!-- STATES -->
     @if (IsLoading)
     {
-        <div class="loading-container">
-            <MudProgressCircular Color="Color.Primary" Size="Size.Large" />
-            <div class="loading-text">Loading ASVS Requirements...</div>
+        <div class="cc-sreq-loading">
+            <MudProgressCircular Indeterminate="true" Style="color:#34acd8;" Size="Size.Large" />
+            <span>Loading ASVS Requirements...</span>
         </div>
     }
     else if (!CheckedAccess)
     {
-        <MudText Color="Color.Secondary">Checking access...</MudText>
+        <div class="cc-sreq-loading">
+            <MudProgressCircular Indeterminate="true" Style="color:#7483f3;" Size="Size.Medium" />
+            <span>Checking access...</span>
+        </div>
     }
     else if (!HasAccess)
     {
-        <MudText Color="Color.Warning">You do not have permission to view these requirements.</MudText>
-        <MudButton Variant="Variant.Outlined" OnClick="GoBack">Back</MudButton>
+        <div class="cc-sreq-state-box">
+            <MudIcon Icon="@Icons.Material.Filled.Lock" Style="font-size:2.5rem; color:rgba(231,111,81,0.7);" />
+            <p class="cc-sreq-state-text">You do not have permission to view these requirements.</p>
+            <button class="cc-sreq-btn cc-sreq-btn--outline" @onclick="GoBack">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Style="font-size:1rem;" /> Back
+            </button>
+        </div>
     }
     else if (Requirements == null || !Requirements.Any())
     {
-        <MudText Color="Color.Warning">Please complete the survey to view the OWASP ASVS requirements.</MudText>
-        <MudButton Variant="Variant.Outlined" OnClick="GoBack">Back</MudButton>
+        <div class="cc-sreq-state-box">
+            <MudIcon Icon="@Icons.Material.Filled.AssignmentLate" Style="font-size:2.5rem; color:rgba(52,172,216,0.5);" />
+            <p class="cc-sreq-state-text">Please complete the survey to view the OWASP ASVS requirements.</p>
+            <button class="cc-sreq-btn cc-sreq-btn--outline" @onclick="GoBack">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Style="font-size:1rem;" /> Back
+            </button>
+        </div>
     }
     else
     {
-        <div class="mb-4" style="display:flex; align-items:center; gap:12px;">
-            <MudText Typo="Typo.subtitle1">Total requirements:</MudText>
-            <MudChip T="string" Size="Size.Small">@Requirements.Count</MudChip>
-
-            <MudSpacer />
-
-            <MudButton Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.PictureAsPdf"
-                       Href="@($"/download-requirements/{userWebAppId}")"
-                       Target="_blank">
-                Download requirements as PDF
-            </MudButton>
-
-            <MudButton Variant="Variant.Outlined"
-                       Color="Color.Secondary"
-                       StartIcon="@Icons.Material.Filled.Assessment"
-                       OnClick="@(() => NavigationManager.NavigateTo($"/survey/{userWebAppId}/implementation-status"))">
-                Implementation status
-            </MudButton>
+        <!-- TOOLBAR -->
+        <div class="cc-sreq-toolbar">
+            <a class="cc-sreq-btn cc-sreq-btn--primary"
+               href="@($"/download-requirements/{userWebAppId}")"
+               target="_blank">
+                <MudIcon Icon="@Icons.Material.Filled.PictureAsPdf" Style="font-size:1rem;" />
+                Download PDF
+            </a>
+            <button class="cc-sreq-btn cc-sreq-btn--secondary"
+                    @onclick="@(() => NavigationManager.NavigateTo($"/survey/{userWebAppId}/implementation-status"))">
+                <MudIcon Icon="@Icons.Material.Filled.Assessment" Style="font-size:1rem;" />
+                Implementation Status
+            </button>
         </div>
 
-        <MudPaper Class="p-4" Elevation="0" Style="background: transparent;">
-            <MudExpansionPanels Elevation="0">
+        <!-- CHAPTERS -->
+        <div class="cc-sreq-content">
+            <MudExpansionPanels Elevation="0" Class="cc-sreq-chapters">
                 @foreach (var chapter in GroupedRequirements.OrderBy(c => c.Key.ChapterID))
                 {
-                    <div>
-                        @if (VisibleChapters.Contains(chapter.Key.ChapterID))
-                        {
-                            <MudExpansionPanel Class="chapter-panel">
-                                <TitleContent>
-                                    <div style="display: flex; align-items: center;">
-                                        <MudIcon Icon="@Icons.Material.Filled.MenuBook" Style="margin-right: 1rem;" />
-                                        <span style="font-size: 1.1rem;">@($"{chapter.Key.Number} - {chapter.Key.Title}")</span>
-                                        <MudSpacer />
-                                        <MudChip T="string" Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;">
-                                            @chapter.Value.Count() sections - @chapter.Value.SelectMany(s => s.Value).Count() requirements
-                                        </MudChip>
+                    @if (VisibleChapters.Contains(chapter.Key.ChapterID))
+                    {
+                        <MudExpansionPanel Class="cc-asvs-chapter-panel" DisableRipple="true">
+                            <TitleContent>
+                                <div class="cc-asvs-chapter-title">
+                                    <div class="cc-asvs-chapter-icon">
+                                        <MudIcon Icon="@Icons.Material.Filled.MenuBook" Style="font-size:1.1rem;" />
                                     </div>
-                                </TitleContent>
-                                <ChildContent>
-                                    <MudExpansionPanels ExpandMultiple="true" Elevation="0">
-                                        @foreach (var section in chapter.Value.OrderBy(s => s.Key.SectionID))
-                                        {
-                                            <MudExpansionPanel Class="section-panel" Dense="true">
-                                                <TitleContent>
-                                                    <div style="display: flex; align-items: center; width: 100%;">
-                                                        <MudIcon Icon="@Icons.Material.Filled.Article" Style="margin-right: 0.75rem; font-size: 1.2rem;" />
-                                                        <span>@($"{section.Key.Number} - {section.Key.Title}")</span>
-                                                        <MudSpacer />
-                                                        <MudChip T="string" Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;">
-                                                            @(section.Value.Count()) requirements
-                                                        </MudChip>
-
-                                                        <div @onclick:stopPropagation style="margin-left: 1rem;">
-                                                            <MudButton Variant="Variant.Filled"
-                                                                       Color="Color.Success"
-                                                                       Size="Size.Small"
-                                                                       StartIcon="@Icons.Material.Filled.Save"
-                                                                       OnClick="@(() => SaveSectionStatuses(section.Key.SectionID))"
-                                                                       Disabled="@((SectionSavingStates.TryGetValue(section.Key.SectionID, out var s) ? s : false))">
-                                                                @if (SectionSavingStates.TryGetValue(section.Key.SectionID, out var isSaving) && isSaving)
-                                                                {
-                                                                    <MudProgressCircular Class="mr-2" Size="Size.Small" Indeterminate="true" />
-                                                                    <span>Saving...</span>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span>Save status</span>
-                                                                }
-                                                            </MudButton>
-                                                        </div>
+                                    <span class="cc-asvs-chapter-name">@chapter.Key.Number — @chapter.Key.Title</span>
+                                    <MudSpacer />
+                                    <span class="cc-asvs-count-badge">
+                                        @chapter.Value.Count() sections · @chapter.Value.SelectMany(s => s.Value).Count() requirements
+                                    </span>
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudExpansionPanels Elevation="0" ExpandMultiple="true" Class="cc-asvs-sections">
+                                    @foreach (var section in chapter.Value.OrderBy(s => s.Key.SectionID))
+                                    {
+                                        <MudExpansionPanel Class="cc-asvs-section-panel" Dense="true" DisableRipple="true">
+                                            <TitleContent>
+                                                <div class="cc-asvs-section-title">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Article"
+                                                             Style="font-size:1rem; margin-right:10px; color:#7483f3;" />
+                                                    <span class="cc-sreq-section-label">
+                                                        @($"{section.Key.Number} - {section.Key.Title}")
+                                                    </span>
+                                                    <MudSpacer />
+                                                    <span class="cc-asvs-count-badge cc-asvs-count-badge--purple">
+                                                        @(section.Value.Count()) requirements
+                                                    </span>
+                                                    <div @onclick:stopPropagation class="cc-sreq-save-wrap">
+                                                        <button class="cc-sreq-btn cc-sreq-btn--save"
+                                                                @onclick="@(() => SaveSectionStatuses(section.Key.SectionID))"
+                                                                disabled="@(SectionSavingStates.TryGetValue(section.Key.SectionID, out var sv) && sv)">
+                                                            @if (SectionSavingStates.TryGetValue(section.Key.SectionID, out var isSaving) && isSaving)
+                                                            {
+                                                                <MudProgressCircular Size="Size.Small" Indeterminate="true"
+                                                                                     Style="color:#07193e; width:14px; height:14px;" />
+                                                                <span>Saving...</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <MudIcon Icon="@Icons.Material.Filled.Save" Style="font-size:0.95rem;" />
+                                                                <span>Save status</span>
+                                                            }
+                                                        </button>
                                                     </div>
-                                                </TitleContent>
-                                                <ChildContent>
-                                                    @{
-                                                        var requirements = section.Value.OrderBy(r => r.ASVSRequirementID).ToList();
-                                                    }
-                                                    @if (requirements?.Count > 0)
-                                                    {
-                                                        <div style="max-height:520px; overflow:auto;">
-                                                            <Virtualize Items="requirements" ItemSize="160" Context="req">
-                                                                <ItemContent>
-                                                                    @{
-                                                                        var r = req;
-                                                                    }
-                                                                    <div class="requirement-row" style="display:flex; gap:12px; align-items:flex-start; padding:12px; border-bottom:1px solid rgba(0,0,0,0.04);">
-                                                                        <div style="width:120px; flex:0 0 120px;">
-                                                                            <span class="requirement-number" style="font-size:1.16rem; font-weight:600;">@r.Number</span>
-                                                                        </div>
+                                                </div>
+                                            </TitleContent>
+                                            <ChildContent>
+                                                @{
+                                                    var reqs = section.Value.OrderBy(r => r.ASVSRequirementID).ToList();
+                                                }
+                                                @if (reqs.Count > 0)
+                                                {
+                                                    <div class="cc-sreq-list-wrap">
+                                                        <Virtualize Items="reqs" ItemSize="200" Context="req">
+                                                            <ItemContent>
+                                                                @{
+                                                                    var r = req;
+                                                                }
+                                                                <div class="cc-sreq-req-row">
 
-                                                                        <div style="width:360px; flex:0 0 360px; padding-right:12px;">
-                                                                            <div class="requirement-text" style="font-size:1.06rem; line-height:1.4;">@r.Text</div>
-                                                                        </div>
+                                                                    <!-- RIGA 1: numero - testo - ask ai - badge -->
+                                                                    <div class="cc-sreq-row-top">
 
-                                                                        <div style="display:flex; gap:12px; align-items:flex-start; flex:1; min-width:200px;">
-                                                                            <div style="width:220px; flex:0 0 220px;">
-                                                                                <MudRadioGroup T="int?" Value="@r.ImplementationStatus" ValueChanged="@(v => OnStatusChanged(r, v))">
-                                                                                    <MudRadio T="int?" Value="1" Color="Color.Primary">Implemented</MudRadio>
-                                                                                    <MudRadio T="int?" Value="0" Color="Color.Secondary">Not implemented</MudRadio>
-                                                                                    <MudRadio T="int?" Value="2" Color="Color.Default">Not applicable</MudRadio>
-                                                                                </MudRadioGroup>
-                                                                            </div>
+                                                                        <span class="cc-asvs-req-number cc-sreq-req-num">@r.Number</span>
 
-                                                                            <div style="flex:1;">
-                                                                                <MudTextField T="string"
-                                                                                              @bind-Value="r.Notes"
-                                                                                              Placeholder="Add personal notes (optional)"
-                                                                                              Immediate="true"
-                                                                                              Lines="4"
-                                                                                              Class="mt-0"
-                                                                                              MaxLength="2000"
-                                                                                              Style="@GetNotesStyle(r.Notes)" />
+                                                                        <span class="cc-asvs-req-text cc-sreq-req-txt">@r.Text</span>
 
-                                                                                @if (ShowAiFeatures)
-                                                                                {
-                                                                                    <MudTextField T="string"
-                                                                                                  @bind-Value="r.AiNotes"
-                                                                                                  Placeholder="AI conversation (paste here from dialog) - optional"
-                                                                                                  Immediate="true"
-                                                                                                  Lines="4"
-                                                                                                  Class="mt-2"
-                                                                                                  MaxLength="4000"
-                                                                                                  Style="@GetAiNotesStyle(r.AiNotes)" />
-                                                                                }
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; width:140px;">
+                                                                        <div class="cc-sreq-row-top-actions">
                                                                             @if (ShowAiFeatures)
                                                                             {
-                                                                                <MudButton Variant="Variant.Text"
-                                                                                           Color="Color.Primary"
-                                                                                           StartIcon="@Icons.Material.Filled.SmartToy"
-                                                                                           Size="Size.Small"
-                                                                                           OnClick="@(() => OpenAiForRequirementAsync(r))">
+                                                                                <button class="cc-sreq-ai-btn"
+                                                                                        @onclick="@(() => OpenAiForRequirementAsync(r))">
+                                                                                    <MudIcon Icon="@Icons.Material.Filled.SmartToy"
+                                                                                             Style="font-size:0.9rem;" />
                                                                                     Ask AI
-                                                                                </MudButton>
+                                                                                </button>
                                                                             }
-
                                                                             @if (!string.IsNullOrWhiteSpace(r.Notes))
                                                                             {
-                                                                                <MudText Typo="Typo.caption" Class="mt-1" Color="Color.Dark">Notes present</MudText>
+                                                                                <span class="cc-sreq-note-badge">📝 Notes</span>
                                                                             }
                                                                             @if (ShowAiFeatures && !string.IsNullOrWhiteSpace(r.AiNotes))
                                                                             {
-                                                                                <MudText Typo="Typo.caption" Class="mt-1" Color="Color.Dark">AI notes present</MudText>
+                                                                                <span class="cc-sreq-note-badge cc-sreq-note-badge--ai">🤖 AI</span>
                                                                             }
                                                                         </div>
                                                                     </div>
-                                                                </ItemContent>
-                                                            </Virtualize>
-                                                        </div>
-                                                    }
-                                                    else
-                                                    {
-                                                        <div class="no-requirements">
-                                                            <MudIcon Icon="@Icons.Material.Filled.Info" Style="font-size: 2rem; color: #6c757d; margin-bottom: 0.5rem;" />
-                                                            <div>No requirements available in this section</div>
-                                                        </div>
-                                                    }
-                                                </ChildContent>
-                                            </MudExpansionPanel>
-                                        }
-                                    </MudExpansionPanels>
-                                </ChildContent>
-                            </MudExpansionPanel>
-                        }
-                        else
-                        {
-                            <div style="padding:12px; color:var(--mud-palette-text-secondary); border:1px dashed rgba(0,0,0,0.04); margin-bottom:8px;">
-                                Caricamento capitolo <strong>@chapter.Key.Title</strong>...
-                            </div>
-                        }
-                    </div>
+
+                                                                    <!-- RIGA 2: status radio -->
+                                                                    <div class="cc-sreq-row-status">
+                                                                        <MudRadioGroup T="int?"
+                                                                                       Value="@r.ImplementationStatus"
+                                                                                       ValueChanged="@(v => OnStatusChanged(r, v))">
+                                                                            <MudRadio T="int?" Value="1" Color="Color.Primary">Implemented</MudRadio>
+                                                                            <MudRadio T="int?" Value="0" Color="Color.Secondary">Not implemented</MudRadio>
+                                                                            <MudRadio T="int?" Value="2" Color="Color.Default">Not applicable</MudRadio>
+                                                                        </MudRadioGroup>
+                                                                    </div>
+
+                                                                    <!-- RIGA 3: note personali - note AI -->
+                                                                    <div class="cc-sreq-row-notes">
+                                                                        <div class="cc-sreq-notes-wrap">
+                                                                            <label class="cc-sreq-notes-label">Personal notes</label>
+                                                                            <textarea class="cc-sreq-textarea"
+                                                                                      placeholder="Add personal notes (optional)"
+                                                                                      maxlength="2000"
+                                                                                      @bind="r.Notes"
+                                                                                      @bind:event="oninput"></textarea>
+                                                                        </div>
+
+                                                                        @if (ShowAiFeatures)
+                                                                        {
+                                                                            <div class="cc-sreq-notes-wrap">
+                                                                                <label class="cc-sreq-notes-label cc-sreq-notes-label--ai">AI notes</label>
+                                                                                <textarea class="cc-sreq-textarea cc-sreq-textarea--ai"
+                                                                                          placeholder="AI conversation (optional)"
+                                                                                          maxlength="4000"
+                                                                                          @bind="r.AiNotes"
+                                                                                          @bind:event="oninput"></textarea>
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            </ItemContent>
+                                                        </Virtualize>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="cc-asvs-empty">
+                                                        <MudIcon Icon="@Icons.Material.Filled.Info"
+                                                                 Style="color:#34acd8; font-size:1.2rem;" />
+                                                        <span>No requirements available in this section</span>
+                                                    </div>
+                                                }
+                                            </ChildContent>
+                                        </MudExpansionPanel>
+                                    }
+                                </MudExpansionPanels>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    }
+                    else
+                    {
+                        <div class="cc-sreq-chapter-placeholder">
+                            Loading chapter <strong>@chapter.Key.Title</strong>...
+                        </div>
+                    }
                 }
             </MudExpansionPanels>
-        </MudPaper>
+        </div>
     }
-</MudContainer>
+</div>
 
 @code {
     [Parameter] public int userWebAppId { get; set; }
@@ -263,13 +301,11 @@
         try
         {
             IsLoading = true;
-
             var authState = await AuthStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
             string? email = null;
             if (user?.Identity != null && user.Identity.IsAuthenticated)
                 email = user.FindFirst(ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
-
             _currentUserEmail = email;
 
             var reqs = await RequirementsRepo.GetRequirementsForUserWebAppIfOwnerAsync(userWebAppId, email);
@@ -289,22 +325,15 @@
                         g => g.GroupBy(r => r.Section!)
                               .ToDictionary(sg => sg.Key, sg => sg.ToList())
                     );
-
                 foreach (var chapter in GroupedRequirements.Values)
-                {
                     foreach (var section in chapter.Keys)
-                    {
                         SectionSavingStates[section.SectionID] = false;
-                    }
-                }
             }
-
             CheckedAccess = true;
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"ERROR Type: {ex.GetType().Name}");
-            Console.Error.WriteLine($"ERROR Message: {ex.Message}");
+            Console.Error.WriteLine($"ERROR {ex.GetType().Name}: {ex.Message}");
             HasAccess = false;
             Requirements = new List<RequirementDTO>();
             CheckedAccess = true;
@@ -322,18 +351,14 @@
     {
         try
         {
-            var chapterIds = GroupedRequirements.Keys.Select(k => k.ChapterID).ToList();
-            foreach (var id in chapterIds)
+            foreach (var id in GroupedRequirements.Keys.Select(k => k.ChapterID).ToList())
             {
                 VisibleChapters.Add(id);
                 await InvokeAsync(StateHasChanged);
                 await Task.Delay(delayPerChapterMs);
             }
         }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"RevealChaptersGraduallyAsync error: {ex.Message}");
-        }
+        catch (Exception ex) { Console.Error.WriteLine($"RevealChaptersGraduallyAsync: {ex.Message}"); }
     }
 
     private void GoBack() => NavigationManager.NavigateTo("/");
@@ -342,7 +367,6 @@
     {
         SectionSavingStates[sectionId] = true;
         await InvokeAsync(StateHasChanged);
-
         try
         {
             var invalid = Requirements
@@ -352,42 +376,22 @@
             if (invalid != null && invalid.Any())
             {
                 var ids = invalid.Select(x => x.Number ?? x.ASVSRequirementID.ToString()).ToList();
-                var preview = ids.Take(6);
-                var more = ids.Count > 6 ? $" e altri {ids.Count - 6}" : string.Empty;
-                var list = string.Join(", ", preview) + more;
-
-                Snackbar.Add($"Per salvare le note devi anche impostare lo stato per: {list}.", Severity.Warning, config =>
-                {
-                    config.VisibleStateDuration = 6000;
-                });
-
+                var list = string.Join(", ", ids.Take(6)) + (ids.Count > 6 ? $" and {ids.Count - 6} more" : "");
+                Snackbar.Add($"Set status before saving notes for: {list}.", Severity.Warning, c => c.VisibleStateDuration = 6000);
                 SectionSavingStates[sectionId] = false;
                 await InvokeAsync(StateHasChanged);
                 return;
             }
 
-            var sectionRequirements = Requirements
-                .Where(r => r.SectionID == sectionId && r.ImplementationStatus.HasValue)
-                .ToList();
+            foreach (var req in Requirements!.Where(r => r.SectionID == sectionId && r.ImplementationStatus.HasValue))
+                await RequirementsRepo.SaveRequirementStatusAsync(userWebAppId, req.ASVSRequirementID, req.ImplementationStatus!.Value, _currentUserEmail, req.Notes, req.AiNotes);
 
-            foreach (var req in sectionRequirements)
-            {
-                await RequirementsRepo.SaveRequirementStatusAsync(
-                    userWebAppId,
-                    req.ASVSRequirementID,
-                    req.ImplementationStatus.Value,
-                    _currentUserEmail,
-                    req.Notes,
-                    req.AiNotes
-                );
-            }
-
-            Snackbar.Add("Stati e note salvati correttamente.", Severity.Success);
+            Snackbar.Add("Status and notes saved.", Severity.Success);
         }
         catch (Exception ex)
         {
-            Console.Error.WriteLine($"Error saving section {sectionId} statuses: {ex.Message}");
-            Snackbar.Add("Errore durante il salvataggio. Riprova.", Severity.Error);
+            Console.Error.WriteLine($"Error saving section {sectionId}: {ex.Message}");
+            Snackbar.Add("Error saving. Please retry.", Severity.Error);
         }
         finally
         {
@@ -396,81 +400,46 @@
         }
     }
 
-    private void OnStatusChanged(RequirementDTO requirement, int? newStatus)
-    {
+    private void OnStatusChanged(RequirementDTO requirement, int? newStatus) =>
         requirement.ImplementationStatus = newStatus;
-    }
-
-    private string GetNotesStyle(string? notes)
-    {
-        var bg = string.IsNullOrWhiteSpace(notes) ? "#FFF8E1" : "#E6F4EA";
-        return $"background:{bg}; border-radius:6px; padding:6px; width:100%;";
-    }
-
-    private string GetAiNotesStyle(string? aiNotes)
-    {
-        var bg = string.IsNullOrWhiteSpace(aiNotes) ? "#FFF8F0" : "#F0F7FF";
-        return $"background:{bg}; border-radius:6px; padding:6px; width:100%;";
-    }
 
     private async Task OpenAiForRequirementAsync(RequirementDTO r)
     {
-        if (!ShowAiFeatures)
-            return;
-
+        if (!ShowAiFeatures) return;
         var parameters = new DialogParameters
         {
             { nameof(AiRequirementDialog.RequirementNumber), r.Number ?? r.ASVSRequirementID.ToString() },
             { nameof(AiRequirementDialog.RequirementText), r.Text ?? string.Empty }
         };
-
-        var options = new DialogOptions
-        {
-            CloseOnEscapeKey = true,
-            MaxWidth = MaxWidth.Medium,
-            FullWidth = true
-        };
-
-        var dialogRef = DialogService.Show<AiRequirementDialog>("AI Help", parameters, options);
+        var dialogRef = DialogService.Show<AiRequirementDialog>("AI Help", parameters,
+            new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium, FullWidth = true });
         var result = await dialogRef.Result;
+        if (!(result?.Data is string conv) || string.IsNullOrWhiteSpace(conv)) return;
 
-        // se non otteniamo una conversazione, esci
-        if (!(result?.Data is string conv) || string.IsNullOrWhiteSpace(conv))
-            return;
-
-        // se campo vuoto incolla direttamente
         if (string.IsNullOrWhiteSpace(r.AiNotes))
         {
             r.AiNotes = conv;
-            Snackbar.Add("Conversazione AI incollata in AiNotes.", Severity.Info);
+            Snackbar.Add("AI conversation pasted.", Severity.Info);
             await InvokeAsync(StateHasChanged);
             return;
         }
 
-        // altrimenti chiedi all'utente cosa fare
-        var choiceRef = DialogService.Show<AiPasteChoiceDialog>("AI Paste Options", new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.ExtraSmall });
+        var choiceRef = DialogService.Show<AiPasteChoiceDialog>("AI Paste Options",
+            new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.ExtraSmall });
         var choiceResult = await choiceRef.Result;
-
-        // se utente annulla o non fornisce azione, non modificare
-        if (!(choiceResult?.Data is string action))
-            return;
+        if (!(choiceResult?.Data is string action)) return;
 
         switch (action)
         {
             case "replace":
                 r.AiNotes = conv;
-                Snackbar.Add("AI Notes sostituito.", Severity.Success);
+                Snackbar.Add("AI Notes replaced.", Severity.Success);
                 break;
             case "append":
-                var sep = "\n\n---\n\n";
-                var time = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm");
-                r.AiNotes = r.AiNotes + sep + $"(AI conversation appended at {time})\n\n" + conv;
-                Snackbar.Add("Conversazione aggiunta in coda a AiNotes.", Severity.Success);
-                break;
-            default:
+                r.AiNotes = r.AiNotes + "\n\n---\n\n" + $"(Appended {DateTime.UtcNow:yyyy-MM-dd HH:mm})\n\n" + conv;
+                Snackbar.Add("Conversation appended to AI Notes.", Severity.Success);
                 break;
         }
-
         await InvokeAsync(StateHasChanged);
     }
 }

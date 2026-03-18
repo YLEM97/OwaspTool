@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OwaspTool.DAL;
 
@@ -11,9 +12,11 @@ using OwaspTool.DAL;
 namespace OwaspTool.Migrations
 {
     [DbContext(typeof(OwaspToolContext))]
-    partial class OwaspToolContextModelSnapshot : ModelSnapshot
+    [Migration("20260211075656_AddWSTGTables")]
+    partial class AddWSTGTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -5,91 +5,433 @@
     ViewData["Title"] = "Log in";
 }
 
-<div class="mt-15 authlib-reset">
-    <div class="authlib-form-container">
-        <h1>Log in</h1>
+<style>
+    body {
+        background-color: #07193e !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    header, nav, footer, .navbar {
+        display: none !important;
+    }
+
+    .container, .container-fluid, main {
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+    }
+
+    .cc-auth-page {
+        min-height: 100vh !important;
+        background: #07193e !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 40px 20px !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    .cc-auth-bg-glow {
+        position: absolute !important;
+        width: 500px !important;
+        height: 500px !important;
+        border-radius: 50% !important;
+        pointer-events: none !important;
+        z-index: 0 !important;
+    }
+
+    .cc-auth-bg-glow--left {
+        top: -100px !important;
+        left: -150px !important;
+        background: radial-gradient(circle, rgba(52, 172, 216, 0.08), transparent 70%) !important;
+    }
+
+    .cc-auth-bg-glow--right {
+        bottom: -100px !important;
+        right: -150px !important;
+        background: radial-gradient(circle, rgba(116, 131, 243, 0.08), transparent 70%) !important;
+    }
+
+    .cc-auth-card {
+        position: relative !important;
+        z-index: 1 !important;
+        width: 100% !important;
+        max-width: 460px !important;
+        background: #0d2454 !important;
+        border: 1px solid rgba(52, 172, 216, 0.18) !important;
+        border-radius: 28px !important;
+        padding: 48px 44px !important;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+    }
+
+    .cc-auth-card-header {
+        text-align: center !important;
+        margin-bottom: 36px !important;
+    }
+
+    .cc-auth-card-icon {
+        width: 72px !important;
+        height: 72px !important;
+        border-radius: 50% !important;
+        background: rgba(52, 172, 216, 0.1) !important;
+        border: 2px solid rgba(52, 172, 216, 0.28) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 auto 20px !important;
+    }
+
+    .cc-auth-title {
+        font-size: 1.8rem !important;
+        font-weight: 800 !important;
+        color: #ffffff !important;
+        letter-spacing: -0.02em !important;
+        margin: 0 0 8px !important;
+        line-height: 1.2 !important;
+    }
+
+    .cc-auth-subtitle {
+        font-size: 14px !important;
+        color: rgba(255, 255, 255, 0.5) !important;
+        margin: 0 !important;
+    }
+
+    .cc-auth-form {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+
+    .cc-auth-field {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .cc-auth-label {
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        color: rgba(255, 255, 255, 0.45) !important;
+    }
+
+    .cc-auth-input-wrap {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .cc-auth-input-icon {
+        position: absolute !important;
+        left: 16px !important;
+        color: #07193e !important;
+        font-size: 15px !important;
+        pointer-events: none !important;
+        z-index: 2 !important;
+    }
+
+    .cc-auth-input {
+        width: 100% !important;
+        background: #D7D7D7 !important;
+        border: 1px solid #07193e !important;
+        border-radius: 12px !important;
+        padding: 14px 16px 14px 44px !important;
+        font-size: 15px !important;
+        color: #07193e !important;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+        .cc-auth-input::placeholder {
+            color: #07193e !important;
+        }
+
+        .cc-auth-input:focus {
+            border-color: #07193e !important;
+            box-shadow: 0 0 0 3px rgba(52, 172, 216, 0.1) !important;
+            background: #D7D7D7 !important;
+        }
+
+    .cc-auth-eye-btn {
+        position: absolute !important;
+        right: 14px !important;
+        color: #07193e !important;
+        cursor: pointer !important;
+        font-size: 16px !important;
+        transition: color 0.2s ease !important;
+        padding: 4px !important;
+        z-index: 2 !important;
+    }
+
+        .cc-auth-eye-btn:hover {
+            color: #34acd8 !important;
+        }
+
+    .cc-auth-validation {
+        font-size: 12px !important;
+        color: #E76F51 !important;
+        margin-top: 2px !important;
+    }
+
+    .cc-auth-remember {
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    .cc-auth-checkbox-label {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        font-size: 14px !important;
+        color: rgba(255, 255, 255, 0.65) !important;
+        cursor: pointer !important;
+        user-select: none !important;
+    }
+
+    .cc-auth-checkbox {
+        display: none !important;
+    }
+
+    .cc-auth-checkbox-custom {
+        width: 18px !important;
+        height: 18px !important;
+        min-width: 18px !important;
+        border-radius: 5px !important;
+        border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        background: transparent !important;
+        transition: all 0.2s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .cc-auth-checkbox:checked + .cc-auth-checkbox-custom {
+        background: #34acd8 !important;
+        border-color: #34acd8 !important;
+    }
+
+        .cc-auth-checkbox:checked + .cc-auth-checkbox-custom::after {
+            content: '' !important;
+            width: 5px !important;
+            height: 9px !important;
+            border: 2px solid #ffffff !important;
+            border-top: none !important;
+            border-left: none !important;
+            transform: rotate(45deg) translateY(-1px) !important;
+            display: block !important;
+        }
+
+    .cc-auth-checkbox:disabled + .cc-auth-checkbox-custom {
+        opacity: 0.4 !important;
+        cursor: not-allowed !important;
+    }
+
+    .cc-auth-submit-btn {
+        width: 100% !important;
+        padding: 14px !important;
+        border-radius: 12px !important;
+        border-color: #34acd8 !important;
+        border-width: 2px !important;
+        border-style: solid !important;
+        background: #34acd8 !important;
+        color: #ffffff !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: box-shadow 0.3s ease, transform 0.2s ease !important;
+        margin-top: 4px !important;
+        text-decoration: none !important;
+    }
+
+        .cc-auth-submit-btn:hover {
+            background: #07193e !important;
+            border-color: #34acd8 !important;
+            border-width: 2px !important;
+            border-style: solid !important;
+        }
+
+        .cc-auth-submit-btn:active {
+            transform: translateY(0) !important;
+        }
+
+    .cc-auth-links {
+        text-align: center !important;
+        margin-top: -4px !important;
+    }
+
+    .cc-auth-link {
+        font-size: 13px !important;
+        color: rgba(255, 255, 255, 0.45) !important;
+        text-decoration: none !important;
+        transition: color 0.2s ease !important;
+    }
+
+        .cc-auth-link:hover {
+            color: #34acd8 !important;
+            text-decoration: none !important;
+        }
+
+    .cc-auth-alert {
+        display: flex !important;
+        align-items: flex-start !important;
+        padding: 14px 16px !important;
+        border-radius: 12px !important;
+        font-size: 14px !important;
+        line-height: 1.5 !important;
+    }
+
+    .cc-auth-alert--success {
+        background: rgba(64, 192, 87, 0.1) !important;
+        border: 1px solid rgba(64, 192, 87, 0.25) !important;
+        color: #40c057 !important;
+    }
+
+    .cc-auth-alert--error {
+        background: rgba(231, 111, 81, 0.1) !important;
+        border: 1px solid rgba(231, 111, 81, 0.25) !important;
+        color: #E76F51 !important;
+    }
+
+    .cc-auth-alert--warning {
+        background: rgba(255, 193, 7, 0.08) !important;
+        border: 1px solid rgba(255, 193, 7, 0.2) !important;
+        color: rgba(255, 193, 7, 0.85) !important;
+    }
+
+</style>
+
+<div class="cc-auth-page">
+
+    <!-- BACKGROUND GLOW -->
+    <div class="cc-auth-bg-glow cc-auth-bg-glow--left"></div>
+    <div class="cc-auth-bg-glow cc-auth-bg-glow--right"></div>
+
+    <div class="cc-auth-card">
+
+        <!-- HEADER -->
+        <div class="cc-auth-card-header">
+            <div class="cc-auth-card-icon">
+                <img src="~/img/logo_CureCode.png" alt="CureCode" style="height:36px;width:auto;margin-right:8px;" />
+            </div>
+            <h1 class="cc-auth-title">Welcome back</h1>
+            <p class="cc-auth-subtitle">Sign in to your CureCode account</p>
+        </div>
 
         @if (Model.IsLoggedIn)
         {
-            <div class="alert alert-success">
+            <div class="cc-auth-alert cc-auth-alert--success">
+                <i class="bi bi-check-circle" style="margin-right: 8px;"></i>
                 <strong>Hi @Model.LoggedUserDisplayName, you are already logged in.</strong>
             </div>
         }
         else
         {
-            <form method="post" novalidate>
-                <div asp-validation-summary="All" class="text-danger validation-summary mb-3"></div>
+            <form method="post" novalidate class="cc-auth-form">
 
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" placeholder="Email" />
-                    <label asp-for="Input.Email">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <!-- EMAIL -->
+                <div class="cc-auth-field">
+                    <label class="cc-auth-label">Email address</label>
+                    <div class="cc-auth-input-wrap">
+                        <i class="bi bi-envelope cc-auth-input-icon"></i>
+                        <input asp-for="Input.Email"
+                               class="cc-auth-input"
+                               placeholder="you@example.com"
+                               autocomplete="email" />
+                    </div>
+                    <span asp-validation-for="Input.Email" class="cc-auth-validation"></span>
                 </div>
 
-                @* <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" type="password" class="form-control" placeholder="Password" />
-                    <label asp-for="Input.Password">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div> *@
-
-                <div class="form-floating mb-3 position-relative">
-                    <input asp-for="Input.Password" type="password" class="form-control" placeholder="Password" id="passwordInput" />
-                    <label asp-for="Input.Password">Password</label>
-                    <span onclick="togglePass()" class="toggle-eye-icon">
-                        <i id="eyeIcon" class="bi bi-eye"></i>
-                    </span>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <!-- PASSWORD -->
+                <div class="cc-auth-field">
+                    <label class="cc-auth-label">Password</label>
+                    <div class="cc-auth-input-wrap">
+                        <i class="bi bi-lock cc-auth-input-icon"></i>
+                        <input asp-for="Input.Password"
+                               type="password"
+                               class="cc-auth-input"
+                               placeholder="••••••••"
+                               id="cc-passwordInput"
+                               autocomplete="current-password" />
+                        <span onclick="ccTogglePass()" class="cc-auth-eye-btn">
+                            <i id="cc-eyeIcon" class="bi bi-eye"></i>
+                        </span>
+                    </div>
+                    <span asp-validation-for="Input.Password" class="cc-auth-validation"></span>
                 </div>
 
-
-                <div class="form-check mb-3">
-                    <input asp-for="Input.RememberMe" class="form-check-input" disabled="@(!Model.PersistentCookiesAllowed)" />
-                    <label asp-for="Input.RememberMe" class="form-check-label">Remember me</label>
+                <!-- REMEMBER ME -->
+                <div class="cc-auth-remember">
+                    <label class="cc-auth-checkbox-label">
+                        <input asp-for="Input.RememberMe"
+                               type="checkbox"
+                               class="cc-auth-checkbox"
+                               disabled="@(!Model.PersistentCookiesAllowed)" />
+                        <span class="cc-auth-checkbox-custom"></span>
+                        Remember me
+                    </label>
                 </div>
+
                 @if (!Model.PersistentCookiesAllowed)
                 {
-                    <div class="form-text" style="color:#E76F51">
-                        <p>Persistent cookies are disabled. Enable them in the cookie preferences to use this option.</p>
+                    <div class="cc-auth-alert cc-auth-alert--warning">
+                        <i class="bi bi-info-circle" style="margin-right: 8px; flex-shrink:0;"></i>
+                        Persistent cookies are disabled. Enable them in the cookie preferences to use this option.
                     </div>
                 }
 
-                <button type="submit" class="btn btn-primary btn-block" style="margin-bottom:10px;">Log in</button>
-                <div class="forgot-password-link" style="margin-bottom:20px;">
-                    <a href="/account/forgot-password">Forgot your password?</a>
+                <!-- SUBMIT -->
+                <button type="submit" class="cc-auth-submit-btn">
+                    SIGN IN
+                </button>
+
+                <!-- FORGOT PASSWORD -->
+                <div class="cc-auth-links">
+                    <a href="/account/forgot-password" class="cc-auth-link">Forgot your password?</a>
                 </div>
+
             </form>
-            @* Global server-set error (generic or email-confirmation) *@
+
             @if (!string.IsNullOrEmpty(Model.ErrorMessage))
             {
-                <div class="alert alert-danger">@Model.ErrorMessage</div>
+                <div class="cc-auth-alert cc-auth-alert--error mt-3">
+                    <i class="bi bi-exclamation-circle" style="margin-right: 8px;"></i>
+                    @Model.ErrorMessage
+                </div>
             }
+
             @if (TempData["PasswordChanged"] != null)
             {
-                <div class="alert alert-success">
+                <div class="cc-auth-alert cc-auth-alert--success mt-3">
+                    <i class="bi bi-check-circle" style="margin-right: 8px;"></i>
                     @TempData["PasswordChanged"]
                 </div>
             }
         }
+
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
     <script>
-        function togglePass() {
-            const input = document.getElementById('passwordInput');
-            const icon = document.getElementById('eyeIcon');
+        function ccTogglePass() {
+            const input = document.getElementById('cc-passwordInput');
+            const icon = document.getElementById('cc-eyeIcon');
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.classList.remove('bi-eye');
-                icon.classList.add('bi-eye-slash');
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
             } else {
                 input.type = 'password';
-                icon.classList.remove('bi-eye-slash');
-                icon.classList.add('bi-eye');
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
             }
         }
     </script>
-
 }

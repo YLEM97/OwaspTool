@@ -54,6 +54,15 @@ public partial class OwaspToolContext : DbContext
 
     public virtual DbSet<Models.Database.WebApplication> WebApplications { get; set; }
 
+    // Nuove tabelle WSTG
+    public virtual DbSet<WSTGChapter> WSTGChapters { get; set; }
+
+    public virtual DbSet<WSTGTest> WSTGTests { get; set; }
+
+    public virtual DbSet<WSTGTestAnswer> WSTGTestAnswers { get; set; }
+
+    public virtual DbSet<WSTGTestStatus> WSTGTestStatuses { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ASVSReqAnswer>(entity =>
@@ -125,6 +134,87 @@ public partial class OwaspToolContext : DbContext
                 .HasForeignKey(d => d.ASVSRequirementID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__ASVSReqSt__ASVSR__XXXXXX");
+        });
+
+        // Mapping WSTGChapter
+        modelBuilder.Entity<WSTGChapter>(entity =>
+        {
+            entity.HasKey(e => e.WSTGChapterID).HasName("PK__WSTGChap__WSTGChapterID");
+
+            entity.Property(e => e.Number).HasMaxLength(50).IsUnicode(true);
+            entity.Property(e => e.Title).HasMaxLength(255).IsUnicode(true);
+        });
+
+        // Mapping WSTGTest
+        modelBuilder.Entity<WSTGTest>(entity =>
+        {
+            entity.HasKey(e => e.WSTGTestID).HasName("PK__WSTGTest__WSTGTestID");
+
+            entity.Property(e => e.Number).HasMaxLength(50).IsUnicode(true);
+            entity.Property(e => e.NumberWSTG).HasMaxLength(50).IsUnicode(true);
+            entity.Property(e => e.Title).HasMaxLength(255).IsUnicode(true);
+
+            entity.Property(e => e.Text)
+                .HasColumnType("nvarchar(max)")
+                .IsUnicode(true)
+                .IsRequired(false);
+
+            entity.Property(e => e.Link)
+                .HasMaxLength(1024)
+                .IsRequired(false);
+
+            entity.Property(e => e.Active).HasDefaultValue(true);
+
+            entity.HasOne(d => d.WSTGChapter).WithMany(p => p.WSTGTests)
+                .HasForeignKey(d => d.WSTGChapterID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__WSTGTest__WSTGChap__01A3B4A6");
+        });
+
+        // Mapping WSTGTestAnswer
+        modelBuilder.Entity<WSTGTestAnswer>(entity =>
+        {
+            entity.HasKey(e => e.WSTGTestAnswerID).HasName("PK__WSTGTest__WSTGTestAnswerID");
+
+            entity.Property(e => e.DisplayOrder).HasDefaultValue(0);
+
+            entity.HasOne(d => d.WSTGTest).WithMany(p => p.WSTGTestAnswers)
+                .HasForeignKey(d => d.WSTGTestID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__WSTGTestAn__WSTGTe__02FC7413");
+
+            entity.HasOne(d => d.AnswerOption).WithMany()
+                .HasForeignKey(d => d.AnswerOptionID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__WSTGTestAn__Answe__03B69164");
+        });
+
+        // Mapping WSTGTestStatus
+        modelBuilder.Entity<WSTGTestStatus>(entity =>
+        {
+            entity.HasKey(e => e.WSTGTestStatusID).HasName("PK__WSTGTest__WSTGTestStatusID");
+
+            entity.Property(e => e.Modified).HasDefaultValueSql("(getdate())");
+
+            entity.Property(e => e.Notes)
+                .HasColumnType("nvarchar(max)")
+                .IsUnicode(true)
+                .IsRequired(false);
+
+            entity.Property(e => e.AiNotes)
+                .HasColumnType("nvarchar(max)")
+                .IsUnicode(true)
+                .IsRequired(false);
+
+            entity.HasOne(d => d.UserWebApp).WithMany()
+                .HasForeignKey(d => d.UserWebAppID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__WSTGTestSt__UserW__04E4BC85");
+
+            entity.HasOne(d => d.WSTGTest).WithMany()
+                .HasForeignKey(d => d.WSTGTestID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__WSTGTestSt__WSTGTe__05D8E0BE");
         });
 
         modelBuilder.Entity<Answer>(entity =>

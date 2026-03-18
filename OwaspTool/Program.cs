@@ -4,6 +4,7 @@ using AuthLibrary.Areas.Auth.Extensions;
 using BytexDigital.Blazor.Components.CookieConsent;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using OwaspTool.Components;
@@ -42,6 +43,9 @@ builder.Services.AddScoped<HttpClient>(sp => new HttpClient
 
 builder.Services.AddScoped<IProjectUserSyncService, ProjectUserSyncService>();
 builder.Services.AddScoped<IRequirementsPdfGeneratorService, RequirementsPdfGeneratorService>();
+builder.Services.AddScoped<ITestsPdfGeneratorService, TestPdfGeneratorService>();
+builder.Services.AddScoped<NavigationService>();
+
 
 builder.Services.AddAuthLibrary();
 

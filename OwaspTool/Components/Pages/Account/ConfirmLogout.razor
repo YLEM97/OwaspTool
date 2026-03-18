@@ -1,7 +1,25 @@
 ﻿@page "/account/confirm-logout"
 
-<div class="mt-15 authlib-reset">
-    <div class="authlib-form-container">
-        <ConfirmLogoutComponent></ConfirmLogoutComponent>
+<div class="cc-auth-page">
+    <div class="cc-auth-bg-glow cc-auth-bg-glow--left"></div>
+    <div class="cc-auth-bg-glow cc-auth-bg-glow--right"></div>
+
+    <div class="cc-auth-card">
+
+        <!-- HEADER personalizzato -->
+        <div class="cc-auth-card-header">
+            <div class="cc-auth-card-icon">
+                <img src="img/logo_CureCode.png"
+                     alt="CureCode"
+                     style="height:36px;width:auto;margin-right:8px;" />
+            </div>
+            <h1 class="cc-auth-title">See you soon</h1>
+            <p class="cc-auth-subtitle">Are you sure you want to leave?</p>
+        </div>
+
+        <div class="authlib-logout">
+            <ConfirmLogoutComponent />
+        </div>
+
     </div>
 </div>

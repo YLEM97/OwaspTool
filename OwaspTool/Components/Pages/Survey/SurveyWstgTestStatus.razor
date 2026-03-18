@@ -1,0 +1,294 @@
+﻿@page "/survey/{userWebAppId:int}/test-status"
+@using Microsoft.EntityFrameworkCore
+@using OwaspTool.DAL
+@using OwaspTool.DTOs
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using MudBlazor
+@inject OwaspToolContext Context
+@inject IUserWebAppRepository UserWebAppRepo
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle>WSTG Tests Status — CureCode</PageTitle>
+
+<div class="cc-impl-page">
+
+    <!-- HEADER -->
+    <div class="cc-impl-header">
+        <div class="cc-impl-header-icon">
+            <MudIcon Icon="@Icons.Material.Filled.Assessment" Style="font-size:1.8rem; color:#34acd8;" />
+        </div>
+        <h1 class="cc-impl-header-title">
+            <span class="cc-impl-brand">CureCode</span>: WSTG Test Status
+        </h1>
+        <p class="cc-impl-header-subtitle">
+            @(WebAppName != null ? $"WebApp: {WebAppName}" : $"WebApp #{userWebAppId}")
+        </p>
+
+        @if (!IsLoading && HasAccess)
+        {
+            <div class="cc-impl-stats">
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number cc-impl-stat--green">@PassCount</span>
+                    <span class="cc-impl-stat-label">Pass</span>
+                </div>
+                <div class="cc-impl-stat-divider"></div>
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number cc-impl-stat--red">@IssuesCount</span>
+                    <span class="cc-impl-stat-label">Issues</span>
+                </div>
+                <div class="cc-impl-stat-divider"></div>
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number" style="color:rgba(255,255,255,0.6);">@NotStartedCount</span>
+                    <span class="cc-impl-stat-label">Not started</span>
+                </div>
+                <div class="cc-impl-stat-divider"></div>
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number cc-impl-stat--blue">@NotApplicableCount</span>
+                    <span class="cc-impl-stat-label">Not applicable</span>
+                </div>
+                <div class="cc-impl-stat-divider"></div>
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number cc-impl-stat--orange">@MissingCount</span>
+                    <span class="cc-impl-stat-label">Missing</span>
+                </div>
+                <div class="cc-impl-stat-divider"></div>
+                <div class="cc-impl-stat">
+                    <span class="cc-impl-stat-number">@SavedCount / @TotalCount</span>
+                    <span class="cc-impl-stat-label">Saved</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="cc-impl-toolbar">
+        <button class="cc-impl-btn cc-impl-btn--outline" @onclick="GoBack">
+            <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Style="font-size:1rem;" />
+            Back to WSTG Tests
+        </button>
+    </div>
+
+    <!-- STATES -->
+    @if (IsLoading)
+    {
+        <div class="cc-impl-loading">
+            <MudProgressCircular Indeterminate="true" Style="color:#34acd8;" Size="Size.Large" />
+            <span>Loading WSTG test status...</span>
+        </div>
+    }
+    else if (!CheckedAccess)
+    {
+        <div class="cc-impl-loading">
+            <MudProgressCircular Indeterminate="true" Style="color:#7483f3;" Size="Size.Medium" />
+            <span>Checking access...</span>
+        </div>
+    }
+    else if (!HasAccess)
+    {
+        <div class="cc-impl-state-box">
+            <MudIcon Icon="@Icons.Material.Filled.Lock" Style="font-size:2.5rem; color:rgba(231,111,81,0.7);" />
+            <p class="cc-impl-state-text">You do not have permission to view WSTG tests status for this application.</p>
+            <button class="cc-impl-btn cc-impl-btn--outline" @onclick="GoBack">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Style="font-size:1rem;" /> Back
+            </button>
+        </div>
+    }
+    else if (!ChapterSummaries.Any())
+    {
+        <div class="cc-impl-state-box">
+            <MudIcon Icon="@Icons.Material.Filled.AssignmentLate" Style="font-size:2.5rem; color:rgba(52,172,216,0.5);" />
+            <p class="cc-impl-state-text">No WSTG tests available. Please complete the survey first.</p>
+            <button class="cc-impl-btn cc-impl-btn--outline" @onclick="GoBack">
+                <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Style="font-size:1rem;" /> Back
+            </button>
+        </div>
+    }
+    else
+    {
+        <!-- TABLE -->
+        <div class="cc-impl-table-wrap">
+            <table class="cc-impl-table">
+                <thead>
+                    <tr>
+                        <th>Chapter</th>
+                        <th>Not started</th>
+                        <th>Pass</th>
+                        <th>Issues</th>
+                        <th>Not applicable</th>
+                        <th>Missing</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in ChapterSummaries)
+                    {
+                        <tr>
+                            <td class="cc-impl-td-section">@row.ChapterTitle</td>
+                            <td><span class="cc-impl-pill" style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.12);">@row.NotStarted</span></td>
+                            <td><span class="cc-impl-pill cc-impl-pill--green">@row.Pass</span></td>
+                            <td><span class="cc-impl-pill cc-impl-pill--red">@row.Issues</span></td>
+                            <td><span class="cc-impl-pill cc-impl-pill--blue">@row.NotApplicable</span></td>
+                            <td><span class="cc-impl-pill cc-impl-pill--orange">@row.Missing</span></td>
+                            <td>
+                                @if (row.Missing == 0)
+                                {
+                                    <span class="cc-impl-badge cc-impl-badge--ok">✓ All saved</span>
+                                }
+                                else
+                                {
+                                    <span class="cc-impl-badge cc-impl-badge--warn">⚠ Missing</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public int userWebAppId { get; set; }
+
+    private bool IsLoading = true;
+    private List<WSTGTestDTO>? WSTGTests;
+    private bool CheckedAccess = false;
+    private bool HasAccess = false;
+    private string? _currentUserEmail;
+    private string? WebAppName;
+
+    private int PassCount;
+    private int IssuesCount;
+    private int NotStartedCount;
+    private int NotApplicableCount;
+    private int MissingCount;
+    private int SavedCount;
+    private int TotalCount;
+
+    private List<ChapterSummary> ChapterSummaries = new();
+
+    protected override async Task OnInitializedAsync() => await LoadDataAsync();
+
+    private async Task LoadDataAsync()
+    {
+        try
+        {
+            IsLoading = true;
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            string? email = null;
+            if (user?.Identity != null && user.Identity.IsAuthenticated)
+                email = user.FindFirst(ClaimTypes.Email)?.Value ?? user.FindFirst("email")?.Value;
+            _currentUserEmail = email;
+
+            if (string.IsNullOrWhiteSpace(email)) { HasAccess = false; WSTGTests = new(); CheckedAccess = true; return; }
+
+            var owner = await Context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (owner == null) { HasAccess = false; WSTGTests = new(); CheckedAccess = true; return; }
+
+            var uwa = await Context.UserWebApps.FirstOrDefaultAsync(u => u.UserWebAppID == userWebAppId);
+            if (uwa == null || uwa.UserID != owner.UserID) { HasAccess = false; WSTGTests = new(); CheckedAccess = true; return; }
+
+            HasAccess = true;
+
+            var surveyCompleted = await UserWebAppRepo.IsSurveyCompletedAsync(userWebAppId);
+            if (!surveyCompleted) { WSTGTests = new(); ChapterSummaries = new(); CheckedAccess = true; return; }
+
+            try
+            {
+                WebAppName = await Context.UserWebApps
+                    .Where(x => x.UserWebAppID == userWebAppId)
+                    .Select(x => x.WebApplication!.Name)
+                    .FirstOrDefaultAsync();
+                if (string.IsNullOrWhiteSpace(WebAppName)) WebAppName = null;
+            }
+            catch { WebAppName = null; }
+
+            var surveyInstance = await Context.SurveyInstances
+                .Where(si => si.UserWebAppID == userWebAppId)
+                .OrderByDescending(si => si.StartDate)
+                .FirstOrDefaultAsync();
+
+            List<int> answerOptionIds = new();
+            if (surveyInstance != null)
+                answerOptionIds = await Context.GivenAnswers
+                    .Where(ga => ga.SurveyInstanceID == surveyInstance.SurveyInstanceID && ga.AnswerOptionID != null)
+                    .Select(ga => ga.AnswerOptionID!.Value)
+                    .Distinct()
+                    .ToListAsync();
+
+            if (!answerOptionIds.Any()) { WSTGTests = new(); ChapterSummaries = new(); CheckedAccess = true; return; }
+
+            var matches = await Context.WSTGTestAnswers
+                .Where(wta => answerOptionIds.Contains(wta.AnswerOptionID))
+                .Include(wta => wta.WSTGTest).ThenInclude(t => t.WSTGChapter)
+                .OrderBy(wta => wta.DisplayOrder)
+                .ToListAsync();
+
+            var tests = matches
+                .Select(m => m.WSTGTest)
+                .Where(t => t != null && (t.Active ?? true))
+                .GroupBy(t => t.WSTGTestID)
+                .Select(g => g.First()!)
+                .ToList();
+
+            var statuses = await Context.WSTGTestStatuses
+                .Where(s => s.UserWebAppID == userWebAppId)
+                .ToDictionaryAsync(s => s.WSTGTestID, s => s);
+
+            WSTGTests = tests.Select(t =>
+            {
+                var dto = new WSTGTestDTO(t);
+                dto.TestStatus = statuses.TryGetValue(t.WSTGTestID, out var st) ? st.Status : null;
+                return dto;
+            }).ToList();
+
+            PassCount = WSTGTests.Count(t => t.TestStatus == 1);
+            IssuesCount = WSTGTests.Count(t => t.TestStatus == 2);
+            NotStartedCount = WSTGTests.Count(t => t.TestStatus == 0);
+            NotApplicableCount = WSTGTests.Count(t => t.TestStatus == 3);
+            MissingCount = WSTGTests.Count(t => !t.TestStatus.HasValue);
+            TotalCount = WSTGTests.Count;
+            SavedCount = TotalCount - MissingCount;
+
+            ChapterSummaries = WSTGTests
+                .Where(t => t.Chapter != null)
+                .GroupBy(t => t.Chapter!)
+                .Select(g => new ChapterSummary
+                {
+                    WSTGChapterID = g.Key.WSTGChapterID,
+                    ChapterTitle = $"{g.Key.Number} - {g.Key.Title}",
+                    NotStarted = g.Count(i => i.TestStatus == 0),
+                    Pass = g.Count(i => i.TestStatus == 1),
+                    Issues = g.Count(i => i.TestStatus == 2),
+                    NotApplicable = g.Count(i => i.TestStatus == 3),
+                    Missing = g.Count(i => !i.TestStatus.HasValue)
+                })
+                .OrderBy(s => s.WSTGChapterID)
+                .ToList();
+
+            CheckedAccess = true;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading WSTG test status: {ex.Message}");
+            WSTGTests = new(); HasAccess = false; CheckedAccess = true;
+        }
+        finally { IsLoading = false; await InvokeAsync(StateHasChanged); }
+    }
+
+    private void GoBack() => NavigationManager.NavigateTo($"/survey/{userWebAppId}/wstg-tests");
+
+    private class ChapterSummary
+    {
+        public int WSTGChapterID { get; set; }
+        public string ChapterTitle { get; set; } = string.Empty;
+        public int NotStarted { get; set; }
+        public int Pass { get; set; }
+        public int Issues { get; set; }
+        public int NotApplicable { get; set; }
+        public int Missing { get; set; }
+    }
+}

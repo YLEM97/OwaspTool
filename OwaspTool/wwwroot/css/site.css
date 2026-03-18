@@ -626,6 +626,98 @@
     justify-self: start;
 }
 
+.wstg-table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+    font-size: 0.9rem;
+}
+
+    .wstg-table th,
+    .wstg-table td {
+        border: 1px solid #e0e0e0;
+        padding: 8px 12px;
+        text-align: left;
+    }
+
+    .wstg-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .wstg-table tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .wstg-table td + td,
+    .wstg-table th + th {
+        border-left: 2px solid #e0e0e0;
+    }
+
+.hero {
+    position: relative;
+    height: 700px; /* oppure min-height + una height responsive */
+    overflow: hidden;
+}
+
+/* L’immagine riempie tutta la hero e viene “croppata” */
+.hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 50%; /* più su: 10%; più giù: 40% */
+}
+
+/* opzionale: contenuto sopra l’immagine */
+.hero__content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero__title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    text-align: center;
+}
+
+.curecode-brand-v2 {
+    font-family: 'Anta', sans-serif !important;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 5rem !important;
+    color: #264653 !important;
+    letter-spacing: 1px;
+    opacity: 0; /* nascosto inizialmente */
+    filter: blur(2px); /* sfocato inizialmente */
+    display: inline-block;
+    transform-origin: center;
+}
+
+.curecode-intro {
+    display: inline-block; /* serve per transform/scale sul testo */
+    animation: curecodeIntro 1500ms cubic-bezier(.2,.9,.2,1) 0ms 1 forwards;
+    transform-origin: center;
+}
+
+@keyframes curecodeIntro {
+    0% {
+        transform: scale(10);
+        opacity: 0;
+        filter: blur(2px);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
 
 
 

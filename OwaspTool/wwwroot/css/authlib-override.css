@@ -1,30 +1,30 @@
 ﻿/* wrapper per isolare gli override */
-.authlib-reset {
+/*.authlib-reset {
     font-family: inherit;
     color: inherit;
-}
+}*/
 
 /* Stile h1 coerente con site.css (colori e font del sito) */
-.authlib-reset h1 {
-    color: #264653; /* colore principale del sito */
-    font-family: 'Anta', sans-serif;
+/*.authlib-reset h1 {
+    color: #264653;*/ /* colore principale del sito */
+    /*font-family: 'Anta', sans-serif;
     font-weight: 400;
-    font-size: 2.5rem; /* dimensione ispirata a .hero-home-title */
-    line-height: 1.2;
+    font-size: 2.5rem;*/ /* dimensione ispirata a .hero-home-title */
+    /*line-height: 1.2;
     margin: 0 0 1rem 0;
     letter-spacing: 0.5px;
-}
+}*/
 
 /* Stile h2 secondario per coerenza */
-.authlib-reset h2 {
+/*.authlib-reset h2 {
     color: #264653;
     font-weight: 400;
     font-size: 1.5rem;
     margin: 0 0 0.75rem 0;
-}
+}*/
 
 /* Responsive: riduci dimensione su schermi piccoli */
-@media (max-width: 600px) {
+/*@media (max-width: 600px) {
     .authlib-reset h1 {
         font-size: 2rem;
     }
@@ -32,10 +32,10 @@
     .authlib-reset h2 {
         font-size: 1.25rem;
     }
-}
+}*/
 
 /* ripristino base per form controls: NON resettare .btn perché rompe componenti esterni */
-.authlib-reset .form-floating,
+/*.authlib-reset .form-floating,
 .authlib-reset .form-control,
 .authlib-reset input,
 .authlib-reset textarea,
@@ -43,10 +43,10 @@
 .authlib-reset .alert {
     all: unset;
     box-sizing: border-box;
-}
+}*/
 
 /* applichiamo regole utili ripristinando comportamento Bootstrap-like */
-.authlib-reset .form-floating {
+/*.authlib-reset .form-floating {
     display: block;
     margin-bottom: 1rem;
 }
@@ -68,10 +68,10 @@
     display: block;
     margin-bottom: .25rem;
     font-weight: 500;
-}
+}*/
 
 /* Bottone stile "tema" coerente con site.css (manteniamo questa classe, ma NON forziamo reset globale .btn) */
-.authlib-reset .btn,
+/*.authlib-reset .btn,
 .authlib-reset .btn.btn-primary {
     display: inline-block;
     padding: .5rem 1rem;
@@ -85,10 +85,10 @@
     transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
     cursor: pointer;
     text-align: center;
-}
+}*/
 
 /* Piccolo pulsante info che non entra in conflitto con reset dei form */
-.policy-btn {
+/*.policy-btn {
     background: transparent;
     border: none;
     color: #2A9D8F;
@@ -104,10 +104,10 @@
     outline: 3px solid rgba(42,157,143,0.14);
     outline-offset: 2px;
     box-shadow: 0 0 0 6px rgba(42,157,143,0.06);
-}
+}*/
 
 /* Stili per la policy modal custom */
-.policy-overlay {
+/*.policy-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.45);
@@ -144,17 +144,17 @@
     background: transparent;
     font-size: 1.25rem;
     cursor: pointer;
-}
+}*/
 
 /* contenuto leggibile */
-.policy-modal-content {
+/*.policy-modal-content {
     margin-top: .5rem;
     color: #264653;
     line-height: 1.45;
-}
+}*/
 
 /* Hover / focus per coerenza con lo stile site.css */
-.authlib-reset .btn:hover {
+/*.authlib-reset .btn:hover {
     background: #E9C46A;
     color: #264653;
     transform: translateY(-2px);
@@ -165,36 +165,36 @@
     outline: 3px solid rgba(42,157,143,0.14);
     outline-offset: 2px;
     box-shadow: 0 0 0 6px rgba(42,157,143,0.06);
-}
+}*/
 
 /* Colori "errore" */
-.authlib-reset .text-danger,
+/*.authlib-reset .text-danger,
 .authlib-reset .validation-message,
 .authlib-reset span.validation-message,
 .authlib-reset .field-validation-error {
-    color: #dc3545 !important; /* rosso chiaro */
-}
+    color: #dc3545 !important;*/ /* rosso chiaro */
+/*}*/
 
 /* Stili per input invalidi — copriamo piu' convenzioni possibili */
-.authlib-reset input.invalid,
+/*.authlib-reset input.invalid,
 .authlib-reset .form-control.invalid,
 .authlib-reset input.input-validation-error,
 .authlib-reset .form-control.input-validation-error {
     border-color: #dc3545 !important;
     box-shadow: 0 0 0 .12rem rgba(220,53,69,0.12) !important;
-}
+}*/
 
     /* Se il label è dopo l'input (come nel tuo markup) coloralo se input è invalido */
-    .authlib-reset input.invalid + label,
+    /*.authlib-reset input.invalid + label,
     .authlib-reset .form-control.invalid + label,
     .authlib-reset input.input-validation-error + label,
     .authlib-reset .form-control.input-validation-error + label {
         color: #dc3545 !important;
         font-weight: 600;
-    }
+    }*/
 
 /* ValidationSummary - forza rosso e bordo per visibilità */
-.authlib-reset .validation-summary-valid,
+/*.authlib-reset .validation-summary-valid,
 .authlib-reset .validation-summary-errors,
 .authlib-reset .validation-summary-valid .text-danger,
 .authlib-reset .validation-summary-errors .text-danger {
@@ -207,19 +207,19 @@
     background: rgba(220,53,69,0.03);
     border-radius: 4px;
     margin-bottom: .75rem;
-}
+}*/
 
 /* Stati disabilitati */
-.authlib-reset .btn:disabled,
+/*.authlib-reset .btn:disabled,
 .authlib-reset .btn[disabled] {
     opacity: .6;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
-}
+}*/
 
 /* --- limitare larghezza form e centrarlo (già presente se vuoi) --- */
-.authlib-reset .authlib-form-container {
+/*.authlib-reset .authlib-form-container {
     width: 100%;
     max-width: 720px;
     margin-left: auto;
@@ -230,13 +230,13 @@
 
 .authlib-reset .alert-success {
     background: linear-gradient(180deg, rgba(42,157,143,0.08), rgba(38,70,83,0.02));
-    border: 1px solid #2A9D8F; /* bordo completo */
-    border-left: 4px solid #2A9D8F; /* evidenziazione sinistra */
-    color: #0f5132;
-    border-radius: 8px; /* angoli stondati */
-    padding: 12px 16px; /* spazio interno */
-    margin-top: 40px !important; /* margine sopra */
-}
+    border: 1px solid #2A9D8F;*/ /* bordo completo */
+    /*border-left: 4px solid #2A9D8F;*/ /* evidenziazione sinistra */
+    /*color: #0f5132;
+    border-radius: 8px;*/ /* angoli stondati */
+    /*padding: 12px 16px;*/ /* spazio interno */
+    /*margin-top: 40px !important;*/ /* margine sopra */
+/*}
 
 .authlib-reset .alert-danger {
     background: linear-gradient(180deg, rgba(220,53,69,0.06), rgba(70,0,0,0.01));
@@ -246,11 +246,11 @@
     border-radius: 8px;
     padding: 12px 16px;
     margin-top: 40px !important;
-}
+}*/
 
 /* Checkbox: ripristino e stile coerente con il tema */
 /* Nota: escludiamo checkbox dal reset precedente, quindi possiamo usare l'aspetto nativo migliorato */
-.authlib-reset input[type="checkbox"],
+/*.authlib-reset input[type="checkbox"],
 .authlib-reset input[type="checkbox"].form-check-input {
     appearance: auto;
     -webkit-appearance: auto;
@@ -266,38 +266,38 @@
     background-color: #fff;
     accent-color: #2A9D8F;
     cursor: pointer;
-}
+}*/
 
     /* Stato checked: rinforzo visivo per browser che non supportano accent-color */
-    .authlib-reset input[type="checkbox"]:checked {
+    /*.authlib-reset input[type="checkbox"]:checked {
         background-image: none;
         background-color: #2A9D8F;
         border-color: #2A9D8F;
         color: #fff;
-    }
+    }*/
 
 /* Label associata: cliccabile e allineata */
-.authlib-reset .form-check-label {
+/*.authlib-reset .form-check-label {
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
     margin-left: .5rem;
     color: inherit;
     user-select: none;
-}
+}*/
 
 /* Assicura checkbox + label sulla stessa linea, vicini e allineati a sinistra */
-.authlib-reset .form-check {
+/*.authlib-reset .form-check {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* forza a sinistra */
-    gap: .5rem; /* distanza ridotta tra checkbox e testo */
-    padding-left: 0;
+    justify-content: flex-start;*/ /* forza a sinistra */
+    /*gap: .5rem;*/ /* distanza ridotta tra checkbox e testo */
+    /*padding-left: 0;
     margin-left: 0;
-}
+}*/
 
 /* Focus accessibile */
-.authlib-reset input[type="checkbox"]:focus {
+/*.authlib-reset input[type="checkbox"]:focus {
     outline: 3px solid rgba(42,157,143,0.12);
     outline-offset: 2px;
     box-shadow: 0 0 0 6px rgba(42,157,143,0.04);
@@ -305,38 +305,366 @@
 
 .authlib-form-container .form-floating {
     position: relative;
-}
+}*/
 
     /* Padding coerente: assicurati che label e input usino lo stesso offset orizzontale */
-    .authlib-form-container .form-floating > .form-control {
-        padding: 1rem 0.75rem; /* top/bottom left/right */
-        box-sizing: border-box;
-    }
+    /*.authlib-form-container .form-floating > .form-control {
+        padding: 1rem 0.75rem;*/ /* top/bottom left/right */
+        /*box-sizing: border-box;
+    }*/
 
     /* Posiziona la label in corrispondenza del padding-left dell'input */
-    .authlib-form-container .form-floating > label {
-        left: 0.75rem; /* deve corrispondere al padding-left dell'input */
-        top: 0.9rem; /* valore visivo per centrare la label iniziale */
-        transform-origin: left center; /* importante per non farla "scivolare" a destra */
-        transition: transform .15s ease, font-size .15s ease, top .15s ease;
+    /*.authlib-form-container .form-floating > label {
+        left: 0.75rem;*/ /* deve corrispondere al padding-left dell'input */
+        /*top: 0.9rem;*/ /* valore visivo per centrare la label iniziale */
+        /*transform-origin: left center;*/ /* importante per non farla "scivolare" a destra */
+        /*transition: transform .15s ease, font-size .15s ease, top .15s ease;
         pointer-events: none;
-    }
+    }*/
 
     /* Stato ridotto (focus o quando l'input non è placeholder-shown)
    Nota: rimuoviamo ogni translateX impostando esplicitamente translateY + scale */
-    .authlib-form-container .form-floating > .form-control:focus + label,
+    /*.authlib-form-container .form-floating > .form-control:focus + label,
     .authlib-form-container .form-floating > .form-control:not(:placeholder-shown) + label {
-        transform: scale(0.85); /* solo verticale + scale */
-        top: 0.3rem;
-    }
+        transform: scale(0.85);*/ /* solo verticale + scale */
+        /*top: 0.3rem;
+    }*/
 
     /* Assicura che la label iniziale non abbia translateX nascosto da altri override */
-    .authlib-form-container .form-floating > label {
+    /*.authlib-form-container .form-floating > label {
         transform: translateY(0) scale(1);
-    }
+    }*/
 
     /* Se usi browser che non supportano :placeholder-shown coerentemente, applica anche per input con valore */
-    .authlib-form-container .form-floating > .form-control[value]:not([value=""]) + label {
+    /*.authlib-form-container .form-floating > .form-control[value]:not([value=""]) + label {
         transform: scale(0.85);
         top: 0.3rem;
+    }*/
+
+/* ================================================
+   CC AUTH REGISTER — override Bootstrap del RegistrationComponent
+   ================================================ */
+
+/* Nascondi h1, h2, hr che arrivano dal componente libreria */
+.authlib-reset h1,
+.authlib-reset h2,
+.authlib-reset hr {
+    display: none !important;
+}
+
+/* Rimuovi vincoli griglia Bootstrap */
+.authlib-reset .row {
+    display: block !important;
+    margin: 0 !important;
+}
+
+.authlib-reset .col-lg-4,
+.authlib-reset .col-md-6,
+.authlib-reset .col,
+.authlib-reset [class*="col-"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    flex: none !important;
+}
+
+/* Form: flex column come cc-auth-form */
+.authlib-reset .editform,
+.authlib-reset form {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+}
+
+/* ValidationSummary */
+.authlib-reset .validation-summary-errors,
+.authlib-reset .validation-summary-valid {
+    display: flex !important;
+    align-items: flex-start !important;
+    padding: 14px 16px !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    background: rgba(231, 111, 81, 0.1) !important;
+    border: 1px solid rgba(231, 111, 81, 0.25) !important;
+    color: #E76F51 !important;
+    margin-bottom: 0 !important;
+}
+
+    .authlib-reset .validation-summary-errors ul,
+    .authlib-reset .validation-summary-valid ul {
+        margin: 0 !important;
+        padding-left: 16px !important;
     }
+
+/* form-floating → stile cc-auth-field */
+.authlib-reset .form-floating {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    position: static !important;
+    margin-bottom: 0 !important;
+}
+
+    /* Label sopra l'input (non floating) */
+    .authlib-reset .form-floating > label {
+        position: static !important;
+        transform: none !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
+        color: rgba(255, 255, 255, 0.45) !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        order: -1 !important;
+        pointer-events: auto !important;
+        opacity: 1 !important;
+        background: transparent !important;
+    }
+
+    /* Input */
+    .authlib-reset .form-floating > .form-control,
+    .authlib-reset .form-control,
+    .authlib-reset input:not([type="checkbox"]):not([type="radio"]) {
+        width: 100% !important;
+        background: #D7D7D7 !important;
+        border: 1px solid #07193e !important;
+        border-radius: 12px !important;
+        padding: 14px 16px !important;
+        font-size: 15px !important;
+        color: #07193e !important;
+        outline: none !important;
+        box-shadow: none !important;
+        transition: border-color 0.25s ease, box-shadow 0.25s ease !important;
+        height: auto !important;
+        line-height: 1.5 !important;
+    }
+
+        .authlib-reset .form-floating > .form-control::placeholder,
+        .authlib-reset .form-control::placeholder,
+        .authlib-reset input::placeholder {
+            color: rgba(7, 25, 62, 0.5) !important;
+        }
+
+        .authlib-reset .form-floating > .form-control:focus,
+        .authlib-reset .form-control:focus,
+        .authlib-reset input:focus {
+            border-color: #34acd8 !important;
+            box-shadow: 0 0 0 3px rgba(52, 172, 216, 0.15) !important;
+            background: #D7D7D7 !important;
+        }
+
+        /* Input invalidi */
+        .authlib-reset .form-control.invalid,
+        .authlib-reset input.invalid,
+        .authlib-reset .form-control.input-validation-error,
+        .authlib-reset input.input-validation-error {
+            border-color: #E76F51 !important;
+            box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.12) !important;
+        }
+
+/* ValidationMessage */
+.authlib-reset .validation-message,
+.authlib-reset .text-danger {
+    font-size: 12px !important;
+    color: #E76F51 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Bottone submit */
+.authlib-reset .btn,
+.authlib-reset .btn-primary,
+.authlib-reset .btn.btn-primary {
+    width: 100% !important;
+    padding: 14px !important;
+    border-radius: 12px !important;
+    border-color: #34acd8 !important;
+    border-width: 2px !important;
+    border-style: solid !important;
+    background: #34acd8 !important;
+    color: #ffffff !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background 0.3s ease, border-color 0.3s ease !important;
+    text-decoration: none !important;
+    margin-top: 4px !important;
+    box-shadow: none !important;
+    border-radius: 12px !important;
+}
+
+    .authlib-reset .btn:hover,
+    .authlib-reset .btn-primary:hover,
+    .authlib-reset .btn.btn-primary:hover {
+        background: #07193e !important;
+        border-color: #34acd8 !important;
+        color: #ffffff !important;
+        transform: none !important;
+    }
+
+    .authlib-reset .btn:disabled,
+    .authlib-reset .btn[disabled] {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+    }
+
+/* pb-2, mb-2 wrapper del bottone */
+.authlib-reset .pb-2,
+.authlib-reset .mb-2 {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Alert success / danger */
+.authlib-reset .alert {
+    display: flex !important;
+    align-items: flex-start !important;
+    padding: 14px 16px !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    margin-top: 8px !important;
+}
+
+.authlib-reset .alert-success {
+    background: rgba(64, 192, 87, 0.1) !important;
+    border: 1px solid rgba(64, 192, 87, 0.25) !important;
+    color: #40c057 !important;
+}
+
+.authlib-reset .alert-danger {
+    background: rgba(231, 111, 81, 0.1) !important;
+    border: 1px solid rgba(231, 111, 81, 0.25) !important;
+    color: #E76F51 !important;
+}
+
+/* Policy button */
+.policy-btn {
+    background: transparent !important;
+    border: none !important;
+    color: #34acd8 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px !important;
+}
+
+    .policy-btn:hover {
+        color: #ffffff !important;
+    }
+
+/* Policy modal — tema scuro coerente */
+.policy-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 2000 !important;
+    padding: 1rem !important;
+}
+
+.policy-modal {
+    background: #0d2454 !important;
+    border: 1px solid rgba(52, 172, 216, 0.2) !important;
+    max-width: 480px !important;
+    width: 100% !important;
+    border-radius: 20px !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5) !important;
+    padding: 28px !important;
+    animation: modalPop .15s ease-out !important;
+}
+
+@keyframes modalPop {
+    from {
+        transform: translateY(8px) scale(.98);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.policy-modal-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 16px !important;
+}
+
+    .policy-modal-header h5 {
+        font-size: 16px !important;
+        color: #ffffff !important;
+        margin: 0 !important;
+    }
+
+        .policy-modal-header h5 b {
+            color: #E76F51 !important;
+        }
+
+.policy-modal-close {
+    border: none !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-size: 1.2rem !important;
+    cursor: pointer !important;
+    border-radius: 8px !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+}
+
+    .policy-modal-close:hover {
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff !important;
+    }
+
+.policy-modal-content {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+}
+
+    .policy-modal-content p {
+        margin: 0 0 8px !important;
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .policy-modal-content ul {
+        color: rgba(255, 255, 255, 0.6) !important;
+        padding-left: 20px !important;
+        margin: 0 !important;
+    }
+
+    .policy-modal-content li {
+        margin-bottom: 6px !important;
+    }
+
+/* Card register: leggermente più larga per 5 campi */
+.cc-auth-card--register {
+    max-width: 800px !important;
+}
+
+/* Responsive */
+@media (max-width: 520px) {
+    .cc-auth-card--register {
+        padding: 36px 24px !important;
+    }
+}

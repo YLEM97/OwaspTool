@@ -1,0 +1,55 @@
+﻿<div class="cc-section-divider @(Flip ? "cc-section-divider--flip" : "") @(Inverted ? "cc-section-divider--inverted" : "")">
+    <svg xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 1440 120"
+         preserveAspectRatio="none"
+         aria-hidden="true">
+        <defs>
+            <linearGradient id="grad-tp" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#34acd8" stop-opacity="0.9" />
+                <stop offset="50%" stop-color="#7483f3" stop-opacity="1" />
+                <stop offset="100%" stop-color="#34acd8" stop-opacity="0.7" />
+            </linearGradient>
+            <linearGradient id="grad-pb" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#1d53a1" stop-opacity="0.6" />
+                <stop offset="50%" stop-color="#7483f3" stop-opacity="0.9" />
+                <stop offset="100%" stop-color="#1d53a1" stop-opacity="0.5" />
+            </linearGradient>
+            <linearGradient id="grad-tb" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#34acd8" stop-opacity="0.4" />
+                <stop offset="40%" stop-color="#1d53a1" stop-opacity="0.6" />
+                <stop offset="100%" stop-color="#34acd8" stop-opacity="0.35" />
+            </linearGradient>
+        </defs>
+
+        @*
+            LINEA 1
+        *@
+        <path d="M0,90
+                 C180,20  360,110 540,50
+                 C720,0   900,100 1080,45
+                 C1260,0  1380,80 1440,60"
+              fill="none"
+              stroke="url(#grad-pb)"
+              stroke-width="2.2"
+              stroke-linecap="round" />
+
+        @*
+            LINEA 2
+        *@
+        <path d="M0,75
+                 C120,110 200,30  360,65
+                 C480,90  560,20  720,55
+                 C860,85  940,15  1080,50
+                 C1200,78 1340,25 1440,58"
+              fill="none"
+              stroke="url(#grad-tp)"
+              stroke-width="2.2"
+              stroke-linecap="round" />
+
+    </svg>
+</div>
+
+@code {
+    [Parameter] public bool Flip { get; set; } = false;
+    [Parameter] public bool Inverted { get; set; } = false;
+}

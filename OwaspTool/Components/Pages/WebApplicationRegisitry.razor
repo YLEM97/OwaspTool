@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
+@using OwaspTool.Components.Shared
 @using OwaspTool.Models.Database
 @using OwaspTool.DTOs
 @using OwaspTool.ViewModels
@@ -12,79 +13,229 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
-<PageTitle>Web Application Registry</PageTitle>
+<PageTitle>Web Application Registry — CureCode</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.Large" Class="mt-16 mb-16">
-    <MudPaper Elevation="4" Class="py-8 px-10">
-        <MudText Typo="Typo.h4" Class="mb-4" Color="Color.Primary">Web Application Registry</MudText>
+<div class="registry-page">
 
-        <MudStack Spacing="2">
-            <MudTextField @bind-Value="ViewModel.NewName" Label="Application Name" Required="true" />
+    <!-- HERO -->
+    <div class="registry-hero">
+        <div class="registry-hero-bg"></div>
+        <div class="registry-hero-icon">
+            <MudIcon Icon="@Icons.Material.Filled.AppRegistration"
+                     Style="font-size: 2.5rem; color: #34acd8;" />
+        </div>
+        <div class="registry-hero-info">
+            <h1 class="registry-hero-title">Web Application Registry</h1>
+            <p class="registry-hero-sub">Register your healthcare applications and manage their security assessment</p>
+        </div>
+    </div>
 
-            <MudSelect @bind-Value="ViewModel.NewLevelID" Label="Security Level">
-                @foreach (var level in Levels)
-                {
-                    <MudSelectItem Value="@level.LevelID">@level.Label (@level.Acronym)</MudSelectItem>
-                }
-            </MudSelect>
+    <!-- CARD FISSA: ADD APPLICATION -->
+    <div class="registry-add-card">
+        <div class="profile-panel-title mb-4">
+            <div class="profile-panel-icon profile-panel-icon--blue">
+                <MudIcon Icon="@Icons.Material.Filled.AddCircle" />
+            </div>
+            <div>
+                <div class="profile-panel-label">Registry</div>
+                <div class="profile-panel-heading">Add a new application</div>
+            </div>
+        </div>
 
-            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ViewModel.AddAsync">
-                Add Application
+        <div class="registry-form">
+            <div class="registry-form-field">
+                <label class="registry-form-label">Application Name</label>
+                <MudTextField @bind-Value="ViewModel.NewName"
+                              Placeholder="e.g. MyHealthApp"
+                              Variant="Variant.Outlined"
+                              Required="true"
+                              Class="registry-input" />
+            </div>
+
+            <div class="registry-form-field">
+                <label class="registry-form-label">Security Level</label>
+                <MudSelect @bind-Value="ViewModel.NewLevelID"
+                           Variant="Variant.Outlined"
+                           Class="registry-input">
+                    @foreach (var level in Levels)
+                    {
+                        <MudSelectItem Value="@level.LevelID">
+                            @level.Label (@level.Acronym)
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            </div>
+
+            <MudButton Class="registry-add-btn"
+                       StartIcon="@Icons.Material.Filled.AddCircleOutline"
+                       OnClick="ViewModel.AddAsync">
+                Add
             </MudButton>
+        </div>
+    </div>
 
-            <MudDivider Class="my-4" />
+    <div class="registry-panels">
+        <MudExpansionPanels Elevation="0" ExpandMultiple="true" Class="profile-expansion">
 
-            @if (ViewModel.IsLoading)
-            {
-                <MudProgressCircular Color="Color.Primary" Size="Size.Large" />
-            }
-            else
-            {
-                <MudTable Items="ViewModel.userWebApps">
-                    <HeaderContent>
-                        <MudTh>Name</MudTh>
-                        <MudTh>Level</MudTh>
-                        <MudTh>Actions</MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd>@context.Name</MudTd>
-                        <MudTd>@context.LevelLabel (@context.LevelAcronym)</MudTd>
-                        <MudTd>
-                            <MudIconButton 
-                                Href="@($"/survey/{context.UserWebAppID}")" 
-                                Icon="@Icons.Material.Filled.QuestionAnswer" 
-                                Color="Color.Secondary"
-                                Class="me-2"
-                                Title="Compile Questionnaire">
-                            </MudIconButton>
-                            @if (context.IsSurveyCompleted)
+            <!-- PANEL: YOUR APPLICATIONS -->
+            <MudExpansionPanel Class="profile-panel" DisableRipple="true" IsExpanded="true">
+                <TitleContent>
+                    <div class="profile-panel-title">
+                        <div class="profile-panel-icon profile-panel-icon--violet">
+                            <MudIcon Icon="@Icons.Material.Filled.Apps" />
+                        </div>
+                        <div>
+                            <div class="profile-panel-label">System</div>
+                            <div class="profile-panel-heading">Your applications</div>
+                        </div>
+                        <MudSpacer />
+                        <span class="profile-panel-count">@(ViewModel?.userWebApps?.Count ?? 0) apps</span>
+                    </div>
+                </TitleContent>
+                <ChildContent>
+                    <div class="apps-table-wrapper">
+
+                        @if (ViewModel.IsLoading)
+                        {
+                            <div class="registry-loading">
+                                <MudProgressCircular Indeterminate="true"
+                                                     Style="color: #34acd8;" />
+                                <span>Loading applications...</span>
+                            </div>
+                        }
+                        else if (!ViewModel.userWebApps.Any())
+                        {
+                            <div class="registry-empty">
+                                <MudIcon Icon="@Icons.Material.Filled.WebAssetOff"
+                                         Style="font-size: 2.5rem; color: rgba(255,255,255,0.2);" />
+                                <p>No applications registered yet. Add your first one above.</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- HEADER -->
+                            <div class="apps-table-header">
+                                <div class="apps-col apps-col--name">Application name</div>
+                                <div class="apps-col apps-col--level">Security level</div>
+                                <div class="apps-col apps-col--actions">Actions</div>
+                            </div>
+                                                        
+                            <!-- ROWS -->
+                            @foreach (var app in ViewModel.userWebApps)
                             {
-                                <MudIconButton 
-                                    Href="@($"/survey/{context.UserWebAppID}/requirements")"
-                                    Icon="@Icons.Material.Filled.ListAlt"
-                                    Color="Color.Secondary"
-                                    Class="me-2"
-                                    Title="View requirements" />
+                                <div class="apps-table-row">
+
+                                    <!-- NAME -->
+                                    <div class="apps-col apps-col--name">
+                                        <div class="apps-name-icon">
+                                            <MudIcon Icon="@Icons.Material.Filled.WebAsset" />
+                                        </div>
+                                        <div>
+                                            <div class="apps-name">@app.Name</div>
+                                            <div class="apps-name-sub">
+                                                @(app.IsSurveyCompleted ? "Survey completed" : "Survey pending")
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- LEVEL -->
+                                    <div class="apps-col apps-col--level">
+                                        <span class="apps-level-badge apps-level-badge--@GetLevelClass(app.LevelAcronym)">
+                                            <MudIcon Icon="@Icons.Material.Filled.Security"
+                                                     Style="font-size:14px; margin-right:5px;" />
+                                            @(string.IsNullOrWhiteSpace(app.LevelLabel) ? app.LevelAcronym : app.LevelLabel)
+                                        </span>
+                                    </div>
+
+                                    <!-- ACTIONS -->
+                                    <div class="apps-col apps-col--actions">
+
+                                        <MudIconButton Icon="@Icons.Material.Filled.QuestionAnswer"
+                                                       Class="@($"apps-action-btn {(app.IsSurveyCompleted ? "apps-action-btn--done" : "apps-action-btn--survey")}")"
+                                                       Size="Size.Small"
+                                                       Href="@($"/survey/{app.UserWebAppID}")"
+                                                       Title="@(app.IsSurveyCompleted ? "View survey" : "Start survey")" />
+
+                                        @if (app.IsSurveyCompleted)
+                                        {
+                                            <MudIconButton Icon="@Icons.Material.Filled.ListAlt"
+                                                           Class="apps-action-btn apps-action-btn--asvs"
+                                                           Size="Size.Small"
+                                                           Href="@($"/survey/{app.UserWebAppID}/requirements")"
+                                                           Title="OWASP ASVS requirements" />
+
+                                            <MudIconButton Icon="@Icons.Material.Filled.FactCheck"
+                                                           Class="apps-action-btn apps-action-btn--wstg"
+                                                           Size="Size.Small"
+                                                           Href="@($"/survey/{app.UserWebAppID}/wstg-tests")"
+                                                           Title="OWASP WSTG tests" />
+                                        }
+
+                                        <div style="flex:1;" />
+
+                                        <MudIconButton Icon="@Icons.Material.Filled.DeleteForever"
+                                                       Class="apps-action-btn apps-action-btn--delete"
+                                                       Size="Size.Small"
+                                                       Title="Delete application"
+                                                       OnClick="@(() => ConfirmDelete(app.UserWebAppID))" />
+                                    </div>
+
+                                </div>
                             }
-                            <MudIconButton 
-                                Color="Color.Error" 
-                                Icon="@Icons.Material.Filled.DeleteForever" 
-                                OnClick="@(() => ConfirmDelete(context.UserWebAppID))"
-                                Variant="Variant.Filled"
-                                Title="Delete">
-                            </MudIconButton>
-                        </MudTd>
-                    </RowTemplate>
-                </MudTable>
-            }
-        </MudStack>
-    </MudPaper>
-</MudContainer>
+                            <!-- LEGENDA -->
+                            <div class="apps-legend">
+                                <span class="apps-legend-title">Actions legend:</span>
+                                <div class="apps-legend-items">
+                                    <div class="apps-legend-item">
+                                        <div class="apps-legend-icon apps-legend-icon--pending">
+                                            <MudIcon Icon="@Icons.Material.Filled.QuestionAnswer" Style="font-size:16px;" />
+                                        </div>
+                                        <span>Survey (pending)</span>
+                                    </div>
+                                    <div class="apps-legend-item">
+                                        <div class="apps-legend-icon apps-legend-icon--done">
+                                            <MudIcon Icon="@Icons.Material.Filled.QuestionAnswer" Style="font-size:16px;" />
+                                        </div>
+                                        <span>Survey (completed)</span>
+                                    </div>
+                                    <div class="apps-legend-item">
+                                        <div class="apps-legend-icon apps-legend-icon--asvs">
+                                            <MudIcon Icon="@Icons.Material.Filled.ListAlt" Style="font-size:16px;" />
+                                        </div>
+                                        <span>OWASP ASVS requirements</span>
+                                    </div>
+                                    <div class="apps-legend-item">
+                                        <div class="apps-legend-icon apps-legend-icon--wstg">
+                                            <MudIcon Icon="@Icons.Material.Filled.FactCheck" Style="font-size:16px;" />
+                                        </div>
+                                        <span>OWASP WSTG tests</span>
+                                    </div>
+                                    <div class="apps-legend-item">
+                                        <div class="apps-legend-icon apps-legend-icon--delete">
+                                            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Style="font-size:16px;" />
+                                        </div>
+                                        <span>Delete application</span>
+                                    </div>
+                                </div>
+                                <p class="apps-legend-note">
+                                    <MudIcon Icon="@Icons.Material.Filled.Info"
+                                             Style="font-size:14px; margin-right:5px; color:#34acd8;" />
+                                    ASVS and WSTG buttons appear only after the survey is completed.
+                                </p>
+                            </div>
+                        }
+
+                    </div>
+                </ChildContent>
+            </MudExpansionPanel>
+
+        </MudExpansionPanels>
+    </div>
+</div>
 
 @code {
     private WebAppRegistryViewModel ViewModel;
     private List<Level> Levels = new();
-    private int DeleteId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,16 +246,19 @@
 
     private async Task ConfirmDelete(int userWebAppId)
     {
-
-        bool? result = await DialogService.ShowMessageBox(
-            "Confirm Delete",
-            (MarkupString)$"Are you sure you want to delete this application?<br /> If you have already completed the questionnaire, or if you have provided any responses, those data will also be permanently deleted. <br /> <b>This action cannot be undone.</b>",
-            yesText: "Yes",
-            noText: "Cancel",
-            options: new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall }
+        var dialog = await DialogService.ShowAsync<ConfirmDeleteDialog>(
+            string.Empty,
+            new DialogOptions
+            {
+                CloseButton = false,
+                MaxWidth = MaxWidth.ExtraSmall,
+                FullWidth = true,
+                BackdropClick = false
+            }
         );
 
-        if (result == true)
+        var result = await dialog.Result;
+        if (result is { Canceled: false })
         {
             await DeleteConfirmed(userWebAppId);
         }
@@ -115,9 +269,7 @@
         try
         {
             await ViewModel.DeleteAsync(userWebAppId);
-
             Snackbar.Add("Application deleted", Severity.Success);
-
             StateHasChanged();
         }
         catch (Exception ex)
@@ -125,4 +277,12 @@
             Snackbar.Add($"Delete failed: {ex.Message}", Severity.Error);
         }
     }
+
+    private string GetLevelClass(string? acronym) => acronym?.ToLower() switch
+    {
+        "l1" => "1",
+        "l2" => "2",
+        "l3" => "3",
+        _ => "1"
+    };
 }

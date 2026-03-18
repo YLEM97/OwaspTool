@@ -39,3 +39,25 @@ Use concise, technical language.
         return response?.message?.content ?? "No answer from AI.";
     }
 };
+
+let scrollHandler = null;
+let dotNetRef = null;
+
+window.registerScrollHandler = (ref) => {
+    dotNetRef = ref;
+
+    scrollHandler = () => {
+        const isScrolled = window.scrollY > 20;
+        dotNetRef.invokeMethodAsync('OnScroll', isScrolled);
+    };
+
+    window.addEventListener('scroll', scrollHandler, { passive: true });
+};
+
+window.unregisterScrollHandler = () => {
+    if (scrollHandler) {
+        window.removeEventListener('scroll', scrollHandler);
+        scrollHandler = null;
+    }
+    dotNetRef = null;
+};

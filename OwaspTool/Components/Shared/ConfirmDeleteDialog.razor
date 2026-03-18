@@ -1,0 +1,45 @@
+﻿@using MudBlazor
+
+<MudDialog Class="cc-confirm-dialog">
+    <DialogContent>
+        <div class="cc-confirm-dialog-body">
+            <div class="cc-confirm-dialog-icon">
+                <MudIcon Icon="@Icons.Material.Filled.DeleteForever"
+                         Style="font-size: 2.2rem; color: #E76F51;" />
+            </div>
+            <h3 class="cc-confirm-dialog-title">Delete Application</h3>
+            <p class="cc-confirm-dialog-text">
+                Are you sure you want to delete this application?
+            </p>
+            <div class="cc-confirm-dialog-warning">
+                <MudIcon Icon="@Icons.Material.Filled.Warning"
+                         Style="font-size: 16px; margin-right: 8px; color: #E76F51; flex-shrink:0;" />
+                <span>
+                    If you have already completed the questionnaire, or provided any responses,
+                    those data will also be permanently deleted.
+                    <strong>This action cannot be undone.</strong>
+                </span>
+            </div>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <div class="cc-confirm-dialog-actions">
+            <MudButton Class="cc-confirm-cancel-btn"
+                       OnClick="Cancel">
+                Cancel
+            </MudButton>
+            <MudButton Class="cc-confirm-delete-btn"
+                       StartIcon="@Icons.Material.Filled.DeleteForever"
+                       OnClick="Confirm">
+                Delete
+            </MudButton>
+        </div>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = null!;
+
+    private void Cancel() => MudDialog.Cancel();
+    private void Confirm() => MudDialog.Close(DialogResult.Ok(true));
+}

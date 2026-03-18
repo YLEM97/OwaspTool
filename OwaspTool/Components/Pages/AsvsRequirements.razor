@@ -2,115 +2,106 @@
 @using OwaspTool.DAL
 @using Microsoft.EntityFrameworkCore
 @inject OwaspToolContext DbContext
+@inject NavigationService NavService
 
-<PageTitle>ASVS Requirements</PageTitle>
+<PageTitle>ASVS Requirements — CureCode</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge">
-    <div class="header-section">
-        <div class="header-title">
-            <MudIcon Icon="@Icons.Material.Filled.Security" Style="margin-right: 1rem; font-size: 2.5rem;" />
-            OWASP ASVS Requirements v5.0
+<div class="cc-asvs-page">
+
+    <!-- HEADER -->
+    <div class="cc-asvs-header">
+        <div class="cc-asvs-header-icon">
+            <MudIcon Icon="@Icons.Material.Filled.Security" Style="font-size: 2rem; color: #34acd8;" />
         </div>
-        <div class="header-subtitle">
-            Application Security Verification Standard - Comprehensive Requirements Matrix
-        </div>
+        <h1 class="cc-asvs-header-title">OWASP ASVS Requirements <span class="cc-asvs-version-badge">v5.0</span></h1>
+        <p class="cc-asvs-header-subtitle">Application Security Verification Standard — Comprehensive Requirements Matrix</p>
+
+        @if (GroupedRequirements != null)
+        {
+            <div class="cc-asvs-stats">
+                <div class="cc-asvs-stat">
+                    <span class="cc-asvs-stat-number">@GroupedRequirements.Count</span>
+                    <span class="cc-asvs-stat-label">Chapters</span>
+                </div>
+                <div class="cc-asvs-stat-divider"></div>
+                <div class="cc-asvs-stat">
+                    <span class="cc-asvs-stat-number">@GroupedRequirements.SelectMany(c => c.Value).Count()</span>
+                    <span class="cc-asvs-stat-label">Sections</span>
+                </div>
+                <div class="cc-asvs-stat-divider"></div>
+                <div class="cc-asvs-stat">
+                    <span class="cc-asvs-stat-number">@GroupedRequirements.SelectMany(c => c.Value).SelectMany(s => s.Value).Count()</span>
+                    <span class="cc-asvs-stat-label">Requirements</span>
+                </div>
+            </div>
+        }
     </div>
-    
-    @if (GroupedRequirements != null)
-    {
-        <div class="stats-card">
-            <MudGrid>
-                <MudItem xs="12" sm="4">
-                    <div class="stat-item">
-                        <span class="stat-number">@GroupedRequirements.Count</span>
-                        <span class="stat-label">Chapters</span>
-                    </div>
-                </MudItem>
-                <MudItem xs="12" sm="4">
-                    <div class="stat-item">
-                        <span class="stat-number">@GroupedRequirements.SelectMany(c => c.Value).Count()</span>
-                        <span class="stat-label">Sections</span>
-                    </div>
-                </MudItem>
-                <MudItem xs="12" sm="4">
-                    <div class="stat-item">
-                        <span class="stat-number">@GroupedRequirements.SelectMany(c => c.Value).SelectMany(s => s.Value).Count()</span>
-                        <span class="stat-label">Requirements</span>
-                    </div>
-                </MudItem>
-            </MudGrid>
-        </div>
-    }
-    
-    <MudPaper Class="p-4" Elevation="0" Style="background: transparent;">
-        <MudExpansionPanels Elevation="0">
-            @if (GroupedRequirements != null)
-            {
-                foreach (var chapter in GroupedRequirements.OrderBy(c => c.Key.ChapterID))
+
+    <!-- CONTENT -->
+    <div class="cc-asvs-content">
+        @if (GroupedRequirements == null)
+        {
+            <div class="cc-asvs-loading">
+                <MudProgressCircular Indeterminate="true" Style="color: #34acd8;" Size="Size.Large" />
+                <span>Loading ASVS Requirements...</span>
+            </div>
+        }
+        else
+        {
+            <MudExpansionPanels Elevation="0" Class="cc-asvs-chapters">
+                @foreach (var chapter in GroupedRequirements.OrderBy(c => c.Key.ChapterID))
                 {
-                    <MudExpansionPanel Class="chapter-panel">
+                    <MudExpansionPanel Class="cc-asvs-chapter-panel" DisableRipple="true">
                         <TitleContent>
-                            <div style="display: flex; align-items: center;">
-                                <MudIcon Icon="@Icons.Material.Filled.MenuBook" Style="margin-right: 1rem;" />
-                                <span style="font-size: 1.1rem;">@($"{chapter.Key.Number} - {chapter.Key.Title}")</span>
+                            <div class="cc-asvs-chapter-title">
+                                <div class="cc-asvs-chapter-icon">
+                                    <MudIcon Icon="@Icons.Material.Filled.MenuBook" Style="font-size: 1.1rem;" />
+                                </div>
+                                <span class="cc-asvs-chapter-name">@chapter.Key.Number — @chapter.Key.Title</span>
                                 <MudSpacer />
-                                <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
+                                <span class="cc-asvs-count-badge">
                                     @chapter.Value.SelectMany(s => s.Value).Count() requirements
-                                </MudChip>
+                                </span>
                             </div>
                         </TitleContent>
                         <ChildContent>
-                            <MudExpansionPanels ExpandMultiple="true" Elevation="0">
+                            <MudExpansionPanels Elevation="0" ExpandMultiple="true" Class="cc-asvs-sections">
                                 @foreach (var section in chapter.Value.OrderBy(s => s.Key.SectionID))
                                 {
-                                    <MudExpansionPanel Class="section-panel" Dense="true">
+                                    <MudExpansionPanel Class="cc-asvs-section-panel" Dense="true" DisableRipple="true">
                                         <TitleContent>
-                                            <div style="display: flex; align-items: center;">
-                                                <MudIcon Icon="@Icons.Material.Filled.Article" Style="margin-right: 0.75rem; font-size: 1.2rem;" />
+                                            <div class="cc-asvs-section-title">
+                                                <MudIcon Icon="@Icons.Material.Filled.Article"
+                                                         Style="font-size: 1rem; margin-right: 10px; color: #7483f3;" />
                                                 <span>@($"{section.Key.Number} - {section.Key.Title}")</span>
                                                 <MudSpacer />
-                                                <MudChip Size="Size.Small" Style="background: rgba(255,255,255,0.2); color: white;" T="string">
-                                                    @* @(section).Value.Count() items *@
+                                                <span class="cc-asvs-count-badge cc-asvs-count-badge--purple">
                                                     @(section.Value.Count) requirements
-                                                </MudChip>
+                                                </span>
                                             </div>
                                         </TitleContent>
                                         <ChildContent>
                                             @{
                                                 var requirements = section.Value.OrderBy(r => r.ASVSRequirementID).ToList();
                                             }
-                                            @if (requirements?.Count > 0)
+                                            @if (requirements.Count > 0)
                                             {
-                                                <MudTable Items="@requirements" Dense="true" Class="requirements-table" Hover="true" Striped="false">
-                                                    <HeaderContent>
-                                                        <MudTh Style="width: 150px;">
-                                                            <div style="display: flex; align-items: center;">
-                                                                <MudIcon Icon="@Icons.Material.Filled.Tag" Style="margin-right: 0.5rem; font-size: 1rem;" />
-                                                                Number
-                                                            </div>
-                                                        </MudTh>
-                                                        <MudTh>
-                                                            <div style="display: flex; align-items: center;">
-                                                                <MudIcon Icon="@Icons.Material.Filled.Description" Style="margin-right: 0.5rem; font-size: 1rem;" />
-                                                                Requirement Description
-                                                            </div>
-                                                        </MudTh>
-                                                    </HeaderContent>
-                                                    <RowTemplate>
-                                                        <MudTd DataLabel="Number">
-                                                            <span class="requirement-number">@context.Number</span>
-                                                        </MudTd>
-                                                        <MudTd DataLabel="Text">
-                                                            <div class="requirement-text">@context.Text</div>
-                                                        </MudTd>
-                                                    </RowTemplate>
-                                                </MudTable>
+                                                <div class="cc-asvs-requirements-list">
+                                                    @foreach (var req in requirements)
+                                                    {
+                                                        <div class="cc-asvs-requirement-row">
+                                                            <span class="cc-asvs-req-number">@req.Number</span>
+                                                            <span class="cc-asvs-req-text">@req.Text</span>
+                                                        </div>
+                                                    }
+                                                </div>
                                             }
                                             else
                                             {
-                                                <div class="no-requirements">
-                                                    <MudIcon Icon="@Icons.Material.Filled.Info" Style="font-size: 2rem; color: #6c757d; margin-bottom: 0.5rem;" />
-                                                    <div>No requirements available in this section</div>
+                                                <div class="cc-asvs-empty">
+                                                    <MudIcon Icon="@Icons.Material.Filled.Info"
+                                                             Style="color: #34acd8; font-size: 1.2rem;" />
+                                                    <span>No requirements available in this section</span>
                                                 </div>
                                             }
                                         </ChildContent>
@@ -120,17 +111,10 @@
                         </ChildContent>
                     </MudExpansionPanel>
                 }
-            }
-            else
-            {
-                <div class="loading-container">
-                    <MudProgressCircular Color="Color.Primary" Size="Size.Large" />
-                    <div class="loading-text">Loading ASVS Requirements...</div>
-                </div>
-            }
-        </MudExpansionPanels>
-    </MudPaper>
-</MudContainer>
+            </MudExpansionPanels>
+        }
+    </div>
+</div>
 
 @code {
     private Dictionary<ChapterDTO, Dictionary<SectionDTO, List<RequirementDTO>>>? GroupedRequirements;
@@ -153,5 +137,3 @@
             );
     }
 }
-
-

@@ -1,4 +1,4 @@
-﻿@inherits LayoutComponentBase
+﻿@* @inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
 @using BytexDigital.Blazor.Components.CookieConsent
@@ -11,10 +11,10 @@
 
 <MudLayout>
     <MudAppBar Elevation="4" Class="position-relative custom-appbar">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Primary" Edge="Edge.Start" OnClick="ToggleDrawer" Size="Size.Large"/>
-        <div class="appbar-title-centered mt-3 pb-1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Primary" Edge="Edge.Start" OnClick="ToggleDrawer" Size="Size.Large" Class="mt-5"/>
+        <div class="appbar-title-centered mt-4 pb-1">
             <a href="/">
-                <img src="img/CC.png" alt="CureCode Logo" style="height:150px;" />
+                <img src="img/CC_v2.png" alt="CureCode Logo" style="height:120px;" />
             </a>
         </div>
         <MudSpacer />
@@ -78,7 +78,7 @@
         <NavMenu />
     </MudDrawer>
     <MudMainContent>
-        <div class="ms-5 mt-5 ps-2 me-5 pe-2">
+        <div class="mt-5">
             @Body
         </div>
     </MudMainContent>
@@ -89,9 +89,9 @@
                    Color="Color.Secondary"
                    Size="Size.Large"
                    @onclick="OpenCookieConsentPanelAsync" />
-</div>
+</div> *@
 
-@code {
+@* @code {
 
     private bool _open = false;
     private bool IsLoggedIn = false;
@@ -133,6 +133,89 @@
     };
 
     [Inject] private CookieConsentService CookieConsentService { get; set; }
+
+    private async Task OpenCookieConsentPanelAsync()
+    {
+        await CookieConsentService.ShowPreferencesModalAsync();
+    }
+} *@
+
+@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+@using OwaspTool.Components.Shared
+@inject AuthenticationStateProvider AuthStateProvider
+
+<MudThemeProvider Theme="_customTheme" IsDarkMode="true" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<GlobalTransitionOverlay />
+
+<div class="layout-wrapper">
+
+    <NavMenu IsLoggedIn="@IsLoggedIn" UserName="@UserName" />
+
+    <main class="cc-main">
+        @Body
+    </main>
+
+</div>
+
+<div class="cc-cookie-fab">
+    <MudIconButton Icon="@Icons.Material.Filled.Cookie"
+                   Color="Color.Secondary"
+                   Size="Size.Large"
+                   @onclick="OpenCookieConsentPanelAsync" />
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    private bool IsLoggedIn;
+    private string? UserName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        IsLoggedIn = user?.Identity != null && user.Identity.IsAuthenticated;
+
+        if (IsLoggedIn)
+        {
+            var firstName = user?.FindFirst("Name")?.Value ?? "";
+            var lastName = user?.FindFirst("Surname")?.Value ?? "";
+            UserName = $"{firstName} {lastName}".Trim();
+        }
+    }
+
+    private MudTheme _customTheme = new MudTheme()
+    {
+        PaletteDark = new PaletteDark()
+        {
+            Primary = "#34acd8",
+            Secondary = "#7483f3",
+            Tertiary = "#4e53b3",
+            Info = "#1d53a1",
+            Background = "#07193e",
+            Surface = "#0d2454",
+            AppbarBackground = "#07193e",
+            AppbarText = "#ffffff",
+            DrawerBackground = "#07193e",
+            DrawerText = "#ffffff",
+            TextPrimary = "#ffffff",
+            TextSecondary = "rgba(255,255,255,0.65)",
+            ActionDefault = "#ffffff",
+            LinesDefault = "rgba(255,255,255,0.08)",
+            TableHover = "rgba(52,172,216,0.08)",
+            Error = "#E76F51",
+        }
+    };
+
+    [Inject] private BytexDigital.Blazor.Components.CookieConsent.CookieConsentService CookieConsentService { get; set; } = default!;
 
     private async Task OpenCookieConsentPanelAsync()
     {

@@ -94,6 +94,26 @@ public class UserWebAppRepository : IUserWebAppRepository
 
             if (instances.Any())
             {
+                // Delete ASVSRequirementStatus rows linked to these instances
+                var reqStatuses = await _context.ASVSRequirementStatus
+                    .Where(si => si.UserWebAppID == userWebAppId)
+                    .ToListAsync();
+                if (reqStatuses.Any())
+                {
+                    _context.ASVSRequirementStatus.RemoveRange(reqStatuses);
+                    await _context.SaveChangesAsync();
+                }
+
+                // Delete WSTGTestStatus rows linked to these instances
+                var testStatuses = await _context.WSTGTestStatuses
+                    .Where(si => si.UserWebAppID == userWebAppId)
+                    .ToListAsync();
+                if (testStatuses.Any())
+                {
+                    _context.WSTGTestStatuses.RemoveRange(testStatuses);
+                    await _context.SaveChangesAsync();
+                }
+
                 // Delete GivenAnswer rows linked to these instances
                 var givenAnswers = await _context.GivenAnswers
                     .Where(ga => instances.Contains(ga.SurveyInstanceID))
