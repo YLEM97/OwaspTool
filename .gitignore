@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# ── Production secrets (mai committare) ──────────────────
+OwaspTool/appsettings.Production.json
+
+**/appsettings.Production.json
