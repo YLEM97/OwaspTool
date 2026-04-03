@@ -364,5 +364,7 @@ FodyWeavers.xsd
 
 # ── Production secrets (mai committare) ──────────────────
 OwaspTool/appsettings.Production.json
+OwaspTool/appsettings.Development.json
 
 **/appsettings.Production.json
+**/appsettings.Development.json
