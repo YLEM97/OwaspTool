@@ -22,6 +22,7 @@
     </PackageReference>
     <PackageReference Include="MudBlazor" Version="8.10.0" />
     <PackageReference Include="QuestPDF" Version="2025.12.0" />
+    <PackageReference Include="Smtp2Go.ApiClient" Version="0.0.5" />
   </ItemGroup>
 
   <ItemGroup>
