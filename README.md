@@ -61,7 +61,7 @@ If at least one of these critical categories is assessed as high risk, the appli
 
 The image below illustrates the decision-making workflow of the <b>first step</b>. On the website, the buttons are <i>interactive</i> to enhance user interaction with the diagram.
 
-![STEP 1](/OwaspTool/wwwroot/img/step1.jpg)
+![STEP 1](/OwaspTool/wwwroot/img/step1.png)
 
 ### Step 2.1: Low level risk categories evaluation
 If none of the critical risks reach Moderate or High levels, the assessment continues with categories which can be direct or indirect consequences of the high level risk categories.
@@ -76,4 +76,10 @@ If H7 or H9 are evaluated as high or moderate, then the system is classified as 
 
 The image below illustrates the decision-making workflow of the <b>second step</b>. On the website, the buttons are <i>interactive</i> to enhance user interaction with the diagram.
 
-![STEP 2](/OwaspTool/wwwroot/img/step2.jpg)
+![STEP 2](/OwaspTool/wwwroot/img/step2.png)
+
+## Informative Section 2: Try CureCode application
+To try CureCode application, you can access with the following credentials:
+- <b>Username:</b> demo@curecode.it
+- <b>Password:</b> Demo@CureCode2026
+
