@@ -83,3 +83,79 @@ To try CureCode application, you can access with the following credentials:
 - <b>Username:</b> demo@curecode.it
 - <b>Password:</b> Demo@CureCode2026
 
+The sections below walk through the complete workflow, from login to accessing the customized OWASP outputs for a registered application.
+
+### Step 1 — Sign In
+
+From the home page, click the **Login** button to be redirected to the sign-in page. Enter the demo credentials above and click **SIGN IN**. Upon successful authentication, you will be redirected back to the home page.
+
+![SIGN IN](/OwaspTool/wwwroot/img/demo/DemoLoginCredentials.png)
+
+### Step 2 — Access Your Profile
+
+After logging in, your account name and a profile icon will appear in the top-right corner of the navigation bar. Click the **profile icon** to navigate to your personal profile page.
+
+![PROFILE](/OwaspTool/wwwroot/img/demo/HomeProfile.png)
+
+### Step 3 — Manage Your Applications
+
+On the profile page, expand the **Your Applications** panel. On a new account this panel will be empty. Click the **⊕ ADD A NEW APPLICATION** button to register your first application.
+
+![YOUR APPLICATIONS](/OwaspTool/wwwroot/img/demo/ProfilePage.png)
+
+You will be redirected to the application registration form. Fill in the following fields and click **ADD**:
+
+| Field | Description |
+| ----- | ----------- |
+| **Application Name** | A descriptive identifier for the application (e.g. `MyHealthApp`). |
+| **Security Level** | The security level you intend to apply. |
+
+![NEW APPLICATIONS](/OwaspTool/wwwroot/img/demo/NewApp.png)
+
+Once submitted, the application will appear in the **Your Applications** list with a **Survey pending** status and a grey survey icon in the **Actions** column.
+
+![YOUR APPLICATIONS - NEW APP ADDED](/OwaspTool/wwwroot/img/demo/YourApplications.png)
+
+### Step 4 — Complete the Security Survey
+
+Click the **grey survey icon** (Survey pending) in the Actions column of the target application. You will be redirected to the contextual profiling survey, which is divided into multiple categories.
+
+Work through each category and answer all questions. After completing a category, click **Save category** before moving to the next one. A **Reset** button is available if you need to clear your answers for the current category.
+
+>[!IMPORTANT]
+> Make sure to save every category before proceeding. Unsaved answers will be lost if you navigate away.
+
+### Step 5 — Finalize the Survey
+
+Once all categories have been saved, click the **Finalize Survey** button at the bottom of the survey page. A confirmation modal will appear, warning that **the answers will be permanently locked** and can no longer be modified after this action.
+
+![FINALIZE SURVEY](/OwaspTool/wwwroot/img/demo/FinalizeSurvey.png)
+
+Click **CONTINUE** to confirm. The survey will be submitted and a **"Survey finalized — answers are locked"** notice will be displayed.
+
+![SURVEY FINALIZED](/OwaspTool/wwwroot/img/demo/SurveyFinalized.png)
+
+### Step 6 — Access OWASP Requirements and Tests
+
+Return to the profile page and open the **Your Applications** panel. The application status will now show **Survey completed**, and two additional action buttons will be visible:
+
+| Button | Color | Description |
+| ------ | ----- | ----------- |
+| **Survey (completed)** | Green | Re-open the read-only survey to review your submitted answers. |
+| **OWASP ASVS requirements** | Blue | View the custom ASVS 5.0 requirements filtered and tailored to your application's profile. |
+| **OWASP WSTG tests** | Purple | View the custom WSTG test cases applicable to your application. |
+
+![YOUR APPLICATIONS - SURVEY DONE](/OwaspTool/wwwroot/img/demo/YourApplicationsSurveyDone.png)
+
+>[!NOTE]
+> The **ASVS** and **WSTG** buttons are only shown after the survey has been finalized.
+
+### Step 7 — Track Progress and Export Reports
+
+Both the ASVS requirements page and the WSTG tests page allow you to:
+
+- **Mark each item** as implemented / passed, not applicable, or flagged with an error.
+- **Add technical notes** to document implementation details or test observations.
+- **Download a structured PDF report** suitable for security audits and compliance documentation.
+
+This workflow completes one full cycle of the CureCode tool — from application registration and contextual profiling to customized security requirements and testing guidance.
