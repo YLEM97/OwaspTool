@@ -36,6 +36,8 @@
         <nav class="cc-nav-links">
             <a href="/" class="cc-nav-link @(IsActive("/") ? "cc-nav-link--active" : "")">Home</a>
             <a href="/security-level" class="cc-nav-link @(IsActive("/security-level") ? "cc-nav-link--active" : "")">Security Level</a>
+            <a href="/asvs-requirements" class="cc-nav-link @(IsActive("/asvs-requirements") ? "cc-nav-link--active" : "")">ASVS</a>
+            <a href="/wstg-tests" class="cc-nav-link @(IsActive("/wstg-tests") ? "cc-nav-link--active" : "")">WSTG</a>
         </nav>
 
         <div class="cc-appbar-spacer"></div>
@@ -128,6 +130,10 @@
            @onclick="CloseMenu">Home</a>
         <a href="/security-level" class="cc-drawer-link @(IsActive("/security-level") ? "cc-drawer-link--active" : "")"
            @onclick="CloseMenu">Security Level</a>
+        <a href="/asvs-requirements" class="cc-drawer-link @(IsActive("/asvs-requirements") ? "cc-drawer-link--active" : "")"
+           @onclick="CloseMenu">ASVS</a>
+        <a href="/wstg-tests" class="cc-drawer-link @(IsActive("/wstg-tests") ? "cc-drawer-link--active" : "")"
+           @onclick="CloseMenu">WSTG</a>
     </div>
 
     <div class="cc-drawer-auth">
