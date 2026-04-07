@@ -157,5 +157,3 @@ Both the ASVS requirements page and the WSTG tests page allow you to:
 - **Mark each item** as implemented / passed, not applicable, or flagged with an error.
 - **Add technical notes** to document implementation details or test observations.
 - **Download a structured PDF report** suitable for security audits and compliance documentation.
-
-This workflow completes one full cycle of the CureCode tool — from application registration and contextual profiling to customized security requirements and testing guidance.
