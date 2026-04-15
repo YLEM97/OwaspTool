@@ -2,7 +2,7 @@
 >This repository is under development!
 
 >[!NOTE]
->CureCode is now online! Visit the following website: [curecode.unige.net](curecode.unige.net).
+>CureCode is now online! Visit the following website: <a href="curecode.unige.net" target="_blank">curecode.unige.net</a>.
 
 # OWASP Tool: CureCode
 Context-aware web-based tool that aims to support healthcare developers and testers in applying OWASP standards thorugh the lifecycle (design, development, and testing) of clinical web applications. The tool aims to make OWASP guidelines more interactive, usable, and tailored to the specific characteristics of the application being developed or tested.
@@ -82,7 +82,7 @@ The image below illustrates the decision-making workflow of the <b>second step</
 ![STEP 2](/OwaspTool/wwwroot/img/step2.png)
 
 ## Informative Section 2: Try CureCode web application
-To try CureCode web application copy and paste in your browser navigation bar the url [curecode.unige.net](curecode.unige.net).
+To try CureCode web application copy and paste in your browser navigation bar the url <a href="curecode.unige.net" target="_blank">curecode.unige.net</a>.
 
 Then, you can access CureCode web application with the following credentials:
 - <b>Username:</b> demo@curecode.it
