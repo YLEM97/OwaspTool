@@ -1,6 +1,9 @@
 >[!WARNING]
 >This repository is under development!
 
+>[!NOTE]
+>CureCode is now online! Visit the following website: curecode.unige.net
+
 # OWASP Tool: CureCode
 Context-aware web-based tool that aims to support healthcare developers and testers in applying OWASP standards thorugh the lifecycle (design, development, and testing) of clinical web applications. The tool aims to make OWASP guidelines more interactive, usable, and tailored to the specific characteristics of the application being developed or tested.
 
@@ -57,13 +60,13 @@ The first step involves assessing the highest-level risk categories, which would
 - <b>H4:</b> <i>Other clinical delays or errors.</i> Any other impact that slows, prevents, or alters diagnostic/therapeutic decisions.
 
 ### Step 1.2: Decision logic
-If at least one of these critical categories is assessed as high risk, the application is automatically classified as L3. If none of these categories are high, but either H2a or H2b is considered moderate, this still justifies a L3 classification, given the legal sensitivity of PII or PHI exposure. If H2a and H2b are not rated high or moderate, but H1, H3 or H4 are evaluated as moderate, the application is classified at L2. If all the categories in this group are considered low or none, proceed to Step 2.1.
+If at least one of these critical categories is assessed as high risk, the application is automatically classified as L3. If none of these categories are high, but either H2a or H2b is considered moderate, this still justifies a L3 classification, given the legal sensitivity of PII or PHI exposure. If H2a and H2b are not rated high or moderate, but H1, H3 or H4 are evaluated as moderate, the application is classified at L2. If all the categories in this group are considered low or none, proceed to Step 1.3.
 
 The image below illustrates the decision-making workflow of the <b>first step</b>. On the website, the buttons are <i>interactive</i> to enhance user interaction with the diagram.
 
 ![STEP 1](/OwaspTool/wwwroot/img/step1.png)
 
-### Step 2.1: Low level risk categories evaluation
+### Step 1.3: Middle level risk categories evaluation
 If none of the critical risks reach Moderate or High levels, the assessment continues with categories which can be direct or indirect consequences of the high level risk categories.
 - <b>H5:</b> <i>Reputational and legal damage to the healthcare organization.</i> A breach or incident may lead to loss of patient and public trust, and potential violations of laws such as GDPR or NIS2. These legal consequences may result in significant financial penalties or operational restrictions.
 - <b>H6:</b> <i>Disruption of clinical services.</i> This refers to system downtime or malfunction that impedes care delivery, e.g., a radiology system becoming unavailable, or electronic prescriptions failing. Prolonged disruptions can directly affect patient care continuity.
@@ -71,33 +74,35 @@ If none of the critical risks reach Moderate or High levels, the assessment cont
 - <b>H8:</b> <i>Invalidation of trial data.</i> for systems involved in clinical trials, any breach that alters or exposes research data may invalidate scientific works. This not only affects medical progress but can undermine compliance with trial protocols and regulatory approvals.
 - <b>H9:</b> <i>Re-identification and possible spread of sensitive information from pseudonymized data.</i> When data is pseudonymized, there’s a risk that attackers may cross-reference it with external datasets to reconstruct patient identities. This kind of breach is subtle but deeply invasive, undermining patient confidentiality.
 
-### Step 2.2: Decision Logic
+### Step 1.4: Decision Logic
 If H7 or H9 are evaluated as high or moderate, then the system is classified as L3. If none of these categories are rated, above Low, the system may be safely classified as L1, which assumes only minimal residual risk.
 
 The image below illustrates the decision-making workflow of the <b>second step</b>. On the website, the buttons are <i>interactive</i> to enhance user interaction with the diagram.
 
 ![STEP 2](/OwaspTool/wwwroot/img/step2.png)
 
-## Informative Section 2: Try CureCode application
-To try CureCode application, you can access with the following credentials:
+## Informative Section 2: Try CureCode web application
+To try CureCode web application copy and paste in your browser navigation bar the url curecode.unige.net.
+
+Then, you can access CureCode web application with the following credentials:
 - <b>Username:</b> demo@curecode.it
 - <b>Password:</b> Demo@CureCode2026
 
 The sections below walk through the complete workflow, from login to accessing the customized OWASP outputs for a registered application.
 
-### Step 1 — Sign In
+### Step 1: Sign In
 
 From the home page, click the **Login** button to be redirected to the sign-in page. Enter the demo credentials above and click **SIGN IN**. Upon successful authentication, you will be redirected back to the home page.
 
 ![SIGN IN](/OwaspTool/wwwroot/img/demo/DemoLoginCredentials.png)
 
-### Step 2 — Access Your Profile
+### Step 2: Access Your Profile
 
 After logging in, your account name and a profile icon will appear in the top-right corner of the navigation bar. Click the **profile icon** to navigate to your personal profile page.
 
 ![PROFILE](/OwaspTool/wwwroot/img/demo/HomeProfile.png)
 
-### Step 3 — Manage Your Applications
+### Step 3: Manage Your Applications
 
 On the profile page, expand the **Your Applications** panel. On a new account this panel will be empty. Click the **⊕ ADD A NEW APPLICATION** button to register your first application.
 
@@ -116,7 +121,7 @@ Once submitted, the application will appear in the **Your Applications** list wi
 
 ![YOUR APPLICATIONS - NEW APP ADDED](/OwaspTool/wwwroot/img/demo/YourApplications.png)
 
-### Step 4 — Complete the Security Survey
+### Step 4: Complete the Security Survey
 
 Click the **grey survey icon** (Survey pending) in the Actions column of the target application. You will be redirected to the contextual profiling survey, which is divided into multiple categories.
 
@@ -125,7 +130,7 @@ Work through each category and answer all questions. After completing a category
 >[!IMPORTANT]
 > Make sure to save every category before proceeding. Unsaved answers will be lost if you navigate away.
 
-### Step 5 — Finalize the Survey
+### Step 5: Finalize the Survey
 
 Once all categories have been saved, click the **Finalize Survey** button at the bottom of the survey page. A confirmation modal will appear, warning that **the answers will be permanently locked** and can no longer be modified after this action.
 
@@ -135,7 +140,7 @@ Click **CONTINUE** to confirm. The survey will be submitted and a **"Survey fina
 
 ![SURVEY FINALIZED](/OwaspTool/wwwroot/img/demo/SurveyFinalized.png)
 
-### Step 6 — Access OWASP Requirements and Tests
+### Step 6: Access OWASP Requirements and Tests
 
 Return to the profile page and open the **Your Applications** panel. The application status will now show **Survey completed**, and two additional action buttons will be visible:
 
@@ -150,7 +155,7 @@ Return to the profile page and open the **Your Applications** panel. The applica
 >[!NOTE]
 > The **ASVS** and **WSTG** buttons are only shown after the survey has been finalized.
 
-### Step 7 — Track Progress and Export Reports
+### Step 7: Track Progress and Export Reports
 
 Both the ASVS requirements page and the WSTG tests page allow you to:
 

@@ -4,6 +4,7 @@ using AuthLibrary.Areas.Auth.Extensions;
 using BytexDigital.Blazor.Components.CookieConsent;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
@@ -36,16 +37,22 @@ builder.Services.AddScoped<ISurveyRequirementsRepository, SurveyRequirementsRepo
 
 builder.Services.AddTransient<IWebAppRegistryViewModel, WebAppRegistryViewModel>();
 
-builder.Services.AddScoped<HttpClient>(sp => new HttpClient
+// Register IHttpClientFactory and a named client, then provide a scoped HttpClient from the factory
+builder.Services.AddHttpClient("App", client =>
 {
-    BaseAddress = new Uri(builder.Configuration["AppUrl"])
+    client.BaseAddress = new Uri(builder.Configuration["AppUrl"]);
 });
+builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("App"));
 
 builder.Services.AddScoped<IProjectUserSyncService, ProjectUserSyncService>();
 builder.Services.AddScoped<IRequirementsPdfGeneratorService, RequirementsPdfGeneratorService>();
 builder.Services.AddScoped<ITestsPdfGeneratorService, TestPdfGeneratorService>();
 builder.Services.AddScoped<NavigationService>();
 
+// Data Protection configuration - ONLY FOR PRODUCTION - COMMENT OUT IN DEVELOPMENT
+//builder.Services.AddDataProtection()
+//    .PersistKeysToFileSystem(new DirectoryInfo("D:\\Siti\\Siti\\OwaspTool\\keys"))
+//    .SetApplicationName("CureCode");
 
 builder.Services.AddAuthLibrary();
 
@@ -108,7 +115,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseStaticFiles();
 
